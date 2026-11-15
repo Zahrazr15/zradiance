@@ -33,13 +33,7 @@
                         <span class="cart-badge" id="navCartBadge">{{ $cartCount > 99 ? '99+' : $cartCount }}</span>
                         @endif
                     </a>
-                    <a href="{{ route('orders.index') }}" class="{{ request()->routeIs('orders.*') ? 'active' : '' }}">Pesanan</a>
-                    <a href="{{ route('profile') }}" class="{{ request()->routeIs('profile') ? 'active' : '' }}">Profil</a>
-
-                    <form action="{{ route('logout') }}" method="POST" data-confirm="Yakin ingin logout?">
-                        @csrf
-                        <button type="submit">Logout</button>
-                    </form>
+                    <a href="{{ route('profile') }}" class="{{ request()->routeIs('profile', 'profile.*', 'orders.*') ? 'active' : '' }}">Profil</a>
                 @endif
             </div>
 

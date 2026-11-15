@@ -165,6 +165,59 @@
         font-size: 13.5px;
     }
 
+    .order-status-tabs {
+        display: flex;
+        gap: 8px;
+        overflow-x: auto;
+        margin: 0 0 18px;
+        padding: 0 0 8px;
+        border-bottom: 1px solid var(--c-border-subtle);
+        scrollbar-width: thin;
+    }
+
+    .order-status-tab {
+        flex: 0 0 auto;
+        padding: 9px 14px;
+        border: 1px solid var(--c-border-subtle);
+        border-radius: var(--radius-pill);
+        background: #fff;
+        color: var(--c-ink-soft);
+        font-size: 13px;
+        font-weight: 700;
+        text-decoration: none;
+        transition: var(--transition);
+    }
+
+    .order-status-tab:hover,
+    .order-status-tab[aria-current="page"] {
+        border-color: var(--c-pink);
+        background: var(--c-pink-subtle);
+        color: var(--c-pink-strong);
+    }
+
+    .order-status-tab:focus-visible {
+        outline: 3px solid rgba(233, 129, 158, 0.3);
+        outline-offset: 2px;
+    }
+
+    .order-table-wrap {
+        overflow-x: auto;
+    }
+
+    .order-mini-table {
+        min-width: 620px;
+    }
+
+    .profile-logout-form {
+        margin-top: 12px;
+    }
+
+    .profile-logout-button {
+        width: 100%;
+        border-color: rgba(192, 57, 43, 0.35);
+        color: var(--c-danger);
+    }
+
     @media (max-width: 960px) {
         .profile-grid-layout { grid-template-columns: 1fr; }
         .user-card { position: static; }
@@ -236,25 +289,64 @@
             <a href="{{ route('profile.edit') }}" class="btn btn-primary" style="width:100%;margin-top:6px;">
                 ✏️ Edit Profil & Foto
             </a>
+
+            <form action="{{ route('logout') }}" method="POST" class="profile-logout-form" data-confirm="Yakin ingin logout?">
+                @csrf
+                <button type="submit" class="btn btn-outline profile-logout-button">Logout</button>
+            </form>
         </aside>
 
         {{-- RIGHT COLUMN: ORDERS HISTORY & ADDRESSES --}}
         <main class="profile-main-section">
 
-            {{-- 1. RIWAYAT PESANAN TERBARU --}}
+            {{-- 1. RIWAYAT PESANAN --}}
             @php
-                $recentOrders = Auth::user()->orders()->withCount('items')->latest()->take(5)->get();
+                $orderTabs = [
+                    'all' => 'Semua',
+                    'unpaid' => 'Belum Bayar',
+                    'processing' => 'Diproses',
+                    'shipped' => 'Dikirim',
+                    'completed' => 'Selesai',
+                    'cancelled' => 'Dibatalkan',
+                ];
+                $requestedOrderFilter = request()->query('order_filter');
+                $activeOrderFilter = is_string($requestedOrderFilter) && array_key_exists($requestedOrderFilter, $orderTabs)
+                    ? $requestedOrderFilter
+                    : 'all';
+                $orderQuery = Auth::user()->orders()
+                    ->select(['id', 'status', 'payment_status', 'total', 'created_at'])
+                    ->latest();
+
+                if ($activeOrderFilter === 'unpaid') {
+                    $orderQuery->where('status', 'pending')
+                        ->where('payment_status', 'unpaid');
+                } elseif ($activeOrderFilter !== 'all') {
+                    $orderQuery->where('status', $activeOrderFilter);
+                }
+
+                $recentOrders = $orderQuery->get();
+                $orderCount = Auth::user()->orders()->count();
             @endphp
             <div class="section-card">
                 <div class="section-card-header">
-                    <h2>🛍️ Riwayat Pesanan Terbaru</h2>
+                    <h2>🛍️ Riwayat Pesanan</h2>
                     <a href="{{ route('orders.index') }}" class="btn btn-outline btn-sm">
-                        Lihat Semua Pesanan ({{ Auth::user()->orders()->count() }}) →
+                        Lihat Semua Pesanan ({{ $orderCount }}) →
                     </a>
                 </div>
 
+                <nav class="order-status-tabs" aria-label="Filter status pesanan">
+                    @foreach($orderTabs as $filter => $label)
+                        <a
+                            href="{{ route('profile', ['order_filter' => $filter]) }}"
+                            class="order-status-tab"
+                            @if($activeOrderFilter === $filter) aria-current="page" @endif
+                        >{{ $label }}</a>
+                    @endforeach
+                </nav>
+
                 @if($recentOrders->count() > 0)
-                    <div class="table-wrap" style="border:0;box-shadow:none;">
+                    <div class="table-wrap order-table-wrap" style="border:0;box-shadow:none;">
                         <table class="table order-mini-table">
                             <thead>
                                 <tr>
@@ -276,7 +368,7 @@
                                     </td>
                                     <td style="text-align:right;">
                                         <a href="{{ route('orders.show', $order) }}" class="btn btn-outline btn-sm" style="padding:4px 10px;font-size:12px;">
-                                            Buka
+                                            Lihat Detail
                                         </a>
                                     </td>
                                 </tr>
@@ -286,8 +378,12 @@
                     </div>
                 @else
                     <div style="text-align:center;padding:30px 20px;color:var(--c-ink-soft);">
-                        <p style="margin-bottom:12px;">Belum ada pesanan aktif.</p>
-                        <a href="{{ route('products.index') }}" class="btn btn-outline btn-sm">Mulai Belanja</a>
+                        @if($activeOrderFilter === 'all')
+                            <p style="margin-bottom:12px;">Belum ada riwayat pesanan.</p>
+                            <a href="{{ route('products.index') }}" class="btn btn-outline btn-sm">Mulai Belanja</a>
+                        @else
+                            <p style="margin-bottom:12px;">Belum ada pesanan pada kategori ini.</p>
+                        @endif
                     </div>
                 @endif
             </div>

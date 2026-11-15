@@ -7,11 +7,11 @@
     .home-wrapper {
         max-width: 1240px;
         margin: 0 auto;
-        padding: 0 24px 80px;
+        padding: 0 24px 64px;
     }
 
     .catalog-intro {
-        margin: 20px 0 30px;
+        margin: 18px 0 20px;
     }
 
     .catalog-intro h1 {
@@ -30,20 +30,20 @@
        2. KATEGORI PILIHAN (CATEGORY CARDS)
     =================================================== */
     .section-block {
-        margin-bottom: 48px;
+        margin-bottom: 32px;
     }
 
     .section-header-row {
         display: flex;
         justify-content: space-between;
         align-items: flex-end;
-        margin-bottom: 22px;
+        margin-bottom: 16px;
         gap: 16px;
         flex-wrap: wrap;
     }
 
     .section-header-row h2 {
-        font-size: 24px;
+        font-size: 22px;
         color: var(--c-ink-heading);
         margin-bottom: 4px;
     }
@@ -106,15 +106,15 @@
         -webkit-backdrop-filter: blur(var(--glass-blur));
         border: 1px solid var(--glass-border);
         border-radius: var(--radius-lg);
-        padding: 20px 24px;
-        margin-bottom: 30px;
+        padding: 16px 18px;
+        margin-bottom: 20px;
         box-shadow: var(--shadow-sm);
     }
 
     .filter-form {
         display: grid;
         grid-template-columns: 2fr 1.2fr 1fr 1fr 1fr auto;
-        gap: 12px;
+        gap: 10px;
         align-items: center;
     }
 
@@ -122,7 +122,7 @@
     .filter-form select {
         width: 100%;
         min-width: 0;
-        padding: 12px 14px;
+        padding: 10px 12px;
         border: 1.5px solid var(--c-border);
         border-radius: var(--radius-pill);
         background: #fff;
@@ -158,7 +158,7 @@
     .product-grid {
         display: grid;
         grid-template-columns: repeat(4, minmax(0, 1fr));
-        gap: 24px;
+        gap: 18px;
     }
 
     /* Product Card Styling */
@@ -346,7 +346,10 @@
 
     @media (max-width: 480px) {
         .filter-form { grid-template-columns: 1fr; }
-        .product-grid, .featured-grid { grid-template-columns: 1fr; }
+        .product-grid, .featured-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+        .product-info { padding: 12px; }
+        .product-name { font-size: 13px; min-height: 38px; }
+        .product-price { font-size: 14px; }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -360,44 +363,16 @@
 
     <header class="catalog-intro">
         <h1>Koleksi Produk</h1>
-        <p>Temukan produk kecantikan sesuai kebutuhan, lalu gunakan pencarian dan filter untuk mempersempit pilihan.</p>
+        <p>Temukan produk yang sesuai kebutuhanmu.</p>
     </header>
 
     {{-- =====================================================
-         2. KATEGORI PILIHAN (CATEGORY CARDS)
-    ====================================================== --}}
-    <div class="section-block">
-        <div class="section-header-row">
-            <div>
-                <h2>Pilihan Kategori Perawatan</h2>
-                <p>Temukan solusi yang pas sesuai kebutuhan dan rutinitas harianmu.</p>
-            </div>
-        </div>
-
-        <div class="category-pills-grid">
-            @foreach($categories as $cat)
-                <a
-                    href="{{ route('products.index', array_merge(request()->query(), ['category' => $cat->cat_id])) }}"
-                    class="category-pill-card {{ (string) request('category') === (string) $cat->cat_id ? 'active' : '' }}"
-                >
-                    <x-category-icon :title="$cat->cat_title" />
-                    <div>
-                        <div class="category-pill-title">{{ $cat->cat_title }}</div>
-                        <small style="color:var(--c-ink-soft);font-size:12px;">Lihat koleksi →</small>
-                    </div>
-                </a>
-            @endforeach
-        </div>
-    </div>
-
-    {{-- =====================================================
-         4. KATALOG SEMUA PRODUK & FILTER
+         2. KATALOG SEMUA PRODUK & FILTER
     ====================================================== --}}
     <div class="section-block" id="catalog-section">
         <div class="section-header-row">
             <div>
-                <h2>Semua Koleksi Produk Kecantikan</h2>
-                <p>Filter berdasarkan kategori, rentang harga, atau urutkan sesuai kebutuhanmu.</p>
+                <h2>Semua Produk</h2>
             </div>
             <span style="color:var(--c-ink-soft);font-size:13.5px;font-weight:700;">
                 {{ $products->total() }} produk ditemukan
@@ -411,7 +386,7 @@
                     type="search"
                     name="q"
                     value="{{ request('q') }}"
-                    placeholder="Cari nama produk / brand..."
+                    placeholder="Cari produk atau brand..."
                 >
 
                 <select name="category">
@@ -533,7 +508,34 @@
     </div>
 
     {{-- =====================================================
-         3. PRODUK UNGGULAN (FEATURED PRODUCTS)
+         3. KATEGORI PILIHAN
+    ====================================================== --}}
+    <div class="section-block">
+        <div class="section-header-row">
+            <div>
+                <h2>Pilihan Kategori Perawatan</h2>
+                <p>Jelajahi produk berdasarkan kategori.</p>
+            </div>
+        </div>
+
+        <div class="category-pills-grid">
+            @foreach($categories as $cat)
+                <a
+                    href="{{ route('products.index', array_merge(request()->query(), ['category' => $cat->cat_id])) }}"
+                    class="category-pill-card {{ (string) request('category') === (string) $cat->cat_id ? 'active' : '' }}"
+                >
+                    <x-category-icon :title="$cat->cat_title" />
+                    <div>
+                        <div class="category-pill-title">{{ $cat->cat_title }}</div>
+                        <small style="color:var(--c-ink-soft);font-size:12px;">Lihat koleksi →</small>
+                    </div>
+                </a>
+            @endforeach
+        </div>
+    </div>
+
+    {{-- =====================================================
+         4. PRODUK UNGGULAN (FEATURED PRODUCTS)
     ====================================================== --}}
     @php
         $featuredProducts = $products->filter(fn($p) => $p->stock > 0)->sortByDesc('reviews_avg_rating')->take(4);
