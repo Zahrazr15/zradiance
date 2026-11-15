@@ -10,5 +10,7 @@
     @yield('content')
 
     <x-footer mode="landing" />
+
+    @stack('scripts')
 </body>
 </html>

@@ -1,253 +1,178 @@
-
 @extends('layouts.user')
 
-@section('title', 'Profil - Beauty Store')
+@section('title', 'Profil Pengguna - Beauty Store')
 
 @push('styles')
 <style>
     .profile-container {
-        max-width: 900px;
-        margin: 50px auto;
-        padding: 0 20px;
+        max-width: 1100px;
+        margin: 36px auto;
+        padding: 0 32px 80px;
     }
 
-    .profile-card {
+    .profile-grid-layout {
+        display: grid;
+        grid-template-columns: 340px 1fr;
+        gap: 32px;
+        align-items: start;
+    }
+
+    /* Left Profile Card */
+    .user-card {
         background: var(--c-surface);
-        border: 1px solid var(--c-border);
-        border-radius: 15px;
-        padding: 40px;
-    }
-
-    .profile-header {
+        border: 1px solid var(--c-border-subtle);
+        border-radius: var(--radius-lg);
+        padding: 32px 24px;
         text-align: center;
-        margin-bottom: 35px;
+        box-shadow: var(--shadow-sm);
+        position: sticky;
+        top: 100px;
     }
 
-    .profile-icon {
-        width: 85px;
-        height: 85px;
+    .avatar-wrapper {
+        width: 100px;
+        height: 100px;
         margin: 0 auto 18px;
         border-radius: 50%;
-        background: var(--c-cream);
+        background: linear-gradient(135deg, var(--c-pink), var(--c-pink-strong));
         display: flex;
         align-items: center;
         justify-content: center;
         overflow: hidden;
-        font-size: 38px;
+        font-size: 42px;
+        color: #fff;
+        box-shadow: 0 6px 20px rgba(233, 129, 158, 0.35);
+        border: 3px solid #fff;
     }
 
-    .profile-icon img {
+    .avatar-wrapper img {
         width: 100%;
         height: 100%;
         object-fit: cover;
     }
 
-    .profile-header h1 {
-        margin: 0 0 8px;
-        color: var(--c-ink);
-        font-size: 28px;
+    .user-card h1 {
+        font-size: 24px;
+        color: var(--c-ink-heading);
+        margin-bottom: 4px;
     }
 
-    .profile-header p {
-        margin: 0;
+    .user-card .user-email {
         color: var(--c-ink-soft);
         font-size: 14px;
+        margin-bottom: 16px;
     }
 
-    .profile-info {
-        display: grid;
-        gap: 15px;
-    }
-
-    .info-item {
-        padding: 18px 20px;
-        background: var(--c-bg);
-        border: 1px solid var(--c-border);
-        border-radius: 10px;
-    }
-
-    .info-item span {
-        display: block;
-        margin-bottom: 7px;
-        color: var(--c-ink-soft);
-        font-size: 13px;
-    }
-
-    .info-item strong {
-        color: var(--c-ink);
-        font-size: 15px;
-        overflow-wrap: anywhere;
-    }
-
-    /* BUKU ALAMAT */
-    .address-section {
-        margin-top: 35px;
-        padding-top: 25px;
-        border-top: 1px solid var(--c-border);
-    }
-
-    .address-heading {
+    .user-meta-list {
         display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 15px;
-        margin-bottom: 20px;
-    }
-
-    .address-heading h2 {
-        margin: 0;
-        color: var(--c-ink);
-        font-size: 21px;
-    }
-
-    .address-add {
-        display: inline-block;
-        padding: 10px 16px;
-        border-radius: 8px;
-        background: var(--c-pink);
-        color: var(--c-ink);
-        text-decoration: none;
-        font-weight: 600;
-        font-size: 13px;
-    }
-
-    .address-item {
-        padding: 18px 20px;
-        margin-bottom: 15px;
-        background: var(--c-bg);
-        border: 1px solid var(--c-border);
-        border-radius: 10px;
-    }
-
-    .address-top {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
+        flex-direction: column;
         gap: 10px;
-        margin-bottom: 12px;
+        margin: 20px 0;
+        text-align: left;
+        background: #FCF8F6;
+        padding: 16px;
+        border-radius: var(--radius-md);
+        font-size: 13.5px;
     }
 
-    .address-label {
-        font-weight: 700;
-        color: var(--c-ink);
+    .user-meta-row {
+        display: flex;
+        justify-content: space-between;
     }
 
-    .default-label {
-        padding: 5px 9px;
-        border-radius: 5px;
-        background: var(--c-cream);
-        color: var(--c-ink);
-        font-size: 11px;
-        font-weight: 700;
+    /* Right Content Cards */
+    .profile-main-section {
+        display: flex;
+        flex-direction: column;
+        gap: 28px;
     }
 
-    .address-item p {
-        margin: 5px 0;
-        color: var(--c-ink-soft);
-        font-size: 14px;
-        line-height: 1.6;
+    .section-card {
+        background: var(--c-surface);
+        border: 1px solid var(--c-border-subtle);
+        border-radius: var(--radius-lg);
+        padding: 30px;
+        box-shadow: var(--shadow-sm);
     }
 
-    .address-recipient {
-        color: var(--c-ink) !important;
-        font-weight: 600;
+    .section-card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 22px;
+        padding-bottom: 14px;
+        border-bottom: 1px solid var(--c-border-subtle);
+        gap: 16px;
+        flex-wrap: wrap;
     }
 
-    .address-empty {
-        padding: 25px;
-        text-align: center;
-        background: var(--c-bg);
-        border: 1px dashed var(--c-border);
-        border-radius: 10px;
-        color: var(--c-ink-soft);
+    .section-card-header h2 {
+        font-size: 20px;
+        color: var(--c-ink-heading);
+        display: flex;
+        align-items: center;
+        gap: 8px;
     }
 
-    .address-empty p {
-        margin: 0 0 12px;
+    /* Address Cards */
+    .address-card-item {
+        background: #FCF8F6;
+        border: 1px solid var(--c-border-subtle);
+        border-radius: var(--radius-md);
+        padding: 20px;
+        margin-bottom: 16px;
+        transition: var(--transition);
+    }
+    .address-card-item:hover {
+        border-color: var(--c-blush);
+        background: #fff;
+        box-shadow: var(--shadow-xs);
     }
 
-    /* AKSI ALAMAT */
+    .address-card-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+
+    .address-tag {
+        font-weight: 800;
+        font-size: 15px;
+        color: var(--c-ink-heading);
+    }
+
     .address-actions {
         display: flex;
+        gap: 8px;
         flex-wrap: wrap;
         align-items: center;
-        gap: 10px;
-        margin-top: 15px;
+        margin-top: 14px;
+        padding-top: 12px;
+        border-top: 1px solid rgba(243, 217, 214, 0.6);
     }
 
-    .address-actions form {
-        margin: 0;
+    /* Recent Orders Table */
+    .order-mini-table th {
+        background: #FCF8F6;
+        font-size: 12.5px;
+        padding: 12px 14px;
+        color: var(--c-ink-soft);
+    }
+    .order-mini-table td {
+        padding: 14px;
+        vertical-align: middle;
+        font-size: 13.5px;
     }
 
-    .address-actions a,
-    .address-actions button {
-        display: inline-block;
-        padding: 8px 14px;
-        border: 1px solid var(--c-border);
-        border-radius: 6px;
-        background: transparent;
-        color: var(--c-ink);
-        font: inherit;
-        font-size: 13px;
-        text-decoration: none;
-        cursor: pointer;
-    }
-
-    .address-actions a:hover,
-    .address-actions button:hover {
-        opacity: .7;
-    }
-
-    .address-actions .delete-button {
-        color: #c0392b;
-        border-color: #c0392b;
-    }
-
-    .profile-alert {
-        padding: 14px 16px;
-        margin-bottom: 20px;
-        border-radius: 8px;
-        font-size: 14px;
-    }
-
-    .profile-alert.success {
-        background: #eaf7ee;
-        color: #216e39;
-    }
-
-    .profile-alert.error {
-        background: #fff0f0;
-        color: #b42318;
-    }
-
-    .profile-alert ul {
-        margin: 8px 0 0;
-        padding-left: 20px;
-    }
-
-    .profile-edit-button {
-        display: inline-block;
-        margin-top: 25px;
-        text-decoration: none;
+    @media (max-width: 960px) {
+        .profile-grid-layout { grid-template-columns: 1fr; }
+        .user-card { position: static; }
     }
 
     @media (max-width: 600px) {
-        .profile-container {
-            margin: 30px auto;
-        }
-
-        .profile-card {
-            padding: 25px;
-        }
-
-        .address-heading {
-            align-items: flex-start;
-            flex-direction: column;
-        }
-
-        .address-top {
-            align-items: flex-start;
-        }
+        .profile-container { padding: 0 16px 50px; margin-top: 20px; }
+        .section-card { padding: 20px; }
     }
 </style>
 @endpush
@@ -255,176 +180,186 @@
 @section('content')
 <div class="profile-container">
 
-    <x-back-button
-        :href="route('dashboard')"
-        label="Kembali ke Dashboard"
-    />
+    <div class="back-bar">
+        <x-back-button :href="route('dashboard')" label="← Kembali ke Dashboard" />
+    </div>
 
-    <div class="profile-card">
+    {{-- NOTIFIKASI --}}
+    @if(session('success'))
+        <div class="alert-success" role="status" style="margin-bottom:24px;">
+            <span>✓</span>
+            <div>{{ session('success') }}</div>
+        </div>
+    @endif
 
-        {{-- NOTIFIKASI --}}
-        @if(session('success'))
-            <div class="profile-alert success" role="status">
-                {{ session('success') }}
-            </div>
-        @endif
+    @if($errors->any())
+        <div class="alert-error" role="alert" style="margin-bottom:24px;">
+            <strong>Terjadi kesalahan:</strong>
+            <ul style="margin:4px 0 0;padding-left:20px;">
+                @foreach($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
 
-        @if($errors->any())
-            <div class="profile-alert error" role="alert">
-                <strong>Terjadi kesalahan:</strong>
-                <ul>
-                    @foreach($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
+    <div class="profile-grid-layout">
 
-        {{-- HEADER PROFIL --}}
-        <div class="profile-header">
-
-            <div class="profile-icon">
+        {{-- LEFT COLUMN: USER INFO --}}
+        <aside class="user-card">
+            <div class="avatar-wrapper">
                 @if(Auth::user()->avatar_url)
-                    <img
-                        src="{{ Auth::user()->avatar_url }}"
-                        alt="Foto profil {{ Auth::user()->name }}"
-                    >
+                    <img src="{{ Auth::user()->avatar_url }}" alt="Foto profil {{ Auth::user()->name }}">
                 @else
                     👤
                 @endif
             </div>
 
-            <h1>Profil Saya</h1>
-            <p>Informasi akun pengguna</p>
+            <h1>{{ Auth::user()->name }}</h1>
+            <div class="user-email">{{ Auth::user()->email }}</div>
 
-        </div>
-
-        {{-- INFORMASI PENGGUNA --}}
-        <div class="profile-info">
-
-            <div class="info-item">
-                <span>Nama</span>
-                <strong>{{ Auth::user()->name }}</strong>
+            <div class="user-meta-list">
+                <div class="user-meta-row">
+                    <span style="color:var(--c-ink-soft);">Status Peran:</span>
+                    <strong style="color:var(--c-ink-heading);">{{ ucfirst(Auth::user()->role) }}</strong>
+                </div>
+                <div class="user-meta-row">
+                    <span style="color:var(--c-ink-soft);">Nomor HP:</span>
+                    <strong>{{ Auth::user()->phone ?: 'Belum diisi' }}</strong>
+                </div>
+                <div class="user-meta-row">
+                    <span style="color:var(--c-ink-soft);">Bergabung:</span>
+                    <strong>{{ Auth::user()->created_at->format('M Y') }}</strong>
+                </div>
             </div>
 
-            <div class="info-item">
-                <span>Email</span>
-                <strong>{{ Auth::user()->email }}</strong>
-            </div>
+            <a href="{{ route('profile.edit') }}" class="btn btn-primary" style="width:100%;margin-top:6px;">
+                ✏️ Edit Profil & Foto
+            </a>
+        </aside>
 
-            <div class="info-item">
-                <span>Role</span>
-                <strong>{{ ucfirst(Auth::user()->role) }}</strong>
-            </div>
+        {{-- RIGHT COLUMN: ORDERS HISTORY & ADDRESSES --}}
+        <main class="profile-main-section">
 
-        </div>
+            {{-- 1. RIWAYAT PESANAN TERBARU --}}
+            @php
+                $recentOrders = Auth::user()->orders()->withCount('items')->latest()->take(5)->get();
+            @endphp
+            <div class="section-card">
+                <div class="section-card-header">
+                    <h2>🛍️ Riwayat Pesanan Terbaru</h2>
+                    <a href="{{ route('orders.index') }}" class="btn btn-outline btn-sm">
+                        Lihat Semua Pesanan ({{ Auth::user()->orders()->count() }}) →
+                    </a>
+                </div>
 
-        {{-- BUKU ALAMAT --}}
-        <div class="address-section">
-
-            <div class="address-heading">
-                <h2>Buku Alamat</h2>
-
-                <a
-                    href="{{ route('addresses.create') }}"
-                    class="address-add"
-                >
-                    + Tambah Alamat
-                </a>
-            </div>
-
-            @forelse($addresses as $address)
-
-                <div class="address-item">
-
-                    <div class="address-top">
-
-                        <span class="address-label">
-                            {{ $address->label }}
-                        </span>
-
-                        @if($address->is_default)
-                            <span class="default-label">
-                                ALAMAT UTAMA
-                            </span>
-                        @endif
-
+                @if($recentOrders->count() > 0)
+                    <div class="table-wrap" style="border:0;box-shadow:none;">
+                        <table class="table order-mini-table">
+                            <thead>
+                                <tr>
+                                    <th>No. Pesanan</th>
+                                    <th>Tanggal</th>
+                                    <th>Total Tagihan</th>
+                                    <th>Status</th>
+                                    <th style="text-align:right;">Detail</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            @foreach($recentOrders as $order)
+                                <tr>
+                                    <td><strong>#{{ $order->id }}</strong></td>
+                                    <td style="color:var(--c-ink-soft);">{{ $order->created_at->format('d/m/Y') }}</td>
+                                    <td><strong>Rp {{ number_format($order->total, 0, ',', '.') }}</strong></td>
+                                    <td>
+                                        @include('user.orders._status', ['status' => $order->status])
+                                    </td>
+                                    <td style="text-align:right;">
+                                        <a href="{{ route('orders.show', $order) }}" class="btn btn-outline btn-sm" style="padding:4px 10px;font-size:12px;">
+                                            Buka
+                                        </a>
+                                    </td>
+                                </tr>
+                            @endforeach
+                            </tbody>
+                        </table>
                     </div>
+                @else
+                    <div style="text-align:center;padding:30px 20px;color:var(--c-ink-soft);">
+                        <p style="margin-bottom:12px;">Belum ada pesanan aktif.</p>
+                        <a href="{{ route('products.index') }}" class="btn btn-outline btn-sm">Mulai Belanja</a>
+                    </div>
+                @endif
+            </div>
 
-                    <p class="address-recipient">
-                        {{ $address->recipient_name }}
-                        · {{ $address->phone }}
-                    </p>
+            {{-- 2. BUKU ALAMAT PENGIRIMAN --}}
+            <div class="section-card">
+                <div class="section-card-header">
+                    <h2>📍 Buku Alamat Pengiriman</h2>
+                    <a href="{{ route('addresses.create') }}" class="btn btn-primary btn-sm">
+                        + Tambah Alamat Baru
+                    </a>
+                </div>
 
-                    <p>
-                        {{ $address->detail }},
-                        {{ $address->village_name }},
-                        {{ $address->district_name }},
-                        {{ $address->city_name }},
-                        {{ $address->province_name }}
-                        @if($address->postal_code)
-                            · {{ $address->postal_code }}
-                        @endif
-                    </p>
+                @forelse($addresses as $address)
+                    <div class="address-card-item">
+                        <div class="address-card-top">
+                            <span class="address-tag">{{ $address->label }}</span>
+                            @if($address->is_default)
+                                <span class="badge" style="background:#E3F6EC;color:#14633F;">ALAMAT UTAMA</span>
+                            @endif
+                        </div>
 
-                    {{-- AKSI ALAMAT --}}
-                    <div class="address-actions">
+                        <p style="margin:4px 0;font-weight:700;color:var(--c-ink-heading);">
+                            {{ $address->recipient_name }} · <span style="font-weight:400;color:var(--c-ink-soft);">{{ $address->phone }}</span>
+                        </p>
 
-                        <a href="{{ route('addresses.edit', $address->id) }}">
-                            Edit
-                        </a>
+                        <p style="color:var(--c-ink);font-size:14px;line-height:1.6;margin:6px 0;">
+                            {{ $address->detail }}, {{ $address->village_name }}, {{ $address->district_name }}, {{ $address->city_name }}, {{ $address->province_name }}
+                            @if($address->postal_code) · {{ $address->postal_code }} @endif
+                        </p>
 
-                        @if(!$address->is_default)
+                        {{-- AKSI ALAMAT --}}
+                        <div class="address-actions">
+                            <a href="{{ route('addresses.edit', $address->id) }}" class="btn btn-outline btn-sm">
+                                Edit Alamat
+                            </a>
+
+                            @if(!$address->is_default)
+                                <form action="{{ route('addresses.default', $address->id) }}" method="POST" style="margin:0;">
+                                    @csrf
+                                    @method('PUT')
+                                    <button type="submit" class="btn btn-secondary btn-sm">
+                                        Set Alamat Utama
+                                    </button>
+                                </form>
+                            @endif
+
                             <form
-                                action="{{ route('addresses.default', $address->id) }}"
+                                action="{{ route('addresses.destroy', $address->id) }}"
                                 method="POST"
+                                onsubmit="return confirm('Yakin ingin menghapus alamat {{ $address->label }}?')"
+                                style="margin:0;"
                             >
                                 @csrf
-                                @method('PUT')
-
-                                <button type="submit">
-                                    Jadikan Alamat Utama
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-sm" style="color:var(--c-danger);background:rgba(192,57,43,0.08);border:0;">
+                                    Hapus
                                 </button>
                             </form>
-                        @endif
-
-                        <form
-                            action="{{ route('addresses.destroy', $address->id) }}"
-                            method="POST"
-                            onsubmit="return confirm('Yakin ingin menghapus alamat {{ $address->label }}?')"
-                        >
-                            @csrf
-                            @method('DELETE')
-
-                            <button type="submit" class="delete-button">
-                                Hapus
-                            </button>
-                        </form>
-
+                        </div>
                     </div>
+                @empty
+                    <div style="text-align:center;padding:40px 20px;color:var(--c-ink-soft);border:1px dashed var(--c-border);border-radius:var(--radius-md);">
+                        <p style="margin-bottom:14px;">Belum ada alamat tersimpan.</p>
+                        <a href="{{ route('addresses.create') }}" class="btn btn-outline btn-sm">
+                            + Tambah Alamat Sekarang
+                        </a>
+                    </div>
+                @endforelse
+            </div>
 
-                </div>
-
-            @empty
-
-                <div class="address-empty">
-                    <p><strong>Belum ada alamat tersimpan.</strong></p>
-                    <p>
-                        Tambahkan alamat agar proses checkout lebih mudah.
-                    </p>
-                </div>
-
-            @endforelse
-
-        </div>
-
-        {{-- EDIT PROFIL --}}
-        <a
-            href="{{ route('profile.edit') }}"
-            class="btn btn-primary profile-edit-button"
-        >
-            Edit Profil
-        </a>
+        </main>
 
     </div>
 </div>

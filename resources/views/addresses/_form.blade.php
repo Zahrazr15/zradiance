@@ -155,42 +155,64 @@
     .address-form-group {
         display: grid;
         gap: 8px;
-        margin-bottom: 18px;
+        margin-bottom: 20px;
     }
 
     .address-form-group label {
-        color: var(--c-ink);
+        color: var(--c-ink-heading);
         font-size: 14px;
-        font-weight: 600;
+        font-weight: 700;
     }
 
     .address-form-group input,
     .address-form-group select,
     .address-form-group textarea {
         width: 100%;
-        padding: 12px;
-        border: 1px solid var(--c-border);
-        border-radius: 8px;
-        background: var(--c-bg);
+        padding: 12px 16px;
+        border: 1.5px solid var(--c-border);
+        border-radius: var(--radius-sm);
+        background: #fff;
         color: var(--c-ink);
         font: inherit;
+        font-size: 14px;
+        transition: var(--transition);
+    }
+
+    .address-form-group input:focus,
+    .address-form-group select:focus,
+    .address-form-group textarea:focus {
+        outline: none;
+        border-color: var(--c-pink-strong);
+        box-shadow: 0 0 0 3px rgba(233, 129, 158, 0.15);
     }
 
     .address-form-group select:disabled {
         opacity: .6;
         cursor: not-allowed;
+        background: #F8F4F5;
     }
 
     #address-form hr {
         border: 0;
-        border-top: 1px solid var(--c-border);
-        margin: 25px 0;
+        border-top: 1px solid var(--c-border-subtle);
+        margin: 28px 0;
     }
 
     #address-form h3 {
-        color: var(--c-ink);
-        margin-bottom: 18px;
+        color: var(--c-ink-heading);
+        font-size: 18px;
+        margin-bottom: 20px;
     }
+
+    #region-loading, #region-error, #region-success {
+        padding: 12px 16px;
+        border-radius: var(--radius-sm);
+        font-size: 13.5px;
+        font-weight: 600;
+    }
+    #region-loading { background: #FFF9EE; color: #8A5A00; }
+    #region-error { background: #FDE7E4; color: #8E2B20; }
+    #region-success { background: #E3F6EC; color: #14633F; }
 
     #submit-address:disabled {
         opacity: .55;

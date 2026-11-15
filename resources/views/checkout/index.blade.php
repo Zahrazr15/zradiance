@@ -1,179 +1,240 @@
-
 @extends('layouts.user')
 
-@section('title', 'Checkout - Beauty Store')
+@section('title', 'Checkout Pesanan - Beauty Store')
 
 @push('styles')
 <style>
-    .container {
-        max-width: 1100px;
-        margin: 40px auto;
-        padding: 0 20px;
+    .checkout-container {
+        max-width: 1240px;
+        margin: 36px auto;
+        padding: 0 32px 80px;
     }
 
-    h1 { margin-bottom: 30px; }
+    .checkout-header {
+        margin-bottom: 28px;
+    }
+
+    .checkout-header h1 {
+        font-size: 32px;
+        color: var(--c-ink-heading);
+        margin-bottom: 6px;
+    }
+
+    .checkout-header p {
+        color: var(--c-ink-soft);
+        font-size: 15px;
+    }
 
     .checkout-grid {
         display: grid;
-        grid-template-columns: 1.5fr 1fr;
-        gap: 25px;
+        grid-template-columns: 1.4fr 1fr;
+        gap: 32px;
+        align-items: start;
     }
 
-    .card {
+    .checkout-card {
         background: var(--c-surface);
-        padding: 25px;
-        border-radius: 15px;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        border: 1px solid var(--c-border-subtle);
+        border-radius: var(--radius-lg);
+        padding: 32px;
+        box-shadow: var(--shadow-sm);
     }
 
-    .card h2 { margin-top: 0; margin-bottom: 20px; }
-
-    .form-group { margin-bottom: 18px; }
-
-    label {
-        display: block;
-        margin-bottom: 7px;
-        font-weight: 600;
-    }
-
-    input, textarea, select {
-        width: 100%;
-        padding: 12px;
-        border: 1px solid var(--c-border);
-        border-radius: 8px;
-        font-size: 14px;
-    }
-
-    input[type="radio"] { width: auto; }
-
-    textarea {
-        min-height: 100px;
-        resize: vertical;
-    }
-
-    .product-item {
+    .checkout-card h2 {
+        font-size: 20px;
+        color: var(--c-ink-heading);
+        margin-bottom: 22px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid var(--c-border-subtle);
         display: flex;
-        justify-content: space-between;
-        gap: 15px;
-        padding: 12px 0;
-        border-bottom: 1px solid var(--c-border);
+        align-items: center;
+        gap: 10px;
     }
 
-    .product-info {
-        display: flex;
-        flex-direction: column;
-        gap: 5px;
-    }
-
-    .product-name, .product-price { font-weight: 600; }
-
-    .product-quantity {
-        font-size: 13px;
-        color: var(--c-ink-soft);
-    }
-
-    .summary-row {
-        display: flex;
-        justify-content: space-between;
-        gap: 15px;
-        margin-top: 14px;
-    }
-
-    .total {
-        display: flex;
-        justify-content: space-between;
-        gap: 15px;
-        margin-top: 20px;
-        padding-top: 20px;
-        border-top: 2px solid var(--c-border);
-        font-size: 18px;
-        font-weight: bold;
-    }
-
-    .checkout-button, .shipping-button {
-        width: 100%;
-        padding: 14px;
-        border: none;
-        border-radius: 8px;
-        background: var(--c-pink);
-        color: var(--c-ink);
-        font-size: 15px;
-        font-weight: 600;
-        cursor: pointer;
-    }
-
-    .checkout-button {
-        margin-top: 20px;
-        font-size: 16px;
-    }
-
-    .checkout-button:hover, .shipping-button:hover {
-        background: var(--c-pink-strong);
-    }
-
-    .shipping-button:disabled, .checkout-button:disabled {
-        opacity: 0.6;
-        cursor: not-allowed;
-    }
-
-    .error {
-        background: #ffe5e5;
-        color: #b00020;
-        padding: 12px;
-        border-radius: 8px;
+    .address-preview-box {
+        background: #FCF8F6;
+        border: 1.5px dashed var(--c-border);
+        border-radius: var(--radius-md);
+        padding: 18px 20px;
         margin-bottom: 20px;
+        font-size: 14px;
+        line-height: 1.6;
     }
+
+    .address-preview-box strong {
+        color: var(--c-ink-heading);
+        font-size: 15px;
+    }
+
+    .shipping-button {
+        width: 100%;
+        padding: 13px 20px;
+        border: 0;
+        border-radius: var(--radius-pill);
+        background: linear-gradient(135deg, var(--c-pink), var(--c-pink-strong));
+        color: #fff;
+        font: 800 14px var(--font);
+        cursor: pointer;
+        transition: var(--transition);
+        box-shadow: 0 2px 8px rgba(233, 129, 158, 0.35);
+    }
+    .shipping-button:hover:not(:disabled) {
+        background: linear-gradient(135deg, var(--c-pink-strong), #D46684);
+        transform: translateY(-1px);
+    }
+    .shipping-button:disabled { opacity: 0.6; cursor: not-allowed; }
 
     .shipping-message {
-        margin-top: 10px;
-        padding: 12px;
-        border-radius: 8px;
-        background: var(--c-bg, #fff5f8);
-        font-size: 13px;
+        margin-top: 14px;
+        padding: 14px 18px;
+        border-radius: var(--radius-sm);
+        background: #FCF8F6;
+        font-size: 13.5px;
+        line-height: 1.5;
+        border: 1px solid var(--c-border-subtle);
     }
-
     .shipping-message.error-message {
-        background: #ffe5e5;
-        color: #b00020;
+        background: var(--c-danger-soft);
+        color: var(--c-danger);
+        border-color: rgba(192, 57, 43, 0.2);
+    }
+    .shipping-message.success-message {
+        background: var(--c-success-soft);
+        color: var(--c-success);
+        border-color: rgba(30, 142, 90, 0.2);
     }
 
-    .shipping-message.success-message {
-        background: #e8f7ec;
-        color: #176b32;
+    .payment-option-list {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        margin-top: 8px;
     }
 
     .payment-option {
         display: flex;
         align-items: flex-start;
-        gap: 10px;
-        padding: 15px;
-        border: 1px solid var(--c-border);
-        border-radius: 10px;
+        gap: 14px;
+        padding: 16px 20px;
+        border: 1.5px solid var(--c-border);
+        border-radius: var(--radius-md);
+        background: #fff;
         cursor: pointer;
+        transition: var(--transition);
     }
-
+    .payment-option:hover {
+        border-color: var(--c-blush);
+        background: #FCF8F6;
+    }
     .payment-option input {
         margin-top: 4px;
+        width: 18px;
+        height: 18px;
+        accent-color: var(--c-pink-strong);
+        flex-shrink: 0;
     }
 
-    .payment-option span { flex: 1; }
+    .product-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+        padding: 14px 0;
+        border-bottom: 1px solid var(--c-border-subtle);
+    }
+    .product-item:last-of-type { border-bottom: 0; }
 
-    @media (max-width: 768px) {
+    .product-name {
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--c-ink-heading);
+    }
+    .product-quantity {
+        font-size: 13px;
+        color: var(--c-ink-soft);
+    }
+    .product-price {
+        font-size: 15px;
+        font-weight: 800;
+        color: var(--c-ink-heading);
+    }
+
+    .summary-row {
+        display: flex;
+        justify-content: space-between;
+        gap: 16px;
+        margin-top: 14px;
+        font-size: 14.5px;
+        color: var(--c-ink-soft);
+    }
+
+    .total-checkout-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        gap: 16px;
+        margin-top: 20px;
+        padding-top: 18px;
+        border-top: 2px dashed var(--c-border);
+    }
+    .total-checkout-row strong {
+        font-size: 16px;
+        color: var(--c-ink-heading);
+    }
+    .grand-total-amount {
+        font-size: 26px;
+        font-weight: 800;
+        color: var(--c-pink-strong);
+    }
+
+    .checkout-button {
+        width: 100%;
+        margin-top: 24px;
+        padding: 15px;
+        border: 0;
+        border-radius: var(--radius-pill);
+        background: linear-gradient(135deg, var(--c-pink), var(--c-pink-strong));
+        color: #fff;
+        font: 800 15px var(--font);
+        cursor: pointer;
+        transition: var(--transition);
+        box-shadow: 0 4px 14px rgba(233, 129, 158, 0.4);
+    }
+    .checkout-button:hover:not(:disabled) {
+        background: linear-gradient(135deg, var(--c-pink-strong), #D46684);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(233, 129, 158, 0.5);
+    }
+    .checkout-button:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        box-shadow: none;
+    }
+
+    @media (max-width: 960px) {
         .checkout-grid { grid-template-columns: 1fr; }
-        .container { margin-top: 20px; }
+    }
+    @media (max-width: 600px) {
+        .checkout-container { padding: 0 16px 60px; margin-top: 20px; }
+        .checkout-card { padding: 22px 18px; }
     }
 </style>
 @endpush
 
 @section('content')
-<div class="container">
+<div class="checkout-container container">
 
-    <x-back-button :href="route('cart.index')" label="Kembali ke Keranjang" />
+    <div class="back-bar">
+        <x-back-button :href="route('cart.index')" label="← Kembali ke Keranjang Belanja" />
+    </div>
 
-    <h1>Checkout</h1>
+    <div class="checkout-header">
+        <h1>Checkout & Pembayaran</h1>
+        <p>Lengkapi tujuan pengiriman dan pilih ekspedisi kurir tepercaya.</p>
+    </div>
 
     @if ($errors->any())
-        <div class="error">
+        <div class="alert-error error">
             <ul style="margin: 0; padding-left: 20px;">
                 @foreach ($errors->all() as $error)
                     <li>{{ $error }}</li>
@@ -185,8 +246,8 @@
     <div class="checkout-grid">
 
         {{-- INFORMASI PENGIRIMAN --}}
-        <div class="card">
-            <h2>Informasi Pengiriman</h2>
+        <div class="checkout-card card">
+            <h2>📦 Alamat & Pengiriman</h2>
 
             @if ($addresses->isNotEmpty())
                 <form action="{{ route('checkout.store') }}" method="POST" id="checkout-form">
@@ -197,8 +258,7 @@
                     @endforeach
 
                     <div class="form-group">
-                        <label for="address_id">Pilih Alamat Pengiriman</label>
-
+                        <label for="address_id">Pilih Alamat Tujuan</label>
                         <select id="address_id" name="address_id" required>
                             @foreach ($addresses as $address)
                                 <option
@@ -206,43 +266,33 @@
                                     @selected(old('address_id', $defaultAddress?->id) == $address->id)
                                 >
                                     {{ $address->label }}
-                                    @if ($address->is_default)
-                                        (Alamat Utama)
-                                    @endif
+                                    @if ($address->is_default) (Alamat Utama) @endif
                                     - {{ $address->recipient_name }}
                                 </option>
                             @endforeach
                         </select>
-
-                        <small>Alamat utama otomatis dipilih. Kamu bisa menggantinya.</small>
                     </div>
 
-                    <div
-                        id="address-preview"
-                        class="form-group"
-                        style="background:var(--c-bg, #fff5f8); padding:15px; border-radius:10px;"
-                    >
+                    <div id="address-preview" class="address-preview-box">
                         <strong id="preview-name"></strong><br>
-                        <span id="preview-phone"></span>
-                        <p id="preview-detail" style="margin:8px 0 0;"></p>
+                        <span id="preview-phone" style="color:var(--c-ink-soft);"></span>
+                        <p id="preview-detail" style="margin:8px 0 0;color:var(--c-ink);"></p>
                     </div>
 
-                    <a
-                        href="{{ route('addresses.create') }}"
-                        style="display:inline-block; margin-bottom:18px;"
-                    >
-                        + Tambah Alamat Baru
-                    </a>
+                    <div style="margin-bottom:24px;">
+                        <a href="{{ route('addresses.create') }}" class="btn btn-outline btn-sm">
+                            + Tambah Alamat Baru
+                        </a>
+                    </div>
 
-                    {{-- PILIH KURIR --}}
+                    {{-- PILIH KURIR RAJAONGKIR --}}
                     <div class="form-group">
-                        <label for="courier">Pilih Kurir</label>
-
+                        <label for="courier">Pilih Jasa Ekspedisi (Kurir)</label>
                         <select id="courier">
-                            <option value="">-- Pilih Kurir --</option>
-                            <option value="jne">JNE</option>
+                            <option value="">-- Pilih Ekspedisi --</option>
+                            <option value="jne">JNE Express</option>
                             <option value="jnt">J&T Express</option>
-                            <option value="sicepat">SiCepat</option>
+                            <option value="sicepat">SiCepat Ekspres</option>
                             <option value="ide">ID Express</option>
                             <option value="sap">SAP Express</option>
                             <option value="tiki">TIKI</option>
@@ -250,54 +300,48 @@
                             <option value="anteraja">AnterAja</option>
                             <option value="pos">POS Indonesia</option>
                             <option value="ninja">Ninja Xpress</option>
-                            <option value="wahana">Wahana</option>
+                            <option value="wahana">Wahana Prestasi Logistik</option>
                         </select>
                     </div>
 
-                    <button
-                        type="button"
-                        id="calculate-shipping"
-                        class="shipping-button"
-                    >
-                        Hitung Ongkos Kirim
+                    <button type="button" id="calculate-shipping" class="shipping-button">
+                        Hitung Tarif Pengiriman
                     </button>
 
                     <div id="shipping-message" class="shipping-message" hidden></div>
 
-                    {{-- PILIH LAYANAN --}}
-                    <div class="form-group" id="service-group" style="display:none; margin-top:18px;">
-                        <label for="shipping-service-option">Pilih Layanan Pengiriman</label>
-
+                    {{-- PILIH LAYANAN LAYANAN TERSEDIA --}}
+                    <div class="form-group" id="service-group" style="display:none; margin-top:20px;">
+                        <label for="shipping-service-option">Pilih Paket Layanan Pengiriman</label>
                         <select id="shipping-service-option">
                             <option value="">-- Pilih Layanan --</option>
                         </select>
                     </div>
 
-                    {{-- NILAI YANG DIKIRIM KE SERVER --}}
+                    {{-- NILAI TERSEMBUNYI UNTUK CONTROLLER --}}
                     <input type="hidden" name="shipping_courier" id="shipping_courier">
                     <input type="hidden" name="shipping_service" id="shipping_service">
                     <input type="hidden" name="shipping_cost" id="shipping_cost">
                     <input type="hidden" name="shipping_etd" id="shipping_etd">
 
-                    <div class="form-group">
-                        <label for="delivery_note">Catatan untuk Kurir (Opsional)</label>
+                    <div class="form-group" style="margin-top:24px;">
+                        <label for="delivery_note">Catatan Khusus untuk Kurir (Opsional)</label>
                         <textarea
                             id="delivery_note"
                             name="delivery_note"
-                            placeholder="Contoh: Rumah pagar putih, dekat minimarket..."
+                            rows="3"
+                            placeholder="Contoh: Rumah pagar cokelat, titipkan di pos satpam jika tidak ada orang..."
                         >{{ old('delivery_note') }}</textarea>
-
                         @error('delivery_note')
-                            <small style="color:red;">{{ $message }}</small>
+                            <small class="field-error">{{ $message }}</small>
                         @enderror
                     </div>
 
                     {{-- METODE PEMBAYARAN --}}
-                    <div class="form-group" style="margin-top:20px;">
-                        <label><strong>Metode Pembayaran</strong></label>
+                    <div class="form-group" style="margin-top:28px;">
+                        <label><strong>Pilih Metode Pembayaran</strong></label>
 
-                        <div style="display:flex; flex-direction:column; gap:12px;">
-
+                        <div class="payment-option-list">
                             <label class="payment-option">
                                 <input
                                     type="radio"
@@ -306,11 +350,10 @@
                                     {{ old('payment_method', 'online') === 'online' ? 'checked' : '' }}
                                     required
                                 >
-
                                 <span>
-                                    <strong>Pembayaran Online</strong><br>
+                                    <strong>💳 Pembayaran Digital (Midtrans)</strong><br>
                                     <small style="color:var(--c-ink-soft);">
-                                        QRIS, Transfer Bank, dan E-Wallet melalui Midtrans.
+                                        Bebas biaya admin: QRIS (GoPay, OVO, ShopeePay), Virtual Account BCA/Mandiri/BRI/BNI, dan Kartu Kredit.
                                     </small>
                                 </span>
                             </label>
@@ -323,56 +366,54 @@
                                     {{ old('payment_method') === 'cod' ? 'checked' : '' }}
                                     required
                                 >
-
                                 <span>
-                                    <strong>Cash on Delivery (COD)</strong><br>
+                                    <strong>💵 Bayar di Tempat (COD)</strong><br>
                                     <small style="color:var(--c-ink-soft);">
-                                        Bayar ketika pesanan diterima.
+                                        Lakukan pembayaran tunai kepada kurir saat pesanan tiba di alamat Anda.
                                     </small>
                                 </span>
                             </label>
-
                         </div>
 
                         @error('payment_method')
-                            <small style="color:red;">{{ $message }}</small>
+                            <small class="field-error">{{ $message }}</small>
                         @enderror
                     </div>
 
                     <button type="submit" class="checkout-button" id="submit-checkout" disabled>
-                        Buat Pesanan
+                        Konfirmasi & Buat Pesanan
                     </button>
                 </form>
             @else
-                <div class="error">
-                    Kamu belum memiliki alamat tersimpan.
-                    Tambahkan alamat terlebih dahulu sebelum checkout.
+                <div class="alert-error error" style="margin-bottom:20px;">
+                    Anda belum memiliki alamat pengiriman yang tersimpan. Tambahkan alamat pengiriman terlebih dahulu untuk melanjutkan checkout.
                 </div>
-
-                <a href="{{ route('addresses.create') }}">+ Tambah Alamat</a>
+                <a href="{{ route('addresses.create') }}" class="btn btn-primary">
+                    + Tambah Alamat Sekarang
+                </a>
             @endif
         </div>
 
         {{-- RINGKASAN PESANAN --}}
-        <div class="card">
-            <h2>Ringkasan Pesanan</h2>
+        <div class="checkout-card card" style="position:sticky;top:100px;">
+            <h2>🛍️ Ringkasan Belanja</h2>
 
-            @foreach ($cart as $item)
-                <div class="product-item">
-                    <div class="product-info">
-                        <div class="product-name">{{ $item['name'] }}</div>
+            <div style="margin-bottom:16px;">
+                @foreach ($cart as $item)
+                    <div class="product-item">
+                        <div class="product-info">
+                            <div class="product-name">{{ $item['name'] }}</div>
+                            <div class="product-quantity">
+                                {{ $item['quantity'] }} × Rp {{ number_format($item['price'], 0, ',', '.') }}
+                            </div>
+                        </div>
 
-                        <div class="product-quantity">
-                            {{ $item['quantity'] }} ×
-                            Rp {{ number_format($item['price'], 0, ',', '.') }}
+                        <div class="product-price">
+                            Rp {{ number_format($item['price'] * $item['quantity'], 0, ',', '.') }}
                         </div>
                     </div>
-
-                    <div class="product-price">
-                        Rp {{ number_format($item['price'] * $item['quantity'], 0, ',', '.') }}
-                    </div>
-                </div>
-            @endforeach
+                @endforeach
+            </div>
 
             <div class="summary-row">
                 <span>Subtotal Produk</span>
@@ -382,19 +423,19 @@
             </div>
 
             <div class="summary-row">
-                <span>Ongkos Kirim</span>
+                <span>Biaya Pengiriman</span>
                 <strong id="shipping-display">Belum dihitung</strong>
             </div>
 
-            <div class="total">
-                <span>Total Pembayaran</span>
-                <span id="grand-total">
+            <div class="total-checkout-row total">
+                <strong>Total Pembayaran</strong>
+                <span class="grand-total-amount" id="grand-total">
                     Rp {{ number_format($total, 0, ',', '.') }}
                 </span>
             </div>
 
-            <small style="display:block; margin-top:12px; color:var(--c-ink-soft);">
-                Total akhir akan diperbarui setelah layanan pengiriman dipilih.
+            <small style="display:block; margin-top:14px; color:var(--c-ink-soft); line-height:1.5;">
+                ℹ️ Total tagihan akhir akan diperbarui otomatis saat paket kurir telah Anda tentukan.
             </small>
         </div>
 
@@ -539,7 +580,7 @@ document.addEventListener('DOMContentLoaded', function () {
         calculateButton.disabled = true;
         calculateButton.textContent = 'Menghitung...';
 
-        showMessage('Sedang menghitung ongkos kirim...');
+        showMessage('Sedang menghitung tarif pengiriman...');
 
         try {
             const response = await fetch(
@@ -563,7 +604,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             if (!response.ok || !result.success) {
                 throw new Error(
-                    result.message || 'Gagal menghitung ongkos kirim.'
+                    result.message || 'Gagal menghitung tarif pengiriman.'
                 );
             }
 
@@ -587,7 +628,7 @@ document.addEventListener('DOMContentLoaded', function () {
             serviceGroup.style.display = 'block';
 
             showMessage(
-                `Berat pengiriman: ${Number(result.weight).toLocaleString('id-ID')} gram. Pilih layanan yang tersedia.`,
+                `Total berat: ${Number(result.weight).toLocaleString('id-ID')} gram. Silakan tentukan paket layanan pengiriman.`,
                 'success-message'
             );
 
@@ -595,7 +636,7 @@ document.addEventListener('DOMContentLoaded', function () {
             showMessage(error.message, 'error-message');
         } finally {
             calculateButton.disabled = false;
-            calculateButton.textContent = 'Hitung Ongkos Kirim';
+            calculateButton.textContent = 'Hitung Tarif Pengiriman';
         }
     }
 
@@ -622,7 +663,7 @@ document.addEventListener('DOMContentLoaded', function () {
         ) {
             event.preventDefault();
             showMessage(
-                'Hitung ongkir dan pilih layanan pengiriman terlebih dahulu.',
+                'Harap hitung dan pilih layanan pengiriman terlebih dahulu.',
                 'error-message'
             );
         }

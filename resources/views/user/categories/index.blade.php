@@ -1,162 +1,149 @@
 @extends('layouts.user')
 
-@section('title', 'Kategori - Beauty Store')
+@section('title', 'Kategori Produk - Beauty Store')
 
 @push('styles')
 <style>
-    .content {
-        max-width: 1200px;
-        margin: 50px auto;
-        padding: 0 30px 60px;
+    .category-page {
+        max-width: 1240px;
+        margin: 40px auto;
+        padding: 0 32px 80px;
     }
 
-    .page-header {
+    .category-header {
         text-align: center;
-        margin-bottom: 35px;
+        max-width: 700px;
+        margin: 0 auto 48px;
     }
 
-    .page-header h1 {
-        font-size: 32px;
-        margin-bottom: 10px;
+    .category-header h1 {
+        font-size: 34px;
+        margin-bottom: 12px;
+        color: var(--c-ink-heading);
     }
 
-    .page-header p {
+    .category-header p {
         color: var(--c-ink-soft);
-        font-size: 16px;
+        font-size: 15.5px;
+        line-height: 1.6;
     }
 
     .category-grid {
         display: grid;
         grid-template-columns: repeat(4, 1fr);
-        gap: 20px;
+        gap: 24px;
     }
 
     .category-card {
         background: var(--c-surface);
-        padding: 35px 20px;
-        border-radius: 15px;
+        padding: 38px 24px;
+        border-radius: var(--radius-lg);
         text-align: center;
         text-decoration: none;
         color: var(--c-ink);
-        border: 1px solid var(--c-border);
-        transition: 0.2s;
+        border: 1px solid var(--c-border-subtle);
+        transition: var(--transition);
+        box-shadow: var(--shadow-xs);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        position: relative;
     }
 
     .category-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+        transform: translateY(-6px);
+        box-shadow: var(--shadow-md);
+        border-color: var(--c-blush);
     }
 
-    .category-icon {
-        margin-bottom: 15px;
+    .category-icon-box {
+        margin-bottom: 20px;
+        transition: var(--transition);
+    }
+
+    .category-card:hover .category-icon-box {
+        transform: scale(1.1) rotate(4deg);
     }
 
     .category-card h2 {
         font-size: 20px;
         margin-bottom: 8px;
+        color: var(--c-ink-heading);
     }
 
     .category-card p {
         color: var(--c-ink-soft);
         font-size: 14px;
-        margin-bottom: 10px;
+        line-height: 1.6;
+        margin-bottom: 16px;
+        flex: 1;
     }
 
-    .product-count {
-        display: inline-block;
-        font-size: 13px;
-        color: var(--c-ink-soft);
-        background: var(--c-cream);
-        padding: 6px 12px;
-        border-radius: 20px;
+    .category-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 12.5px;
+        font-weight: 700;
+        color: var(--c-pink-strong);
+        background: var(--c-pink-subtle);
+        padding: 6px 14px;
+        border-radius: var(--radius-pill);
+        border: 1px solid rgba(250, 172, 191, 0.4);
     }
 
-    .empty {
+    .empty-categories {
         background: var(--c-surface);
-        padding: 40px;
+        padding: 60px 24px;
         text-align: center;
-        border-radius: 15px;
+        border-radius: var(--radius-lg);
         color: var(--c-ink-soft);
+        border: 1px dashed var(--c-border);
     }
 
-    @media (max-width: 900px) {
-        .category-grid {
-            grid-template-columns: repeat(2, 1fr);
-        }
+    @media (max-width: 1040px) {
+        .category-grid { grid-template-columns: repeat(2, 1fr); }
     }
 
     @media (max-width: 600px) {
-        .content {
-            margin: 30px auto;
-            padding: 0 20px 40px;
-        }
-
-        .category-grid {
-            grid-template-columns: 1fr;
-        }
-
-        .page-header h1 {
-            font-size: 27px;
-        }
+        .category-page { padding: 0 20px 50px; margin-top: 24px; }
+        .category-grid { grid-template-columns: 1fr; }
+        .category-header h1 { font-size: 28px; }
     }
 </style>
 @endpush
 
 @section('content')
-<div class="content">
+<div class="category-page">
 
-    <div class="page-header">
-        <h1>Kategori Produk</h1>
-
-        <p>
-            Jelajahi berbagai kategori produk kecantikan yang tersedia.
-        </p>
+    <div class="category-header">
+        <h1>Kategori Pilihan</h1>
+        <p>Jelajahi berbagai kategori perawatan wajah, tata rias, dan perawatan tubuh yang sesuai dengan tipe kulitmu.</p>
     </div>
 
-
     @if ($categories->count() > 0)
-
         <div class="category-grid">
-
             @foreach ($categories as $category)
-
-                <a
-                    href="{{ route('categories.show', $category->cat_id) }}"
-                    class="category-card"
-                >
-
-                    <div class="category-icon">
+                <a href="{{ route('categories.show', $category->cat_id) }}" class="category-card">
+                    <div class="category-icon-box">
                         <x-category-icon :title="$category->cat_title" />
                     </div>
 
-                    <h2>
-                        {{ $category->cat_title }}
-                    </h2>
+                    <h2>{{ $category->cat_title }}</h2>
 
-                    <p>
-                        {{ $category->description }}
-                    </p>
+                    <p>{{ $category->description ?: 'Temukan produk ' . $category->cat_title . ' terbaik untuk perawatanmu.' }}</p>
 
-                    <p>
-                        Lihat produk {{ $category->cat_title }}
-                    </p>
-
-                    <span class="product-count">
-                        {{ $category->products_count }} Produk
+                    <span class="category-pill">
+                        ✨ {{ $category->products_count }} Koleksi Produk
                     </span>
-
                 </a>
-
             @endforeach
-
         </div>
-
     @else
-
-        <div class="empty">
-            Belum ada kategori produk.
+        <div class="empty-categories">
+            <h3>Belum Ada Kategori</h3>
+            <p>Kategori produk akan segera ditambahkan oleh admin.</p>
         </div>
-
     @endif
 
 </div>

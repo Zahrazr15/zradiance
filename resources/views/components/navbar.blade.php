@@ -1,6 +1,6 @@
 @props(['mode' => 'user'])
 
-<nav class="navbar">
+<nav class="navbar" id="mainNavbar">
     <div class="navbar-container">
 
         <a href="{{ $mode === 'landing' ? route('home') : route('dashboard') }}" class="logo">
@@ -26,10 +26,10 @@
                 {{-- USER --}}
                 <a href="{{ route('dashboard') }}" class="{{ request()->routeIs('dashboard') ? 'active' : '' }}">Home</a>
                 <a href="{{ route('categories.index') }}" class="{{ request()->routeIs('categories.*') ? 'active' : '' }}">Kategori</a>
-                <a href="{{ route('cart.index') }}" class="nav-cart {{ request()->routeIs('cart.*') ? 'active' : '' }}" aria-label="Keranjang">
+                <a href="{{ route('cart.index') }}" class="nav-cart {{ request()->routeIs('cart.*') ? 'active' : '' }}" id="navCartButton" aria-label="Keranjang">
                     🛒
                     @if(($cartCount ?? 0) > 0)
-                    <span class="cart-badge">{{ $cartCount > 99 ? '99+' : $cartCount }}</span>
+                    <span class="cart-badge" id="navCartBadge">{{ $cartCount > 99 ? '99+' : $cartCount }}</span>
                     @endif
                 </a>
                 <a href="{{ route('orders.index') }}" class="{{ request()->routeIs('orders.*') ? 'active' : '' }}">Pesanan</a>
@@ -38,10 +38,24 @@
                 <form action="{{ route('logout') }}" method="POST" data-confirm="Yakin ingin logout?">
                     @csrf
                     <button type="submit">Logout</button>
-                    
                 </form>
             @endif
         </div>
 
     </div>
 </nav>
+
+<script>
+(function() {
+    var nb = document.getElementById('mainNavbar');
+    if (nb) {
+        window.addEventListener('scroll', function() {
+            if (window.scrollY > 15) {
+                nb.classList.add('scrolled');
+            } else {
+                nb.classList.remove('scrolled');
+            }
+        }, { passive: true });
+    }
+})();
+</script>

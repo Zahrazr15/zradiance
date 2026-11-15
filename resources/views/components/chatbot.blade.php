@@ -1,41 +1,177 @@
 <style>
-    #bsChat { position: fixed; right: 22px; bottom: 22px; z-index: 100; font-family: var(--font); }
-    #bsChat .bs-fab { width: 58px; height: 58px; border-radius: 50%; border: 0; background: var(--c-pink-strong); color: #fff; font-size: 26px; cursor: pointer; box-shadow: 0 6px 20px rgba(61,34,48,.25); }
-    #bsChat .bs-fab:hover { background: var(--c-ink); }
-    #bsChat .bs-panel { display: none; position: absolute; right: 0; bottom: 72px; width: 370px; max-width: calc(100vw - 30px); height: 540px; max-height: calc(100vh - 110px); background: var(--c-surface); border: 1px solid var(--c-border); border-radius: 16px; box-shadow: 0 12px 40px rgba(61,34,48,.22); overflow: hidden; flex-direction: column; }
+    #bsChat { position: fixed; right: 24px; bottom: 24px; z-index: 100; font-family: var(--font); }
+    #bsChat .bs-fab { 
+        width: 60px; 
+        height: 60px; 
+        border-radius: 50%; 
+        border: 0; 
+        background: linear-gradient(135deg, var(--c-pink) 0%, var(--c-pink-strong) 100%); 
+        color: #fff; 
+        font-size: 26px; 
+        cursor: pointer; 
+        box-shadow: 0 8px 24px rgba(233, 129, 158, 0.45); 
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    #bsChat .bs-fab:hover { 
+        transform: scale(1.08) translateY(-2px); 
+        box-shadow: 0 12px 30px rgba(233, 129, 158, 0.55); 
+    }
+    #bsChat .bs-panel { 
+        display: none; 
+        position: absolute; 
+        right: 0; 
+        bottom: 76px; 
+        width: 380px; 
+        max-width: calc(100vw - 32px); 
+        height: 560px; 
+        max-height: calc(100vh - 120px); 
+        background: rgba(255, 255, 255, 0.94); 
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.85); 
+        border-radius: 22px; 
+        box-shadow: 0 20px 50px rgba(61, 34, 48, 0.22), 0 0 0 1px rgba(243, 217, 214, 0.5); 
+        overflow: hidden; 
+        flex-direction: column; 
+        animation: fadeInScale 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
     #bsChat.open .bs-panel { display: flex; }
-    #bsChat .bs-head { background: var(--c-pink); color: var(--c-ink); padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; }
-    #bsChat .bs-head strong { font-size: 15px; }
-    #bsChat .bs-head small { display: block; font-size: 12px; color: var(--c-ink-soft); }
-    #bsChat .bs-close { background: none; border: 0; font-size: 20px; cursor: pointer; color: var(--c-ink); }
-    #bsChat .bs-list { flex: 1; overflow-y: auto; padding: 14px; background: var(--c-bg); display: flex; flex-direction: column; gap: 10px; }
-    #bsChat .bs-msg { max-width: 88%; padding: 10px 13px; border-radius: 14px; font-size: 14px; line-height: 1.5; white-space: pre-line; word-wrap: break-word; }
-    #bsChat .bs-bot { background: var(--c-surface); border: 1px solid var(--c-border); align-self: flex-start; border-bottom-left-radius: 4px; }
-    #bsChat .bs-user { background: var(--c-pink); align-self: flex-end; border-bottom-right-radius: 4px; }
-    #bsChat .bs-card { align-self: stretch; background: var(--c-surface); border: 1px solid var(--c-border); border-radius: 12px; padding: 11px 13px; font-size: 13px; }
-    #bsChat .bs-card .bs-brand { color: var(--c-ink-soft); font-size: 12px; }
-    #bsChat .bs-card .bs-name { font-weight: 800; font-size: 14px; }
-    #bsChat .bs-card .bs-price { font-weight: 800; margin: 3px 0; }
-    #bsChat .bs-card ul { padding-left: 17px; margin: 5px 0; }
-    #bsChat .bs-card .bs-note { color: #8a5a00; background: #FFF3D6; border-radius: 6px; padding: 4px 8px; margin-top: 5px; font-size: 12px; }
-    #bsChat .bs-card a { color: var(--c-pink-strong); font-weight: 700; text-decoration: none; }
-    #bsChat .bs-tablewrap { align-self: stretch; overflow-x: auto; background: var(--c-surface); border: 1px solid var(--c-border); border-radius: 12px; }
+    #bsChat .bs-head { 
+        background: linear-gradient(135deg, rgba(250, 172, 191, 0.85) 0%, rgba(233, 129, 158, 0.85) 100%); 
+        backdrop-filter: blur(10px);
+        color: #fff; 
+        padding: 16px 20px; 
+        display: flex; 
+        justify-content: space-between; 
+        align-items: center; 
+        border-bottom: 1px solid rgba(255, 255, 255, 0.4);
+    }
+    #bsChat .bs-head strong { font-size: 15.5px; font-weight: 800; display: block; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.1); }
+    #bsChat .bs-head small { display: block; font-size: 12px; color: rgba(255, 255, 255, 0.9); margin-top: 2px; }
+    #bsChat .bs-close { 
+        background: rgba(255, 255, 255, 0.2); 
+        border: 0; 
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        font-size: 16px; 
+        cursor: pointer; 
+        color: #fff; 
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background 0.2s;
+    }
+    #bsChat .bs-close:hover { background: rgba(255, 255, 255, 0.35); }
+    #bsChat .bs-list { 
+        flex: 1; 
+        overflow-y: auto; 
+        padding: 16px; 
+        background: #FCF8F6; 
+        display: flex; 
+        flex-direction: column; 
+        gap: 12px; 
+    }
+    #bsChat .bs-msg { 
+        max-width: 86%; 
+        padding: 12px 16px; 
+        border-radius: 18px; 
+        font-size: 13.5px; 
+        line-height: 1.55; 
+        white-space: pre-line; 
+        word-wrap: break-word; 
+        box-shadow: 0 2px 8px rgba(61, 34, 48, 0.04);
+    }
+    #bsChat .bs-bot { 
+        background: #FFFFFF; 
+        border: 1px solid var(--c-border-subtle); 
+        color: var(--c-ink);
+        align-self: flex-start; 
+        border-bottom-left-radius: 4px; 
+    }
+    #bsChat .bs-user { 
+        background: linear-gradient(135deg, var(--c-pink), var(--c-pink-strong)); 
+        color: #fff;
+        align-self: flex-end; 
+        border-bottom-right-radius: 4px; 
+        box-shadow: 0 4px 12px rgba(233, 129, 158, 0.3);
+    }
+    #bsChat .bs-card { 
+        align-self: stretch; 
+        background: #FFFFFF; 
+        border: 1px solid var(--c-border); 
+        border-radius: 14px; 
+        padding: 14px 16px; 
+        font-size: 13px; 
+        box-shadow: 0 4px 14px rgba(61, 34, 48, 0.05);
+    }
+    #bsChat .bs-card .bs-brand { color: var(--c-ink-light); font-size: 11.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+    #bsChat .bs-card .bs-name { font-weight: 800; font-size: 14.5px; color: var(--c-ink-heading); margin-top: 2px; }
+    #bsChat .bs-card .bs-price { font-weight: 800; color: var(--c-pink-strong); margin: 4px 0; font-size: 14px; }
+    #bsChat .bs-card ul { padding-left: 18px; margin: 6px 0; color: var(--c-ink-soft); }
+    #bsChat .bs-card .bs-note { color: #8A5A00; background: #FFF4D9; border-radius: 8px; padding: 6px 10px; margin-top: 6px; font-size: 12px; }
+    #bsChat .bs-card a { color: var(--c-pink-strong); font-weight: 800; text-decoration: none; display: inline-block; margin-top: 6px; }
+    #bsChat .bs-tablewrap { align-self: stretch; overflow-x: auto; background: #FFFFFF; border: 1px solid var(--c-border); border-radius: 14px; }
     #bsChat table { border-collapse: collapse; font-size: 12px; min-width: 100%; }
-    #bsChat th, #bsChat td { border-bottom: 1px solid var(--c-border); padding: 7px 9px; text-align: left; vertical-align: top; min-width: 96px; }
-    #bsChat th { background: var(--c-cream); }
-    #bsChat td:first-child { font-weight: 800; background: var(--c-bg); }
-    #bsChat .bs-chips { display: flex; flex-wrap: wrap; gap: 6px; align-self: stretch; }
-    #bsChat .bs-chip { border: 1px solid var(--c-pink-strong); background: var(--c-surface); color: var(--c-ink); border-radius: 999px; padding: 6px 11px; font: 600 12px var(--font); cursor: pointer; text-align: left; }
-    #bsChat .bs-chip:hover { background: var(--c-cream); }
-    #bsChat .bs-link { align-self: flex-start; font-size: 13px; color: var(--c-pink-strong); font-weight: 700; text-decoration: none; }
-    #bsChat .bs-form { display: flex; gap: 8px; padding: 10px; border-top: 1px solid var(--c-border); background: var(--c-surface); }
-    #bsChat .bs-form input { flex: 1; padding: 10px 12px; border: 1px solid var(--c-border); border-radius: 10px; font: inherit; font-size: 14px; }
-    #bsChat .bs-form input:focus { outline: none; border-color: var(--c-pink-strong); }
-    #bsChat .bs-form button { border: 0; background: var(--c-pink-strong); color: #fff; border-radius: 10px; padding: 0 16px; font: 800 14px var(--font); cursor: pointer; }
-    #bsChat .bs-form button:disabled { opacity: .5; cursor: not-allowed; }
+    #bsChat th, #bsChat td { border-bottom: 1px solid var(--c-border-subtle); padding: 8px 10px; text-align: left; vertical-align: top; min-width: 96px; }
+    #bsChat th { background: #FAF2E8; color: var(--c-ink-heading); font-weight: 800; }
+    #bsChat td:first-child { font-weight: 800; background: #FFFDF9; color: var(--c-ink); }
+    #bsChat .bs-chips { display: flex; flex-wrap: wrap; gap: 7px; align-self: stretch; margin-top: 4px; }
+    #bsChat .bs-chip { 
+        border: 1px solid var(--c-pink); 
+        background: rgba(255, 255, 255, 0.9); 
+        color: var(--c-ink); 
+        border-radius: 999px; 
+        padding: 7px 13px; 
+        font: 700 12px var(--font); 
+        cursor: pointer; 
+        text-align: left; 
+        transition: all 0.2s;
+        box-shadow: 0 1px 4px rgba(61, 34, 48, 0.04);
+    }
+    #bsChat .bs-chip:hover { 
+        background: var(--c-cream); 
+        border-color: var(--c-pink-strong);
+        transform: translateY(-1px);
+    }
+    #bsChat .bs-link { align-self: flex-start; font-size: 13px; color: var(--c-pink-strong); font-weight: 800; text-decoration: none; }
+    #bsChat .bs-form { 
+        display: flex; 
+        gap: 8px; 
+        padding: 12px 14px; 
+        border-top: 1px solid var(--c-border-subtle); 
+        background: #FFFFFF; 
+    }
+    #bsChat .bs-form input { 
+        flex: 1; 
+        padding: 11px 14px; 
+        border: 1.5px solid var(--c-border); 
+        border-radius: 999px; 
+        font: inherit; 
+        font-size: 13.5px; 
+        background: #FCF8F6;
+        transition: border 0.2s;
+    }
+    #bsChat .bs-form input:focus { outline: none; border-color: var(--c-pink-strong); background: #fff; }
+    #bsChat .bs-form button { 
+        border: 0; 
+        background: linear-gradient(135deg, var(--c-pink), var(--c-pink-strong)); 
+        color: #fff; 
+        border-radius: 999px; 
+        padding: 0 18px; 
+        font: 800 13.5px var(--font); 
+        cursor: pointer; 
+        transition: transform 0.2s;
+        box-shadow: 0 2px 8px rgba(233, 129, 158, 0.35);
+    }
+    #bsChat .bs-form button:hover { transform: translateY(-1px); }
+    #bsChat .bs-form button:disabled { opacity: .5; cursor: not-allowed; transform: none; }
     @media (max-width: 480px) {
-        #bsChat { right: 12px; bottom: 12px; }
-        #bsChat .bs-panel { width: calc(100vw - 24px); height: calc(100vh - 100px); }
+        #bsChat { right: 14px; bottom: 14px; }
+        #bsChat .bs-panel { width: calc(100vw - 28px); height: calc(100vh - 100px); }
     }
 </style>
 
@@ -44,7 +180,7 @@
         <div class="bs-head">
             <div>
                 <strong>Asisten Beauty Store</strong>
-                <small>Jawaban berdasarkan data toko</small>
+                <small>Jawaban pintar seputar produk kecantikan</small>
             </div>
             <button type="button" class="bs-close" aria-label="Tutup chatbot">✕</button>
         </div>
@@ -131,7 +267,6 @@
     function render(data) {
         addBot(data.reply);
         if (data.table) addTable(data.table);
-        // Saat tabel perbandingan tampil, kartu produk tidak perlu diulang
         if (!data.table) (data.products || []).forEach(addCard);
         (data.links || []).forEach(function (l) {
             var a = el('a', 'bs-link', '→ ' + l.label);
@@ -208,7 +343,7 @@
                 'Bagaimana cara memesan produk?'
             ]
         });
-        list.removeChild(list.querySelector('.bs-bot:nth-of-type(2)')); // buang bubble kosong dari render()
+        list.removeChild(list.querySelector('.bs-bot:nth-of-type(2)'));
     }
 
     root.querySelector('.bs-fab').addEventListener('click', function () { setOpen(!root.classList.contains('open')); });

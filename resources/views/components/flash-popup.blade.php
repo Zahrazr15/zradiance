@@ -6,14 +6,74 @@
 @endphp
 
 <style>
-    .bs-overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;z-index:9999;padding:20px}
-    .bs-box{background:#fff;border-radius:14px;padding:28px 26px;max-width:380px;width:100%;text-align:center;box-shadow:0 10px 40px rgba(0,0,0,.2)}
-    .bs-icon{width:52px;height:52px;border-radius:50%;margin:0 auto 14px;display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:800;color:#fff}
-    .bs-success .bs-icon{background:#1f9d62}.bs-error .bs-icon{background:#d64535}.bs-warning .bs-icon{background:#e0a020}
-    .bs-box h3{margin:0 0 8px;font-size:18px}.bs-box p{margin:0 0 20px;font-size:14px;color:#555;line-height:1.5}
-    .bs-actions{display:flex;gap:10px;justify-content:center}
-    .bs-actions button{padding:10px 18px;border-radius:8px;border:0;font:700 14px inherit;cursor:pointer}
-    .bs-ok{background:#f4a6b8;color:#222}.bs-cancel{background:#eee;color:#222}
+    .bs-overlay{
+        position:fixed;
+        inset:0;
+        background:rgba(36, 20, 29, 0.45);
+        backdrop-filter:blur(10px);
+        -webkit-backdrop-filter:blur(10px);
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        z-index:9999;
+        padding:20px;
+        animation:fadeInScale 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    .bs-box{
+        background:rgba(255, 255, 255, 0.94);
+        backdrop-filter:blur(20px);
+        -webkit-backdrop-filter:blur(20px);
+        border:1px solid rgba(255, 255, 255, 0.8);
+        border-radius:22px;
+        padding:34px 30px;
+        max-width:400px;
+        width:100%;
+        text-align:center;
+        box-shadow:0 24px 60px -10px rgba(61, 34, 48, 0.28), 0 0 0 1px rgba(243, 217, 214, 0.5);
+    }
+    .bs-icon{
+        width:58px;
+        height:58px;
+        border-radius:50%;
+        margin:0 auto 16px;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        font-size:26px;
+        font-weight:800;
+        color:#fff;
+        box-shadow:0 8px 20px rgba(0, 0, 0, 0.12);
+    }
+    .bs-success .bs-icon{background:linear-gradient(135deg, #27AE60, #1E8E5A)}
+    .bs-error .bs-icon{background:linear-gradient(135deg, #E74C3C, #C0392B)}
+    .bs-warning .bs-icon{background:linear-gradient(135deg, #F39C12, #D68910)}
+    .bs-box h3{margin:0 0 8px;font-size:20px;color:var(--c-ink-heading);font-weight:800}
+    .bs-box p{margin:0 0 24px;font-size:14.5px;color:var(--c-ink-soft);line-height:1.6}
+    .bs-actions{display:flex;gap:12px;justify-content:center}
+    .bs-actions button{
+        padding:12px 24px;
+        border-radius:999px;
+        border:0;
+        font:700 14px var(--font, sans-serif);
+        cursor:pointer;
+        transition:all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .bs-actions button:hover{transform:translateY(-1.5px)}
+    .bs-actions button:active{transform:translateY(0)}
+    .bs-ok{
+        background:linear-gradient(135deg, var(--c-pink), var(--c-pink-strong));
+        color:#fff;
+        box-shadow:0 4px 14px rgba(233, 129, 158, 0.35);
+    }
+    .bs-ok:hover{
+        background:linear-gradient(135deg, var(--c-pink-strong), #D46684);
+        box-shadow:0 6px 18px rgba(233, 129, 158, 0.45);
+    }
+    .bs-cancel{
+        background:rgba(0, 0, 0, 0.06);
+        color:var(--c-ink);
+    }
+    .bs-cancel:hover{background:rgba(0, 0, 0, 0.1)}
 </style>
 
 <script>

@@ -109,6 +109,15 @@
                 </a>
             </li>
 
+            <li>
+                <a href="{{ route('admin.shipping-settings.edit') }}"
+                   title="Lokasi Toko"
+                   class="{{ request()->routeIs('admin.shipping-settings.*') ? 'active' : '' }}">
+                    <span class="menu-icon">📍</span>
+                    <span class="menu-label">Lokasi Toko (Ongkir)</span>
+                </a>
+            </li>
+
             <li><div class="menu-section">Akun</div></li>
 
             <li>
