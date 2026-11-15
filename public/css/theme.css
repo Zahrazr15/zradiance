@@ -419,6 +419,40 @@ p{color:var(--c-ink-soft)}
 }
 .user-main{min-height:65vh;padding-top:10px}
 
+/* ---------- CROSS-PAGE LANDING / LOGIN TRANSITION ---------- */
+@view-transition{navigation:auto}
+.hero{view-transition-name:landing-hero}
+.login-page .auth-form-side{view-transition-name:login-panel}
+@supports not (view-transition-name:login-panel){
+  .login-page .auth-form-side{animation:login-enter-left 0.6s cubic-bezier(0.22, 1, 0.36, 1) both}
+}
+::view-transition-old(landing-hero){
+  animation:landing-exit-right 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+::view-transition-new(login-panel){
+  animation:login-enter-left 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+::view-transition-old(login-panel){
+  animation:login-exit-left 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+::view-transition-new(landing-hero){
+  animation:landing-enter-right 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@keyframes landing-exit-right{
+  to{opacity:0;transform:translateX(18vw)}
+}
+@keyframes login-enter-left{
+  from{opacity:0;transform:translateX(-18vw)}
+  to{opacity:1;transform:translateX(0)}
+}
+@keyframes login-exit-left{
+  to{opacity:0;transform:translateX(-18vw)}
+}
+@keyframes landing-enter-right{
+  from{opacity:0;transform:translateX(18vw)}
+  to{opacity:1;transform:translateX(0)}
+}
+
 /* ---------- SPLIT-SCREEN AUTH (LOGIN & REGISTER) ---------- */
 .auth-split-wrapper{
   min-height:100vh;
@@ -756,6 +790,88 @@ p{color:var(--c-ink-soft)}
 .empty-state{text-align:center;padding:60px 20px;color:var(--c-ink-soft)}
 .empty-state h3{font-size:18px;margin-bottom:8px;color:var(--c-ink-heading)}
 
+/* ---------- BEAUTY STORE PAGINATION ---------- */
+.pagination{width:100%;margin-top:32px}
+.pagination nav{display:flex;flex-direction:column;gap:14px;width:100%;color:var(--c-ink-soft)}
+.pagination nav>div:first-child{display:none}
+.pagination nav>div:last-child{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:14px;
+  flex-wrap:wrap;
+}
+.pagination nav>div:last-child>div:last-child>span{
+  display:inline-flex;
+  align-items:center;
+  overflow-x:auto;
+  max-width:100%;
+  border-radius:var(--radius-sm);
+  box-shadow:var(--shadow-xs);
+}
+.pagination nav a,
+.pagination nav [aria-current="page"]>span,
+.pagination nav [aria-disabled="true"]>span{
+  display:inline-flex;
+  min-width:40px;
+  min-height:40px;
+  align-items:center;
+  justify-content:center;
+  padding:8px 12px;
+  border:1px solid var(--c-border);
+  background:#fff;
+  color:var(--c-ink);
+  font-size:13px;
+  font-weight:700;
+  text-decoration:none;
+  transition:var(--transition);
+}
+.pagination nav a:hover{
+  position:relative;
+  z-index:1;
+  border-color:var(--c-pink);
+  background:var(--c-pink-subtle);
+  color:var(--c-ink-heading);
+}
+.pagination nav a:focus-visible{
+  position:relative;
+  z-index:2;
+  outline:2px solid var(--c-pink-strong);
+  outline-offset:2px;
+}
+.pagination nav [aria-current="page"]>span{
+  background:var(--c-pink-strong);
+  border-color:var(--c-pink-strong);
+  color:#fff;
+}
+.pagination nav [aria-disabled="true"]>span{
+  background:#F8F3F4;
+  color:var(--c-ink-light);
+  cursor:not-allowed;
+}
+.pagination nav>div:last-child>div:first-child{
+  color:var(--c-ink-soft);
+  font-size:13px;
+}
+@media(max-width:640px){
+  .pagination nav>div:first-child{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+  }
+  .pagination nav>div:first-child>a,
+  .pagination nav>div:first-child>span{border-radius:var(--radius-pill)}
+  .pagination nav>div:last-child{display:none}
+  .pagination nav a,
+  .pagination nav [aria-current="page"]>span,
+  .pagination nav [aria-disabled="true"]>span{
+    min-width:36px;
+    min-height:38px;
+    padding:7px 10px;
+  }
+}
+
 /* ---------- STATUS PESANAN BADGES ---------- */
 .page-wrap{max-width:1100px;margin:40px auto;padding:0 24px}
 .status-pending{background:#FFF3D6;color:#8A5A00;border:1px solid #FFE4A0}
@@ -841,5 +957,10 @@ p{color:var(--c-ink-soft)}
     animation-iteration-count:1 !important;
     transition-duration:0.01ms !important;
     scroll-behavior:auto !important;
+  }
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*){
+    animation-duration:0.01ms !important;
   }
 }

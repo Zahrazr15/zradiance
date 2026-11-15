@@ -30,7 +30,21 @@ use Illuminate\Support\Facades\Route;
 // =====================================================
 
 Route::get('/', function () {
-    return view('welcome');
+    $categories = Category::query()
+        ->select(['cat_id', 'cat_title'])
+        ->orderBy('cat_title')
+        ->limit(6)
+        ->get();
+
+    $products = Product::query()
+        ->select(['id', 'product_cat', 'brand', 'name', 'price', 'stock', 'image', 'created_at'])
+        ->with('category:cat_id,cat_title')
+        ->where('stock', '>', 0)
+        ->latest()
+        ->limit(8)
+        ->get();
+
+    return view('welcome', compact('categories', 'products'));
 })->name('home');
 
 // REGISTER
@@ -148,7 +162,40 @@ Route::middleware(['auth', 'role:user'])
     ->group(function () {
 
         Route::get('/dashboard', function () {
-            return redirect()->route('products.index');
+            $user = request()->user();
+
+            $categories = Category::query()
+                ->select(['cat_id', 'cat_title'])
+                ->orderBy('cat_title')
+                ->get();
+
+            $products = Product::query()
+                ->select(['id', 'product_cat', 'brand', 'name', 'price', 'stock', 'image', 'created_at'])
+                ->with('category:cat_id,cat_title')
+                ->where('stock', '>', 0)
+                ->latest()
+                ->limit(4)
+                ->get();
+
+            $orders = $user->orders()
+                ->select(['id', 'status', 'total', 'created_at'])
+                ->withCount('items')
+                ->latest()
+                ->limit(3)
+                ->get();
+
+            $orderCount = $user->orders()->count();
+            $activeOrderCount = $user->orders()
+                ->whereIn('status', ['pending', 'processing', 'shipped'])
+                ->count();
+
+            return view('dashboard', compact(
+                'categories',
+                'products',
+                'orders',
+                'orderCount',
+                'activeOrderCount'
+            ));
         })->name('dashboard');
 
         Route::get('/products', [ProductController::class, 'userIndex'])

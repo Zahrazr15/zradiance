@@ -4,24 +4,66 @@
 
 @push('styles')
     <style>
+        .navbar-floating-wrapper {
+            position: absolute;
+            top: 14px;
+            left: 0;
+            right: 0;
+        }
+
         /* =========================
            HERO SECTION (FULL VIEWPORT LUXURY)
         ========================= */
         .hero {
             position: relative;
-            min-height: calc(100vh - var(--nav-h));
+            isolation: isolate;
+            min-height: 100vh;
+            min-height: 100svh;
             display: flex;
             align-items: center;
-            background:
-                linear-gradient(135deg, rgba(61, 34, 48, 0.72) 0%, rgba(43, 23, 35, 0.65) 100%),
-                url('https://images.unsplash.com/photo-1596462502278-27bfdc403348?auto=format&fit=crop&w=1920&q=85') center/cover no-repeat;
+            background: var(--c-ink);
             overflow: hidden;
+        }
+
+        .hero-slides {
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+            background: var(--c-ink);
+        }
+
+        .hero-slide {
+            position: absolute;
+            inset: 0;
+            overflow: hidden;
+            opacity: 0;
+            transform: scale(1.025);
+            transition: opacity 900ms ease, transform 8s linear;
+        }
+
+        .hero-slide.is-active {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .hero-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .hero-slide::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(90deg, rgba(36, 20, 29, 0.82), rgba(36, 20, 29, 0.46) 58%, rgba(36, 20, 29, 0.18));
         }
 
         .hero::before {
             content: '';
             position: absolute;
             inset: 0;
+            z-index: 1;
             background: radial-gradient(circle at 20% 50%, rgba(250, 172, 191, 0.28), transparent 60%);
             pointer-events: none;
         }
@@ -37,6 +79,54 @@
             grid-template-columns: 1.2fr 0.8fr;
             align-items: center;
             gap: 40px;
+        }
+
+        .hero-carousel-controls {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: -18px 0 30px;
+        }
+
+        .hero-carousel-controls button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 38px;
+            height: 38px;
+            border: 1px solid rgba(255, 255, 255, 0.55);
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.12);
+            color: #fff;
+            font: 700 18px var(--font);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .hero-carousel-controls button:hover {
+            background: rgba(255, 255, 255, 0.28);
+            transform: translateY(-1px);
+        }
+
+        .hero-carousel-indicators {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .hero-carousel-indicators button {
+            width: 9px;
+            height: 9px;
+            padding: 0;
+            border: 0;
+            background: rgba(255, 255, 255, 0.55);
+            transition: width 250ms ease, background 250ms ease;
+        }
+
+        .hero-carousel-indicators button[aria-current="true"] {
+            width: 26px;
+            border-radius: var(--radius-pill);
+            background: var(--c-pink);
         }
 
         .hero-content {
@@ -269,6 +359,151 @@
             font-size: 14.5px;
         }
 
+        .landing-section {
+            max-width: 1240px;
+            margin: 0 auto;
+            padding: 76px 32px;
+        }
+
+        .landing-section-heading {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            gap: 20px;
+            margin-bottom: 28px;
+        }
+
+        .landing-section-heading h2 {
+            margin-bottom: 6px;
+            font-size: 30px;
+        }
+
+        .landing-section-heading p {
+            font-size: 15px;
+        }
+
+        .landing-categories {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+            gap: 16px;
+        }
+
+        .landing-category-card {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            min-height: 112px;
+            padding: 18px;
+            border: 1px solid var(--c-border-subtle);
+            border-radius: var(--radius-md);
+            background: var(--c-surface);
+            box-shadow: var(--shadow-xs);
+            color: var(--c-ink-heading);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .landing-category-card:hover {
+            transform: translateY(-3px);
+            border-color: var(--c-blush);
+            box-shadow: var(--shadow-md);
+        }
+
+        .landing-category-card strong {
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .landing-category-card small {
+            color: var(--c-ink-soft);
+        }
+
+        .landing-products {
+            background: linear-gradient(180deg, #FFFDFB, #FCF5F5);
+            border-top: 1px solid var(--c-border-subtle);
+            border-bottom: 1px solid var(--c-border-subtle);
+        }
+
+        .landing-product-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 20px;
+        }
+
+        .landing-product-card {
+            min-width: 0;
+            overflow: hidden;
+            border: 1px solid var(--c-border-subtle);
+            border-radius: var(--radius-md);
+            background: #fff;
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition);
+        }
+
+        .landing-product-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .landing-product-image {
+            display: block;
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            object-fit: cover;
+            background: #FFF6EC;
+        }
+
+        .landing-product-info {
+            padding: 18px;
+        }
+
+        .landing-product-brand {
+            margin-bottom: 5px;
+            color: var(--c-ink-light);
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+        }
+
+        .landing-product-info h3 {
+            min-height: 42px;
+            margin-bottom: 10px;
+            font-size: 15px;
+        }
+
+        .landing-product-info h3 a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .landing-product-info h3 a:hover {
+            color: var(--c-pink-strong);
+        }
+
+        .landing-product-price {
+            margin-bottom: 14px;
+            color: var(--c-ink-heading);
+            font-size: 16px;
+            font-weight: 800;
+        }
+
+        .landing-empty-state {
+            padding: 38px 22px;
+            border: 1px dashed var(--c-border);
+            border-radius: var(--radius-lg);
+            background: rgba(255, 255, 255, 0.75);
+            color: var(--c-ink-soft);
+            text-align: center;
+        }
+
+        .landing-empty-state strong {
+            display: block;
+            margin-bottom: 6px;
+            color: var(--c-ink-heading);
+            font-size: 17px;
+        }
+
         /* =========================
            ABOUT SECTION
         ========================= */
@@ -392,13 +627,15 @@
            RESPONSIVE
         ========================= */
         @media (max-width: 960px) {
+            .navbar-floating-wrapper { top: 10px; }
             .hero-container {
                 grid-template-columns: 1fr;
-                padding: 60px 24px;
+                padding: 96px 24px 60px;
             }
             .hero-glass-card { display: none; }
             .hero h1 { font-size: 42px; }
             .features-grid { grid-template-columns: 1fr; }
+            .landing-product-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
             .about-container { grid-template-columns: 1fr; gap: 40px; }
             .about-image .glass-stat { bottom: 10px; right: 10px; }
             .cta-card { padding: 50px 24px; }
@@ -406,8 +643,9 @@
         }
 
         @media (max-width: 600px) {
-            .hero { min-height: auto; }
-            .hero-container { padding: 56px 20px 48px; }
+            .hero { min-height: 100vh; min-height: 100svh; }
+            .hero-container { padding: 96px 20px 48px; }
+            .hero-carousel-controls { margin: -10px 0 26px; }
             .hero-badge { font-size: 11px; letter-spacing: 0.8px; padding: 7px 14px; }
             .hero h1 { font-size: clamp(34px, 10vw, 40px); margin-bottom: 18px; }
             .hero p { font-size: 15px; line-height: 1.7; margin-bottom: 26px; }
@@ -417,6 +655,13 @@
             .hero-stat-item { flex: 1 1 112px; }
             .hero-stat-item h4 { font-size: 19px; }
             .hero-stat-item p { font-size: 12px; line-height: 1.5; }
+            .landing-section { padding: 56px 20px; }
+            .landing-section-heading { align-items: flex-start; flex-direction: column; }
+            .landing-section-heading h2 { font-size: 25px; }
+            .landing-product-grid { gap: 12px; }
+            .landing-product-info { padding: 13px; }
+            .landing-product-info h3 { font-size: 14px; min-height: 38px; }
+            .landing-product-price { font-size: 14px; }
             .section { padding: 64px 20px; }
             .section-header { margin-bottom: 36px; }
             .section-header h2,
@@ -440,7 +685,19 @@
 @section('content')
 
     {{-- HERO / BANNER --}}
-    <section class="hero" id="home">
+    <section class="hero" id="home" data-landing-hero>
+        <div class="hero-slides" aria-hidden="true">
+            <div class="hero-slide is-active" aria-hidden="true">
+                <img src="https://images.unsplash.com/photo-1596462502278-27bfdc403348?auto=format&fit=crop&w=2200&q=85" alt="" fetchpriority="high">
+            </div>
+            <div class="hero-slide" aria-hidden="true">
+                <img src="https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=2200&q=80" alt="" loading="lazy">
+            </div>
+            <div class="hero-slide" aria-hidden="true">
+                <img src="https://images.unsplash.com/photo-1556229010-6c3f2c9ca5f8?auto=format&fit=crop&w=1000&q=80" alt="" loading="lazy">
+            </div>
+        </div>
+
         <div class="hero-container">
             <div class="hero-content">
                 <div class="hero-badge">
@@ -463,6 +720,16 @@
                     <a href="#info" class="btn btn-ghost">
                         Pelajari Sistem →
                     </a>
+                </div>
+
+                <div class="hero-carousel-controls" role="group" aria-label="Kontrol gambar utama">
+                    <button type="button" data-hero-previous aria-label="Gambar sebelumnya">‹</button>
+                    <div class="hero-carousel-indicators">
+                        <button type="button" data-hero-slide="0" aria-label="Tampilkan gambar 1" aria-current="true"></button>
+                        <button type="button" data-hero-slide="1" aria-label="Tampilkan gambar 2"></button>
+                        <button type="button" data-hero-slide="2" aria-label="Tampilkan gambar 3"></button>
+                    </div>
+                    <button type="button" data-hero-next aria-label="Gambar berikutnya">›</button>
                 </div>
 
                 <div class="hero-stats">
@@ -504,6 +771,76 @@
                     </li>
                 </ul>
             </div>
+        </div>
+    </section>
+
+    <section class="landing-section" aria-labelledby="landing-categories-title">
+        <div class="landing-section-heading">
+            <div>
+                <h2 id="landing-categories-title">Jelajahi Kategori</h2>
+                <p>Pilih kebutuhan perawatan yang ingin Anda temukan.</p>
+            </div>
+            <a href="{{ route('login') }}" class="btn btn-outline btn-sm">Masuk untuk berbelanja →</a>
+        </div>
+
+        @if ($categories->isNotEmpty())
+            <div class="landing-categories">
+                @foreach ($categories as $category)
+                    <a href="{{ auth()->check() ? route('products.index', ['category' => $category->cat_id]) : route('login') }}" class="landing-category-card">
+                        <x-category-icon :title="$category->cat_title" />
+                        <span>
+                            <strong>{{ $category->cat_title }}</strong>
+                            <small>Lihat pilihan produk →</small>
+                        </span>
+                    </a>
+                @endforeach
+            </div>
+        @else
+            <div class="landing-empty-state">
+                <strong>Kategori belum tersedia</strong>
+                Silakan kembali lagi nanti untuk melihat koleksi kategori.
+            </div>
+        @endif
+    </section>
+
+    <section class="landing-products">
+        <div class="landing-section">
+            <div class="landing-section-heading">
+                <div>
+                    <h2>Pilihan Produk</h2>
+                    <p>Produk tersedia yang dipilih langsung dari katalog Beauty Store.</p>
+                </div>
+                <a href="{{ route('login') }}" class="btn btn-outline btn-sm">Masuk untuk melihat katalog →</a>
+            </div>
+
+            @if ($products->isNotEmpty())
+                <div class="landing-product-grid">
+                    @foreach ($products as $product)
+                        <article class="landing-product-card">
+                            @if ($product->image)
+                                <img class="landing-product-image" src="{{ $product->image }}" alt="{{ $product->name }}" loading="lazy">
+                            @else
+                                <div class="landing-product-image" role="img" aria-label="Gambar produk belum tersedia"></div>
+                            @endif
+                            <div class="landing-product-info">
+                                <div class="landing-product-brand">{{ $product->brand }}</div>
+                                <h3>
+                                    <a href="{{ auth()->check() ? route('products.show', $product->id) : route('login') }}">
+                                        {{ $product->name }}
+                                    </a>
+                                </h3>
+                                <div class="landing-product-price">Rp {{ number_format($product->price, 0, ',', '.') }}</div>
+                                <a href="{{ auth()->check() ? route('products.show', $product->id) : route('login') }}" class="btn btn-primary btn-sm">Lihat Produk</a>
+                            </div>
+                        </article>
+                    @endforeach
+                </div>
+            @else
+                <div class="landing-empty-state">
+                    <strong>Produk belum tersedia</strong>
+                    Koleksi pilihan akan tampil di sini setelah produk tersedia.
+                </div>
+            @endif
         </div>
     </section>
 
@@ -549,8 +886,8 @@
         <div class="about-container">
             <div class="about-image">
                 <div class="glass-stat">
-                    <h4>4.9 / 5.0</h4>
-                    <p>Kepuasan Pelanggan Beauty Store</p>
+                    <h4>Beauty Store</h4>
+                    <p>Temukan pilihan untuk rutinitas kecantikanmu.</p>
                 </div>
             </div>
 
@@ -581,3 +918,84 @@
     </section>
 
 @endsection
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    var hero = document.querySelector('[data-landing-hero]');
+    if (!hero) return;
+
+    var slides = Array.prototype.slice.call(hero.querySelectorAll('.hero-slide'));
+    var indicators = Array.prototype.slice.call(hero.querySelectorAll('[data-hero-slide]'));
+    var previous = hero.querySelector('[data-hero-previous]');
+    var next = hero.querySelector('[data-hero-next]');
+    var current = 0;
+    var timer = null;
+    var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    function showSlide(index) {
+        if (slides.length < 2) return;
+
+        current = (index + slides.length) % slides.length;
+        slides.forEach(function (slide, slideIndex) {
+            slide.classList.toggle('is-active', slideIndex === current);
+        });
+        indicators.forEach(function (indicator, slideIndex) {
+            if (slideIndex === current) {
+                indicator.setAttribute('aria-current', 'true');
+            } else {
+                indicator.removeAttribute('aria-current');
+            }
+        });
+    }
+
+    function stopSlideshow() {
+        if (timer) {
+            window.clearInterval(timer);
+            timer = null;
+        }
+    }
+
+    function startSlideshow() {
+        stopSlideshow();
+        if (!reducedMotion && !document.hidden && slides.length > 1) {
+            timer = window.setInterval(function () {
+                showSlide(current + 1);
+            }, 7000);
+        }
+    }
+
+    if (previous) {
+        previous.addEventListener('click', function () {
+            showSlide(current - 1);
+            startSlideshow();
+        });
+    }
+    if (next) {
+        next.addEventListener('click', function () {
+            showSlide(current + 1);
+            startSlideshow();
+        });
+    }
+    indicators.forEach(function (indicator) {
+        indicator.addEventListener('click', function () {
+            showSlide(Number(indicator.getAttribute('data-hero-slide')));
+            startSlideshow();
+        });
+    });
+
+    hero.addEventListener('mouseenter', stopSlideshow);
+    hero.addEventListener('mouseleave', startSlideshow);
+    hero.addEventListener('focusin', stopSlideshow);
+    hero.addEventListener('focusout', function (event) {
+        if (!hero.contains(event.relatedTarget)) startSlideshow();
+    });
+    document.addEventListener('visibilitychange', function () {
+        if (document.hidden) stopSlideshow();
+        else startSlideshow();
+    });
+
+    startSlideshow();
+});
+</script>
+@endpush

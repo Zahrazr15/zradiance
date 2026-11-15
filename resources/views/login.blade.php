@@ -6,7 +6,7 @@
     <title>Login - Beauty Store</title>
 </head>
 
-<body>
+<body class="login-page">
 
     <div class="auth-split-wrapper">
 
