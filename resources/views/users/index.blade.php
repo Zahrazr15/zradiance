@@ -12,7 +12,6 @@
         <p>Kelola akun admin dan pelanggan Beauty Store.</p>
     </div>
 
-    <a href="{{ route('admin.users.create') }}" class="btn btn-primary">+ Tambah Pengguna</a>
 </div>
 
 <div class="admin-card">

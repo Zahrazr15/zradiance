@@ -5,8 +5,8 @@
     <div class="footer-container">
 
         <div class="footer-brand">
-            <h2><x-logo :size="30" /></h2>
-            <p>Temukan berbagai produk kecantikan pilihan untuk melengkapi kebutuhanmu.</p>
+            <h2><x-logo :size="28" /></h2>
+            <p>Platform e-commerce kecantikan terpercaya. Produk original, BPOM teruji, dan konsultasi cerdas bersama AI.</p>
         </div>
 
         <div class="footer-section">
@@ -17,19 +17,21 @@
         </div>
 
         <div class="footer-section">
-            <h3>Menu</h3>
+            <h3>Menu Cepat</h3>
             @if($mode === 'landing')
                 <a href="#home">Home</a>
-                <a href="#info">Informasi</a>
-                <a href="{{ route('login') }}">Login</a>
+                <a href="#info">Informasi Sistem</a>
+                <a href="{{ route('login') }}">Masuk Akun</a>
+                <a href="{{ route('register') }}">Daftar Gratis</a>
             @else
                 <a href="{{ route('dashboard') }}">Home</a>
-                <a href="{{ route('categories.index') }}">Kategori</a>
-                <a href="{{ route('cart.index') }}">Keranjang</a>
+                <a href="{{ route('products.index') }}">Products</a>
+                <a href="{{ route('cart.index') }}">Keranjang Belanja</a>
+                <a href="{{ route('orders.index') }}">Pesanan Saya</a>
             @endif
         </div>
 
     </div>
 
-    <div class="footer-bottom">© {{ date('Y') }} Beauty Store. Sistem e-commerce produk kecantikan.</div>
+    <div class="footer-bottom">© {{ date('Y') }} Beauty Store. Sistem e-commerce produk kecantikan modern.</div>
 </footer>

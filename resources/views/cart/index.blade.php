@@ -444,11 +444,11 @@
 </div>
 @endsection
 
+
 @push('scripts')
 @if (count($cart) > 0)
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-
     const checkboxes = Array.from(
         document.querySelectorAll('.select-product')
     );
@@ -456,19 +456,16 @@ document.addEventListener('DOMContentLoaded', function () {
     const selectAll = document.getElementById('select-all');
     const totalElement = document.getElementById('selected-total');
     const checkoutButton = document.getElementById('checkout-button');
-
     const toolbarCount = document.getElementById('selected-count-toolbar');
     const summaryCount = document.getElementById('selected-count-summary');
     const statusElement = document.getElementById('selection-status');
+    const checkoutForm = document.getElementById('checkout-selection');
 
     const selectionUrl = @json(route('cart.selection'));
-    const selectAllUrl = @json(route('cart.select-all'));
     const checkoutUrl = @json(route('checkout.index'));
-
     const csrfToken = @json(csrf_token());
 
     let saving = false;
-    let requestVersion = 0;
 
     function getSelectedIds() {
         return checkboxes
@@ -492,14 +489,10 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 
         totalElement.textContent = formatRupiah(total);
-
-        toolbarCount.textContent =
-            selectedCount + ' produk dipilih';
-
+        toolbarCount.textContent = selectedCount + ' produk dipilih';
         summaryCount.textContent = selectedCount;
 
-        checkoutButton.disabled =
-            selectedCount === 0 || saving;
+        checkoutButton.disabled = selectedCount === 0 || saving;
 
         selectAll.checked =
             checkboxes.length > 0 &&
@@ -510,14 +503,36 @@ document.addEventListener('DOMContentLoaded', function () {
             selectedCount < checkboxes.length;
     }
 
-    async function saveSelection() {
-        const currentVersion = ++requestVersion;
+    // Checkbox hanya mengubah tampilan pilihan.
+    checkboxes.forEach(function (checkbox) {
+        checkbox.addEventListener('change', updateDisplay);
+    });
+
+    // Pilih atau batalkan semua produk.
+    selectAll.addEventListener('change', function () {
+        checkboxes.forEach(function (checkbox) {
+            checkbox.checked = selectAll.checked;
+        });
+
+        updateDisplay();
+    });
+
+    // Simpan pilihan ke session, lalu kirim ID produk melalui URL.
+    checkoutForm.addEventListener('submit', async function (event) {
+        event.preventDefault();
+
+        if (saving) return;
+
         const selectedIds = getSelectedIds();
 
-        saving = true;
-        updateDisplay();
+        if (selectedIds.length === 0) {
+            statusElement.textContent = 'Pilih minimal satu produk.';
+            return;
+        }
 
-        statusElement.textContent = 'Menyimpan pilihan...';
+        saving = true;
+        checkoutButton.disabled = true;
+        statusElement.textContent = 'Menyiapkan checkout...';
 
         try {
             const response = await fetch(selectionUrl, {
@@ -541,136 +556,26 @@ document.addEventListener('DOMContentLoaded', function () {
                 );
             }
 
-            if (currentVersion !== requestVersion) {
-                return;
-            }
+            // Kirim selected[] sebagai query parameter GET.
+            const params = new URLSearchParams();
 
-            statusElement.textContent = 'Pilihan berhasil disimpan.';
+            selectedIds.forEach(function (id) {
+                params.append('selected[]', id);
+            });
+
+            window.location.href =
+                checkoutUrl + '?' + params.toString();
 
         } catch (error) {
-            if (currentVersion !== requestVersion) {
-                return;
-            }
-
             statusElement.textContent =
-                error.message || 'Gagal menyimpan pilihan produk.';
+                error.message || 'Gagal menyiapkan checkout.';
 
-            checkboxes.forEach(function (checkbox) {
-                checkbox.disabled = true;
-            });
-
-            checkoutButton.disabled = true;
-
-        } finally {
-            if (currentVersion === requestVersion) {
-                saving = false;
-                updateDisplay();
-            }
-        }
-    }
-
-    checkboxes.forEach(function (checkbox) {
-        checkbox.addEventListener('change', function () {
-            checkboxes.forEach(item => item.disabled = saving);
-            saveSelection();
-        });
-    });
-
-    selectAll.addEventListener('change', async function () {
-        const shouldSelectAll = selectAll.checked;
-
-        checkboxes.forEach(function (checkbox) {
-            checkbox.checked = shouldSelectAll;
-            checkbox.disabled = true;
-        });
-
-        const currentVersion = ++requestVersion;
-
-        saving = true;
-        updateDisplay();
-
-        statusElement.textContent = 'Menyimpan pilihan...';
-
-        try {
-            const response = await fetch(
-                shouldSelectAll ? selectAllUrl : selectionUrl,
-                {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json',
-                        'X-CSRF-TOKEN': csrfToken,
-                        'X-Requested-With': 'XMLHttpRequest'
-                    },
-                    body: JSON.stringify(
-                        shouldSelectAll
-                            ? {}
-                            : { selected: [] }
-                    )
-                }
-            );
-
-            const result = await response.json();
-
-            if (!response.ok || !result.success) {
-                throw new Error(
-                    result.message || 'Gagal memperbarui pilihan produk.'
-                );
-            }
-
-            if (currentVersion !== requestVersion) {
-                return;
-            }
-
-            const selectedSet = new Set(
-                result.selected.map(Number)
-            );
-
-            checkboxes.forEach(function (checkbox) {
-                checkbox.checked = selectedSet.has(
-                    Number(checkbox.value)
-                );
-            });
-
-            statusElement.textContent = 'Pilihan berhasil disimpan.';
-
-        } catch (error) {
-            if (currentVersion !== requestVersion) {
-                return;
-            }
-
-            statusElement.textContent =
-                error.message || 'Gagal memperbarui pilihan produk.';
-
-            checkboxes.forEach(function (checkbox) {
-                checkbox.disabled = true;
-            });
-
-            checkoutButton.disabled = true;
-
-        } finally {
-            if (currentVersion === requestVersion) {
-                saving = false;
-
-                checkboxes.forEach(function (checkbox) {
-                    checkbox.disabled = false;
-                });
-
-                updateDisplay();
-            }
+            saving = false;
+            updateDisplay();
         }
     });
-
-    // Pastikan pilihan tersimpan sebelum checkout.
-    document.getElementById('checkout-selection')
-        .addEventListener('submit', function (event) {
-            if (saving || getSelectedIds().length === 0) {
-                event.preventDefault();
-            }
-        });
 
     updateDisplay();
-
 });
 </script>
 @endif

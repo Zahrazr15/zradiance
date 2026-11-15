@@ -404,6 +404,36 @@
             .cta-card { padding: 50px 24px; }
             .cta-card h2 { font-size: 28px; }
         }
+
+        @media (max-width: 600px) {
+            .hero { min-height: auto; }
+            .hero-container { padding: 56px 20px 48px; }
+            .hero-badge { font-size: 11px; letter-spacing: 0.8px; padding: 7px 14px; }
+            .hero h1 { font-size: clamp(34px, 10vw, 40px); margin-bottom: 18px; }
+            .hero p { font-size: 15px; line-height: 1.7; margin-bottom: 26px; }
+            .hero-buttons { gap: 10px; margin-bottom: 30px; }
+            .hero-buttons .btn { width: 100%; padding: 12px 20px; }
+            .hero-stats { gap: 16px; flex-wrap: wrap; padding-top: 20px; }
+            .hero-stat-item { flex: 1 1 112px; }
+            .hero-stat-item h4 { font-size: 19px; }
+            .hero-stat-item p { font-size: 12px; line-height: 1.5; }
+            .section { padding: 64px 20px; }
+            .section-header { margin-bottom: 36px; }
+            .section-header h2,
+            .about-content h2 { font-size: 28px; }
+            .section-header p { font-size: 15px; }
+            .feature-card { padding: 30px 24px; }
+            .about-section { padding: 64px 20px; }
+            .about-container { gap: 32px; }
+            .about-image { min-height: 300px; }
+            .about-image .glass-stat { padding: 14px 18px; max-width: 190px; }
+            .glass-stat h4 { font-size: 22px; }
+            .cta-section { padding: 64px 20px; }
+            .cta-card { padding: 42px 22px; border-radius: var(--radius-lg); }
+            .cta-card h2 { font-size: 26px; }
+            .cta-card p { font-size: 15px; margin-bottom: 26px; }
+            .cta-card .btn { width: 100%; padding: 13px 20px; font-size: 15px; }
+        }
     </style>
 @endpush
 
