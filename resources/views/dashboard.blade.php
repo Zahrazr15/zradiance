@@ -11,6 +11,8 @@
     }
 
     .dashboard-welcome {
+        position: relative;
+        isolation: isolate;
         display: flex;
         align-items: center;
         min-height: 270px;
@@ -18,13 +20,51 @@
         padding: 38px;
         overflow: hidden;
         border-radius: var(--radius-lg);
-        background:
-            linear-gradient(90deg, rgba(36, 20, 29, 0.94) 0%, rgba(36, 20, 29, 0.78) 55%, rgba(36, 20, 29, 0.2) 100%),
-            url('https://images.unsplash.com/photo-1596462502278-27bfdc403348?auto=format&fit=crop&w=1600&q=80') center 46% / cover;
+        background: var(--c-ink);
         box-shadow: var(--shadow-md);
     }
 
+    .dashboard-welcome-slides,
+    .dashboard-welcome-slide {
+        position: absolute;
+        inset: 0;
+    }
+
+    .dashboard-welcome-slides {
+        z-index: 0;
+        background: var(--c-ink);
+    }
+
+    .dashboard-welcome-slide {
+        overflow: hidden;
+        opacity: 0;
+        transform: scale(1.02);
+        transition: opacity 650ms ease, transform 6s linear;
+    }
+
+    .dashboard-welcome-slide.is-active {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    .dashboard-welcome-slide img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .dashboard-welcome::before {
+        position: absolute;
+        inset: 0;
+        z-index: 1;
+        background: linear-gradient(90deg, rgba(36, 20, 29, 0.9), rgba(36, 20, 29, 0.68) 58%, rgba(36, 20, 29, 0.22));
+        content: '';
+        pointer-events: none;
+    }
+
     .dashboard-welcome-copy {
+        position: relative;
+        z-index: 2;
         max-width: 620px;
     }
 
@@ -253,6 +293,20 @@
         font-weight: 800;
     }
 
+    .dashboard-product-rating {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        margin-bottom: 12px;
+        color: var(--c-ink-soft);
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .dashboard-product-rating .rating-score {
+        color: var(--c-pink-strong);
+    }
+
     .dashboard-empty-state {
         padding: 28px 20px;
         border: 1px dashed var(--c-border);
@@ -318,13 +372,31 @@
         .dashboard-product-info { padding: 12px; }
     }
 
+    @media (prefers-reduced-motion: reduce) {
+        .dashboard-welcome-slide {
+            transition: none;
+            transform: none;
+        }
+    }
+
 </style>
 @endpush
 
 @section('content')
 <div class="home-wrapper">
 
-    <section class="dashboard-welcome" aria-labelledby="dashboard-welcome-title">
+    <section class="dashboard-welcome" aria-labelledby="dashboard-welcome-title" data-dashboard-hero>
+        <div class="dashboard-welcome-slides" aria-hidden="true">
+            <div class="dashboard-welcome-slide is-active">
+                <img src="https://images.unsplash.com/photo-1596462502278-27bfdc403348?auto=format&fit=crop&w=1600&q=80" alt="" fetchpriority="high">
+            </div>
+            <div class="dashboard-welcome-slide">
+                <img src="https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=1600&q=80" alt="" loading="lazy">
+            </div>
+            <div class="dashboard-welcome-slide">
+                <img src="https://images.unsplash.com/photo-1556229010-6c3f2c9ca5f8?auto=format&fit=crop&w=1600&q=80" alt="" loading="lazy">
+            </div>
+        </div>
         <div class="dashboard-welcome-copy">
             <div class="dashboard-eyebrow">Area Pelanggan</div>
             <h1 id="dashboard-welcome-title">Selamat datang, {{ auth()->user()->name }}</h1>
@@ -418,8 +490,8 @@
     <section class="dashboard-section" aria-labelledby="dashboard-products-title">
         <div class="dashboard-section-heading">
             <div>
-                <h2 id="dashboard-products-title">Produk Pilihan Terbaru</h2>
-                <p>Produk tersedia yang baru ditambahkan ke katalog.</p>
+                <h2 id="dashboard-products-title">Top Products</h2>
+                <p>Produk berperingkat tertinggi berdasarkan ulasan pelanggan.</p>
             </div>
             <a href="{{ route('products.index') }}" class="btn btn-outline btn-sm">Jelajahi katalog →</a>
         </div>
@@ -437,6 +509,14 @@
                             <small>{{ $product->brand }}</small>
                             <h3>{{ $product->name }}</h3>
                             <div class="dashboard-product-price">Rp {{ number_format($product->price, 0, ',', '.') }}</div>
+                            @if ($product->reviews_count > 0)
+                                <div class="dashboard-product-rating" aria-label="Rating {{ number_format($product->reviews_avg_rating, 1, ',', '.') }} dari 5 dari {{ $product->reviews_count }} ulasan">
+                                    <span class="rating-score" aria-hidden="true">★ {{ number_format($product->reviews_avg_rating, 1, ',', '.') }}</span>
+                                    <span>({{ $product->reviews_count }} ulasan)</span>
+                                </div>
+                            @else
+                                <div class="dashboard-product-rating">Belum ada ulasan</div>
+                            @endif
                             <a href="{{ route('products.show', $product->id) }}" class="btn btn-primary btn-sm">Lihat Produk</a>
                         </div>
                     </article>
@@ -444,11 +524,60 @@
             </div>
         @else
             <div class="dashboard-empty-state">
-                <strong>Belum ada produk tersedia</strong>
-                Produk terbaru akan muncul di sini setelah tersedia.
+                <strong>Belum ada produk dengan ulasan</strong>
+                Produk yang sudah memiliki ulasan akan ditampilkan di sini.
             </div>
         @endif
     </section>
 
 </div>
 @endsection
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    var hero = document.querySelector('[data-dashboard-hero]');
+    if (!hero) return;
+
+    var slides = Array.prototype.slice.call(hero.querySelectorAll('.dashboard-welcome-slide'));
+    var current = 0;
+    var timer = null;
+    var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    function showNextSlide() {
+        slides[current].classList.remove('is-active');
+        current = (current + 1) % slides.length;
+        slides[current].classList.add('is-active');
+    }
+
+    function stopSlideshow() {
+        if (timer) {
+            window.clearInterval(timer);
+            timer = null;
+        }
+    }
+
+    function startSlideshow() {
+        stopSlideshow();
+        if (!reducedMotion && !document.hidden && slides.length > 1) {
+            timer = window.setInterval(showNextSlide, 5000);
+        }
+    }
+
+    if (slides.length < 2) return;
+
+    hero.addEventListener('mouseenter', stopSlideshow);
+    hero.addEventListener('mouseleave', startSlideshow);
+    hero.addEventListener('focusin', stopSlideshow);
+    hero.addEventListener('focusout', function (event) {
+        if (!hero.contains(event.relatedTarget)) startSlideshow();
+    });
+    document.addEventListener('visibilitychange', function () {
+        if (document.hidden) stopSlideshow();
+        else startSlideshow();
+    });
+
+    startSlideshow();
+});
+</script>
+@endpush

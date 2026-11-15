@@ -6,9 +6,25 @@
     <style>
         .navbar-floating-wrapper {
             position: absolute;
-            top: 14px;
+            top: 10px;
             left: 0;
             right: 0;
+        }
+
+        .navbar-floating-wrapper .navbar-container {
+            min-height: 56px;
+            padding: 0 20px;
+            gap: 16px;
+        }
+
+        .navbar-floating-wrapper .logo {
+            font-size: 22px;
+        }
+
+        .navbar-floating-wrapper .nav-links a,
+        .navbar-floating-wrapper .nav-links button {
+            padding: 7px 12px;
+            font-size: 13px;
         }
 
         /* =========================
@@ -38,7 +54,7 @@
             overflow: hidden;
             opacity: 0;
             transform: scale(1.025);
-            transition: opacity 900ms ease, transform 8s linear;
+            transition: opacity 650ms ease, transform 6s linear;
         }
 
         .hero-slide.is-active {
@@ -269,13 +285,13 @@
         .section {
             max-width: 1240px;
             margin: auto;
-            padding: 90px 32px;
+            padding: 64px 32px;
         }
 
         .section-header {
             text-align: center;
             max-width: 720px;
-            margin: 0 auto 56px;
+            margin: 0 auto 40px;
         }
 
         .section-header .section-tag {
@@ -307,14 +323,14 @@
         .features-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 28px;
+            gap: 20px;
         }
 
         .feature-card {
             background: var(--c-surface);
             border: 1px solid var(--c-border-subtle);
             border-radius: var(--radius-lg);
-            padding: 38px 30px;
+            padding: 28px 24px;
             text-align: center;
             transition: var(--transition);
             box-shadow: var(--shadow-sm);
@@ -331,7 +347,7 @@
         .feature-icon {
             width: 68px;
             height: 68px;
-            margin: 0 auto 24px;
+            margin: 0 auto 16px;
             border-radius: 50%;
             background: linear-gradient(135deg, #FFF6EC, var(--c-cream));
             display: flex;
@@ -362,7 +378,7 @@
         .landing-section {
             max-width: 1240px;
             margin: 0 auto;
-            padding: 76px 32px;
+            padding: 56px 32px;
         }
 
         .landing-section-heading {
@@ -370,12 +386,12 @@
             align-items: flex-end;
             justify-content: space-between;
             gap: 20px;
-            margin-bottom: 28px;
+            margin-bottom: 20px;
         }
 
         .landing-section-heading h2 {
             margin-bottom: 6px;
-            font-size: 30px;
+            font-size: 28px;
         }
 
         .landing-section-heading p {
@@ -392,7 +408,7 @@
             display: flex;
             align-items: center;
             gap: 16px;
-            min-height: 112px;
+            min-height: 96px;
             padding: 18px;
             border: 1px solid var(--c-border-subtle);
             border-radius: var(--radius-md);
@@ -509,7 +525,7 @@
         ========================= */
         .about-section {
             background: linear-gradient(180deg, rgba(255, 234, 187, 0.3) 0%, rgba(251, 195, 193, 0.2) 100%);
-            padding: 90px 32px;
+            padding: 64px 32px;
             border-top: 1px solid var(--c-border-subtle);
             border-bottom: 1px solid var(--c-border-subtle);
         }
@@ -519,12 +535,12 @@
             margin: auto;
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 64px;
+            gap: 48px;
             align-items: center;
         }
 
         .about-image {
-            min-height: 420px;
+            min-height: 360px;
             background:
                 linear-gradient(rgba(61, 34, 48, 0.1), rgba(61, 34, 48, 0.2)),
                 url('https://images.unsplash.com/photo-1556229010-6c3f2c9ca5f8?auto=format&fit=crop&w=1000&q=80') center/cover no-repeat;
@@ -576,7 +592,7 @@
            CTA SECTION
         ========================= */
         .cta-section {
-            padding: 90px 32px;
+            padding: 64px 32px;
             text-align: center;
         }
 
@@ -627,7 +643,7 @@
            RESPONSIVE
         ========================= */
         @media (max-width: 960px) {
-            .navbar-floating-wrapper { top: 10px; }
+            .navbar-floating-wrapper { top: 8px; }
             .hero-container {
                 grid-template-columns: 1fr;
                 padding: 96px 24px 60px;
@@ -644,36 +660,39 @@
 
         @media (max-width: 600px) {
             .hero { min-height: 100vh; min-height: 100svh; }
-            .hero-container { padding: 96px 20px 48px; }
+            .navbar-floating-wrapper { padding: 0 12px; }
+            .navbar-floating-wrapper .navbar-container { min-height: 50px; padding: 8px 14px; }
+            .navbar-floating-wrapper .nav-links a,
+            .navbar-floating-wrapper .nav-links button { padding: 10px 14px; }
+            .hero-container { padding: 88px 20px 40px; }
             .hero-carousel-controls { margin: -10px 0 26px; }
-            .hero-badge { font-size: 11px; letter-spacing: 0.8px; padding: 7px 14px; }
-            .hero h1 { font-size: clamp(34px, 10vw, 40px); margin-bottom: 18px; }
-            .hero p { font-size: 15px; line-height: 1.7; margin-bottom: 26px; }
-            .hero-buttons { gap: 10px; margin-bottom: 30px; }
+            .hero h1 { font-size: clamp(34px, 10vw, 40px); margin-bottom: 16px; }
+            .hero p { font-size: 15px; line-height: 1.65; margin-bottom: 20px; }
+            .hero-buttons { gap: 10px; margin-bottom: 22px; }
             .hero-buttons .btn { width: 100%; padding: 12px 20px; }
-            .hero-stats { gap: 16px; flex-wrap: wrap; padding-top: 20px; }
+            .hero-stats { gap: 16px; flex-wrap: wrap; padding-top: 16px; }
             .hero-stat-item { flex: 1 1 112px; }
             .hero-stat-item h4 { font-size: 19px; }
             .hero-stat-item p { font-size: 12px; line-height: 1.5; }
-            .landing-section { padding: 56px 20px; }
+            .landing-section { padding: 44px 20px; }
             .landing-section-heading { align-items: flex-start; flex-direction: column; }
             .landing-section-heading h2 { font-size: 25px; }
             .landing-product-grid { gap: 12px; }
             .landing-product-info { padding: 13px; }
             .landing-product-info h3 { font-size: 14px; min-height: 38px; }
             .landing-product-price { font-size: 14px; }
-            .section { padding: 64px 20px; }
-            .section-header { margin-bottom: 36px; }
+            .section { padding: 48px 20px; }
+            .section-header { margin-bottom: 28px; }
             .section-header h2,
             .about-content h2 { font-size: 28px; }
             .section-header p { font-size: 15px; }
-            .feature-card { padding: 30px 24px; }
-            .about-section { padding: 64px 20px; }
-            .about-container { gap: 32px; }
-            .about-image { min-height: 300px; }
+            .feature-card { padding: 24px 20px; }
+            .about-section { padding: 48px 20px; }
+            .about-container { gap: 28px; }
+            .about-image { min-height: 260px; }
             .about-image .glass-stat { padding: 14px 18px; max-width: 190px; }
             .glass-stat h4 { font-size: 22px; }
-            .cta-section { padding: 64px 20px; }
+            .cta-section { padding: 48px 20px; }
             .cta-card { padding: 42px 22px; border-radius: var(--radius-lg); }
             .cta-card h2 { font-size: 26px; }
             .cta-card p { font-size: 15px; margin-bottom: 26px; }
@@ -700,17 +719,13 @@
 
         <div class="hero-container">
             <div class="hero-content">
-                <div class="hero-badge">
-                    <span></span> Official Beauty E-Commerce
-                </div>
-
                 <h1>
                     Temukan Kilau Alami &
                     <span class="gradient-text">Pesona Cantikmu</span>
                 </h1>
 
                 <p>
-                    Beauty Store menghadirkan ragam pilihan produk kecantikan terkurasi — dari perawatan kulit wajah, riasan estetik, hingga relaksasi tubuh. Sistem belanja modern dengan pengiriman terpercaya ke seluruh Indonesia.
+                    Temukan skincare, makeup, body care, dan hair care pilihan untuk rutinitas kecantikanmu.
                 </p>
 
                 <div class="hero-buttons">
@@ -961,7 +976,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!reducedMotion && !document.hidden && slides.length > 1) {
             timer = window.setInterval(function () {
                 showSlide(current + 1);
-            }, 7000);
+            }, 5000);
         }
     }
 

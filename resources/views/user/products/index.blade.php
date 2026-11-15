@@ -391,74 +391,6 @@
     </div>
 
     {{-- =====================================================
-         3. PRODUK UNGGULAN (FEATURED PRODUCTS)
-    ====================================================== --}}
-    @php
-        $featuredProducts = $products->filter(fn($p) => $p->stock > 0)->sortByDesc('reviews_avg_rating')->take(4);
-        if ($featuredProducts->isEmpty()) {
-            $featuredProducts = $products->take(4);
-        }
-    @endphp
-
-    @if($featuredProducts->isNotEmpty() && !request()->has('q'))
-    <div class="section-block">
-        <div class="section-header-row">
-            <div>
-                <h2>🌟 Produk Unggulan & Terpopuler</h2>
-                <p>Pilihan terbaik dengan ulasan tertinggi dari para pelanggan setia.</p>
-            </div>
-            <a href="#catalog-section" class="btn btn-outline btn-sm">Buka Seluruh Katalog →</a>
-        </div>
-
-        <div class="featured-grid">
-            @foreach($featuredProducts as $product)
-                <article class="product-card">
-                    <a href="{{ route('products.show', $product->id) }}" class="product-image-link">
-                        @if($product->image)
-                            <img src="{{ $product->image }}" alt="{{ $product->name }}" class="product-image" loading="lazy">
-                        @else
-                            <div class="image-placeholder">✨</div>
-                        @endif
-                    </a>
-
-                    <div class="product-info">
-                        <div class="product-brand">{{ $product->brand }}</div>
-                        <h3 class="product-name">
-                            <a href="{{ route('products.show', $product->id) }}">{{ $product->name }}</a>
-                        </h3>
-
-                        <div class="product-price">
-                            Rp{{ number_format($product->price, 0, ',', '.') }}
-                        </div>
-
-                        <div class="product-rating">
-                            @if($product->reviews_count > 0)
-                                ★ {{ number_format($product->reviews_avg_rating, 1) }}
-                                <span>({{ $product->reviews_count }})</span>
-                            @else
-                                <span>Belum ada ulasan</span>
-                            @endif
-                        </div>
-
-                        <div class="product-actions">
-                            <a href="{{ route('products.show', $product->id) }}" class="detail-button">Detail</a>
-                            @if($product->stock > 0)
-                                <form action="{{ route('cart.add', $product->id) }}" method="POST" class="add-to-cart-form">
-                                    @csrf
-                                    <button type="submit" class="cart-button">+ Keranjang</button>
-                                </form>
-                            @else
-                                <button type="button" disabled style="background:#ddd;color:#888;">Habis</button>
-                            @endif
-                        </div>
-                    </div>
-                </article>
-            @endforeach
-        </div>
-    </div>
-    @endif
-
-    {{-- =====================================================
          4. KATALOG SEMUA PRODUK & FILTER
     ====================================================== --}}
     <div class="section-block" id="catalog-section">
@@ -599,6 +531,74 @@
             </div>
         @endif
     </div>
+
+    {{-- =====================================================
+         3. PRODUK UNGGULAN (FEATURED PRODUCTS)
+    ====================================================== --}}
+    @php
+        $featuredProducts = $products->filter(fn($p) => $p->stock > 0)->sortByDesc('reviews_avg_rating')->take(4);
+        if ($featuredProducts->isEmpty()) {
+            $featuredProducts = $products->take(4);
+        }
+    @endphp
+
+    @if($featuredProducts->isNotEmpty() && !request()->has('q'))
+    <div class="section-block">
+        <div class="section-header-row">
+            <div>
+                <h2>🌟 Produk Unggulan & Terpopuler</h2>
+                <p>Pilihan terbaik dengan ulasan tertinggi dari para pelanggan setia.</p>
+            </div>
+            <a href="#catalog-section" class="btn btn-outline btn-sm">Buka Seluruh Katalog →</a>
+        </div>
+
+        <div class="featured-grid">
+            @foreach($featuredProducts as $product)
+                <article class="product-card">
+                    <a href="{{ route('products.show', $product->id) }}" class="product-image-link">
+                        @if($product->image)
+                            <img src="{{ $product->image }}" alt="{{ $product->name }}" class="product-image" loading="lazy">
+                        @else
+                            <div class="image-placeholder">✨</div>
+                        @endif
+                    </a>
+
+                    <div class="product-info">
+                        <div class="product-brand">{{ $product->brand }}</div>
+                        <h3 class="product-name">
+                            <a href="{{ route('products.show', $product->id) }}">{{ $product->name }}</a>
+                        </h3>
+
+                        <div class="product-price">
+                            Rp{{ number_format($product->price, 0, ',', '.') }}
+                        </div>
+
+                        <div class="product-rating">
+                            @if($product->reviews_count > 0)
+                                ★ {{ number_format($product->reviews_avg_rating, 1) }}
+                                <span>({{ $product->reviews_count }})</span>
+                            @else
+                                <span>Belum ada ulasan</span>
+                            @endif
+                        </div>
+
+                        <div class="product-actions">
+                            <a href="{{ route('products.show', $product->id) }}" class="detail-button">Detail</a>
+                            @if($product->stock > 0)
+                                <form action="{{ route('cart.add', $product->id) }}" method="POST" class="add-to-cart-form">
+                                    @csrf
+                                    <button type="submit" class="cart-button">+ Keranjang</button>
+                                </form>
+                            @else
+                                <button type="button" disabled style="background:#ddd;color:#888;">Habis</button>
+                            @endif
+                        </div>
+                    </div>
+                </article>
+            @endforeach
+        </div>
+    </div>
+    @endif
 
 </div>
 @endsection
