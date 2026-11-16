@@ -1,58 +1,271 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# ZRadiance - Beauty E-Commerce
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+**ZRadiance** merupakan aplikasi e-commerce berbasis web yang berfokus pada penjualan produk kecantikan (*beauty products*). Aplikasi ini dikembangkan sebagai bagian dari pemenuhan tugas Ujian Akhir Semester (UAS) untuk mata kuliah Praktik Manajemen Sistem Informasi.
 
-## About Laravel
+ZRadiance dirancang untuk memudahkan pelanggan dalam mencari produk kecantikan, mengelola keranjang belanja, melakukan pemesanan, serta memantau informasi pesanan. Aplikasi juga menyediakan halaman administrator untuk mengelola data dan aktivitas toko.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Fitur Aplikasi
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### 1. Customer
+- Registrasi dan login pengguna.
+- Melihat katalog dan detail produk.
+- Pencarian, filter kategori, dan pengurutan produk.
+- Menambahkan dan mengelola produk dalam keranjang.
+- Mengelola profil dan alamat pengiriman.
+- Melakukan checkout dan melihat ongkos kirim.
+- Melihat riwayat serta detail pesanan.
+- Melihat ulasan produk.
 
-## Learning Laravel
+### 2. Administrator
+- Dashboard administrator.
+- Mengelola data produk (tambah, lihat, ubah, dan hapus).
+- Mengelola kategori produk.
+- Melihat dan mengelola pesanan.
+- Mengelola informasi pelanggan.
+- Mengatur konfigurasi pengiriman.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### 3. Integrasi dan Fitur Pendukung
+- Integrasi RajaOngkir untuk pencarian tujuan dan perhitungan ongkos kirim.
+- Integrasi Midtrans untuk mendukung proses pembayaran online.
+- Pengelolaan status pesanan.
+- Penanganan kegagalan API dan pembatasan permintaan (*rate limiting*).
+- Cache pencarian destinasi pengiriman.
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+---
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+## Teknologi yang Digunakan
 
-## Agentic Development
+| Teknologi | Kegunaan |
+|---|---|
+| PHP 8.3 | Bahasa pemrograman backend |
+| Laravel 13 | Framework aplikasi web |
+| MySQL | Sistem manajemen basis data |
+| HTML, CSS, JavaScript | Pengembangan antarmuka |
+| Blade Template | Template engine Laravel |
+| PHPUnit | Pengujian otomatis aplikasi |
+| Laravel Feature Test | Pengujian fungsional aplikasi |
+| RajaOngkir | Integrasi layanan pengiriman |
+| Midtrans | Integrasi pembayaran online |
+| Laragon | Lingkungan pengembangan lokal |
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+---
+
+## Persyaratan Sistem
+
+Sebelum menjalankan aplikasi, pastikan perangkat telah memiliki:
+
+- PHP 8.3 atau versi yang kompatibel.
+- Composer.
+- MySQL.
+- Node.js dan NPM.
+- Laragon atau lingkungan server lokal sejenis.
+
+---
+
+## Instalasi dan Konfigurasi
+
+### 1. Clone Repository
 
 ```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+git clone <URL_REPOSITORY_GITHUB>
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+Masuk ke direktori project:
 
-## Contributing
+```bash
+cd ecommerce
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### 2. Install Dependency
 
-## Code of Conduct
+```bash
+composer install
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Install dependency frontend:
 
-## Security Vulnerabilities
+```bash
+npm install
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### 3. Konfigurasi Environment
 
-## License
+Salin file konfigurasi:
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+```bash
+cp .env.example .env
+```
+
+Pada Windows PowerShell, dapat menggunakan:
+
+```powershell
+Copy-Item .env.example .env
+```
+
+Buat application key:
+
+```bash
+php artisan key:generate
+```
+
+### 4. Konfigurasi Database
+
+Buat database MySQL dengan nama:
+
+```text
+ecommerce
+```
+
+Sesuaikan konfigurasi database pada file `.env`:
+
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=ecommerce
+DB_USERNAME=root
+DB_PASSWORD=
+```
+
+Sesuaikan username dan password berdasarkan konfigurasi MySQL lokal.
+
+### 5. Migrasi dan Seeder
+
+Jalankan migrasi database:
+
+```bash
+php artisan migrate
+```
+
+Untuk mengisi data awal demonstrasi, jalankan seeder yang telah disediakan:
+
+```bash
+php artisan db:seed
+```
+
+Pastikan `DatabaseSeeder` sudah memanggil seeder yang diperlukan sebelum menjalankan perintah tersebut.
+
+### 6. Menjalankan Aplikasi
+
+Jalankan proses build frontend:
+
+```bash
+npm run build
+```
+
+Jalankan server Laravel:
+
+```bash
+php artisan serve
+```
+
+Buka aplikasi melalui browser:
+
+```text
+http://127.0.0.1:8000
+```
+
+---
+
+## Konfigurasi Layanan Eksternal
+
+Aplikasi menggunakan layanan eksternal untuk mendukung beberapa proses operasional.
+
+- **RajaOngkir:** digunakan untuk pencarian destinasi dan perhitungan ongkos kirim.
+- **Midtrans:** digunakan untuk mendukung proses pembayaran online.
+
+Konfigurasi API harus disesuaikan dengan dokumentasi resmi masing-masing penyedia layanan.
+
+Gunakan API Key milik sendiri dan simpan seluruh kredensial pada file `.env`. Jangan mengunggah API Key atau secret ke repository publik.
+
+---
+
+## Pengujian Sistem
+
+Pengujian otomatis dilakukan menggunakan PHPUnit dan Laravel Testing.
+
+Perintah menjalankan seluruh pengujian:
+
+```bash
+php artisan test
+```
+
+### Hasil Pengujian Otomatis
+
+| Jenis Pengujian | Jumlah |
+|---|---:|
+| Feature Test | 27 |
+| Unit Test | 13 |
+| Total Test | **40** |
+| Assertions | **212** |
+| PASS | **40** |
+| FAIL | **0** |
+| SKIPPED dalam suite otomatis | **0** |
+
+Pengujian mencakup autentikasi, hak akses pengguna, pengelolaan produk dan kategori, profil, alamat, keranjang, checkout, validasi data, penanganan error, serta integrasi pengiriman menggunakan simulasi API (*mock testing*).
+
+**Catatan:** Pengujian otomatis menggunakan database SQLite in-memory dan simulasi layanan eksternal. Pengujian transaksi Midtrans sungguhan dan integrasi langsung RajaOngkir belum dilakukan.
+
+Dokumentasi pengujian lebih lanjut dapat dilihat pada:
+
+`docs/testing/LAPORAN-PENGUJIAN-ZRADIANCE.md`
+
+---
+
+## Struktur Direktori
+
+```text
+ecommerce/
+├── app/
+│   ├── Http/
+│   ├── Models/
+│   └── Services/
+├── config/
+├── database/
+│   ├── migrations/
+│   ├── seeders/
+│   └── seed-data/
+├── docs/
+│   └── testing/
+├── public/
+├── resources/
+│   └── views/
+├── routes/
+├── tests/
+│   ├── Feature/
+│   └── Unit/
+├── .env.example
+├── artisan
+├── composer.json
+└── README.md
+```
+
+---
+
+## Tujuan Pengembangan
+
+Pengembangan ZRadiance bertujuan untuk menerapkan konsep sistem informasi berbasis web dalam kegiatan perdagangan elektronik, khususnya pada bidang produk kecantikan.
+
+Melalui aplikasi ini, diharapkan proses pengelolaan produk, pelanggan, pesanan, dan informasi pengiriman dapat dilakukan secara lebih terstruktur dan terintegrasi.
+
+---
+
+## Informasi Proyek
+
+| Keterangan | Informasi |
+|---|---|
+| Nama Aplikasi | ZRadiance |
+| Jenis Aplikasi | E-Commerce |
+| Bidang | Beauty Products |
+| Mata Kuliah | Praktik Manajemen Sistem Informasi |
+| Keperluan | Tugas Ujian Akhir Semester (UAS) |
+| Framework | Laravel 13 |
+| Database | MySQL |
+
+---
+
+**ZRadiance - Beauty Store E-Commerce**
+
+Dikembangkan untuk memenuhi kebutuhan pembelajaran dan penerapan sistem informasi berbasis web.

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Exceptions\StockException;
+use App\Exceptions\ShippingServiceException;
 use App\Models\Address;
 use App\Models\CartItem;
 use App\Models\Order;
@@ -11,15 +12,20 @@ use App\Services\CartService;
 use App\Services\MidtransService;
 use App\Services\ShippingService;
 use App\Services\AdminNotificationService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 use Throwable;
 
 class CheckoutController extends Controller
 {
+    private const LOCATION_NOT_FOUND_MESSAGE =
+        'Lokasi belum dapat dicocokkan dengan RajaOngkir. Pastikan provinsi, kota/kabupaten, kecamatan, desa/kelurahan, dan kode pos pada alamat sudah benar.';
+
     private array $couriers = [
         'jne', 'jnt', 'sicepat', 'ide', 'sap',
         'tiki', 'lion', 'anteraja', 'pos', 'ncs',
@@ -202,7 +208,7 @@ class CheckoutController extends Controller
             if (!$destination) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Lokasi alamat tidak ditemukan di RajaOngkir. Periksa kembali alamat tersimpan.',
+                    'message' => self::LOCATION_NOT_FOUND_MESSAGE,
                 ], 422);
             }
 
@@ -230,6 +236,8 @@ class CheckoutController extends Controller
                 'options' => $options,
             ]);
 
+        } catch (ShippingServiceException $e) {
+            return $this->shippingFailureResponse($e);
         } catch (Throwable $e) {
             report($e);
 
@@ -343,7 +351,7 @@ class CheckoutController extends Controller
                 return back()
                     ->withInput()
                     ->withErrors([
-                        'shipping_service' => 'Lokasi pengiriman tidak ditemukan. Periksa alamat pelanggan.',
+                        'shipping_service' => self::LOCATION_NOT_FOUND_MESSAGE,
                     ]);
             }
 
@@ -374,6 +382,12 @@ class CheckoutController extends Controller
             $shippingServiceName = $selectedService['service'];
             $shippingEtd = $selectedService['etd'] ?? null;
 
+        } catch (ShippingServiceException $e) {
+            return back()
+                ->withInput()
+                ->withErrors([
+                    'shipping_service' => $this->shippingFailureMessage($e),
+                ]);
         } catch (Throwable $e) {
             report($e);
 
@@ -565,52 +579,202 @@ class CheckoutController extends Controller
         ShippingService $shippingService,
         Address $address
     ): ?array {
-        $queries = array_filter(array_unique([
-            $address->postal_code,
-            $address->village_name,
-        ]));
+        $queries = [];
+        $seenKeywords = [];
 
-        foreach ($queries as $keyword) {
-            $destinations = $shippingService->searchDestination($keyword);
+        foreach ([
+            'postal_code' => $address->postal_code,
+            'village_name' => $address->village_name,
+        ] as $type => $value) {
+            $keyword = trim((string) $value);
 
-            $match = collect($destinations)->first(function ($item) use ($address) {
-                return
-                    $this->normalizeLocation($item['province_name'] ?? '') ===
-                        $this->normalizeLocation($address->province_name ?? '') &&
-
-                    $this->normalizeLocation($item['city_name'] ?? '') ===
-                        $this->normalizeLocation($address->city_name ?? '') &&
-
-                    $this->normalizeLocation($item['district_name'] ?? '') ===
-                        $this->normalizeLocation($address->district_name ?? '') &&
-
-                    $this->normalizeLocation($item['subdistrict_name'] ?? '') ===
-                        $this->normalizeLocation($address->village_name ?? '');
-            });
-
-            if ($match) {
-                return $match;
+            if ($keyword === '' || isset($seenKeywords[$keyword])) {
+                continue;
             }
+
+            $seenKeywords[$keyword] = true;
+            $queries[] = [
+                'type' => $type,
+                'keyword' => $keyword,
+            ];
         }
+
+        $diagnostics = [];
+
+        foreach ($queries as $query) {
+            $destinations = $shippingService->searchDestination(
+                $query['keyword'],
+                fn (array $item) => !in_array(
+                    false,
+                    $this->destinationComponentMatches($item, $address),
+                    true
+                )
+            );
+            $componentMatches = [
+                'province' => false,
+                'city' => false,
+                'district' => false,
+                'subdistrict' => false,
+            ];
+
+            foreach ($destinations as $item) {
+                $matches = $this->destinationComponentMatches(
+                    $item,
+                    $address
+                );
+
+                foreach ($matches as $component => $matched) {
+                    $componentMatches[$component] =
+                        $componentMatches[$component] || $matched;
+                }
+
+                if (!in_array(false, $matches, true)) {
+                    Log::info('RajaOngkir destination matched.', [
+                        'query_type' => $query['type'],
+                        'candidate_count' => count($destinations),
+                    ]);
+
+                    return $item;
+                }
+            }
+
+            $diagnostics[] = [
+                'query_type' => $query['type'],
+                'candidate_count' => count($destinations),
+                'component_matches' => $componentMatches,
+            ];
+        }
+
+        Log::warning(
+            'RajaOngkir destination lookup found no exact hierarchy match.',
+            [
+                'searches' => $diagnostics,
+                'required_hierarchy' => [
+                    'province',
+                    'city',
+                    'district',
+                    'subdistrict',
+                ],
+            ]
+        );
 
         return null;
     }
 
+    private function destinationComponentMatches(
+        array $item,
+        Address $address
+    ): array {
+        return [
+            'province' => $this->locationMatches(
+                $item['province_name'] ?? null,
+                $address->province_name,
+                'province'
+            ),
+            'city' => $this->locationMatches(
+                $item['city_name'] ?? null,
+                $address->city_name,
+                'city'
+            ),
+            'district' => $this->locationMatches(
+                $item['district_name'] ?? null,
+                $address->district_name,
+                'district'
+            ),
+            'subdistrict' => $this->locationMatches(
+                $item['subdistrict_name'] ?? null,
+                $address->village_name,
+                'subdistrict'
+            ),
+        ];
+    }
+
     /**
-     * Menyamakan variasi penulisan nama wilayah.
+     * Membandingkan nama wilayah setelah variasi prefiks administratif dinormalisasi.
      */
-    private function normalizeLocation(?string $value): string
+    private function locationMatches(
+        ?string $candidate,
+        ?string $address,
+        string $level
+    ): bool {
+        $candidate = $this->normalizeLocation($candidate, $level);
+        $address = $this->normalizeLocation($address, $level);
+
+        return $candidate !== '' && $address !== '' && $candidate === $address;
+    }
+
+    private function normalizeLocation(?string $value, string $level): string
     {
-        $value = mb_strtoupper(trim($value));
+        $value = mb_strtoupper(trim((string) $value), 'UTF-8');
+        $value = preg_replace('/[^\p{L}\p{N}]+/u', ' ', $value) ?? '';
+        $value = trim(preg_replace('/\s+/u', ' ', $value) ?? '');
 
-        $value = preg_replace(
-            '/\b(KABUPATEN|KAB\.|KOTA ADMINISTRASI|KOTA)\b/u',
-            '',
-            $value
-        );
+        $prefixes = match ($level) {
+            'province' => ['PROVINSI'],
+            'city' => [
+                'KOTA ADMINISTRASI',
+                'KABUPATEN',
+                'KAB',
+                'KOTA',
+            ],
+            'district' => ['KECAMATAN', 'KEC'],
+            'subdistrict' => ['KELURAHAN', 'DESA', 'KEL'],
+            default => [],
+        };
 
-        $value = preg_replace('/[^A-Z0-9]+/u', ' ', $value);
+        foreach ($prefixes as $prefix) {
+            $normalized = preg_replace(
+                '/^' . preg_quote($prefix, '/') . '\s+/u',
+                '',
+                $value,
+                1,
+                $count
+            );
 
-        return trim(preg_replace('/\s+/u', ' ', $value));
+            if ($count > 0) {
+                $value = $normalized ?? '';
+                break;
+            }
+        }
+
+        return trim($value);
+    }
+
+    private function shippingFailureResponse(
+        ShippingServiceException $exception
+    ): JsonResponse {
+        $status = $exception->httpStatus === 429 ? 429 : 502;
+        $response = response()->json([
+            'success' => false,
+            'message' => $this->shippingFailureMessage($exception),
+            'retry_after_seconds' => $exception->retryAfterSeconds,
+        ], $status);
+
+        if ($exception->retryAfterSeconds !== null) {
+            $response->headers->set(
+                'Retry-After',
+                (string) $exception->retryAfterSeconds
+            );
+        }
+
+        return $response;
+    }
+
+    private function shippingFailureMessage(
+        ShippingServiceException $exception
+    ): string {
+        return match ($exception->reason) {
+            ShippingServiceException::RATE_LIMITED => $exception->retryAfterSeconds !== null
+                ? 'RajaOngkir sedang membatasi permintaan. Silakan coba lagi dalam ' .
+                    $exception->retryAfterSeconds .
+                    ' detik.'
+                : 'RajaOngkir sedang membatasi permintaan. Silakan coba lagi beberapa saat lagi.',
+            ShippingServiceException::QUOTA_EXHAUSTED =>
+                'Kuota API RajaOngkir telah habis. Hubungi administrator.',
+            ShippingServiceException::CONNECTION_FAILED =>
+                'Koneksi ke RajaOngkir gagal. Silakan coba beberapa saat lagi.',
+            default =>
+                'RajaOngkir mengalami kesalahan saat memproses permintaan. Silakan coba lagi nanti.',
+        };
     }
 }

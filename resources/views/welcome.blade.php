@@ -1,30 +1,26 @@
 @extends('layouts.landing')
 
-@section('title', 'Beauty Store - Temukan Produk Kecantikan Pilihanmu')
+@section('title', 'ZRADIANCE - Temukan Produk Kecantikan Pilihanmu')
 
 @push('styles')
     <style>
         .navbar-floating-wrapper {
             position: absolute;
-            top: 10px;
+            top: 0;
             left: 0;
             right: 0;
         }
 
         .navbar-floating-wrapper .navbar-container {
-            min-height: 56px;
-            padding: 0 20px;
+            min-height: var(--nav-h);
+            padding: 0 24px;
             gap: 16px;
-        }
-
-        .navbar-floating-wrapper .logo {
-            font-size: 22px;
         }
 
         .navbar-floating-wrapper .nav-links a,
         .navbar-floating-wrapper .nav-links button {
-            padding: 7px 12px;
-            font-size: 13px;
+            padding: 9px 16px;
+            font-size: 14px;
         }
 
         /* =========================
@@ -148,6 +144,17 @@
         .hero-content {
             color: #fff;
             animation: slideUpFade 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .hero-content h1,
+        .hero-content p {
+            transition: opacity 180ms ease, transform 180ms ease;
+        }
+
+        .hero-content.is-changing h1,
+        .hero-content.is-changing p {
+            opacity: 0.35;
+            transform: translateY(6px);
         }
 
         .hero-badge {
@@ -643,7 +650,7 @@
            RESPONSIVE
         ========================= */
         @media (max-width: 960px) {
-            .navbar-floating-wrapper { top: 8px; }
+            .navbar-floating-wrapper { top: 0; }
             .hero-container {
                 grid-template-columns: 1fr;
                 padding: 96px 24px 60px;
@@ -661,9 +668,10 @@
         @media (max-width: 600px) {
             .hero { min-height: 100vh; min-height: 100svh; }
             .navbar-floating-wrapper { padding: 0 12px; }
-            .navbar-floating-wrapper .navbar-container { min-height: 50px; padding: 8px 14px; }
+            .navbar-floating-wrapper .navbar-container { min-height: 64px; padding: 8px 18px; }
             .navbar-floating-wrapper .nav-links a,
-            .navbar-floating-wrapper .nav-links button { padding: 10px 14px; }
+            .navbar-floating-wrapper .nav-links a,
+            .navbar-floating-wrapper .nav-links button { padding: 12px 16px; }
             .hero-container { padding: 88px 20px 40px; }
             .hero-carousel-controls { margin: -10px 0 26px; }
             .hero h1 { font-size: clamp(34px, 10vw, 40px); margin-bottom: 16px; }
@@ -706,27 +714,25 @@
     {{-- HERO / BANNER --}}
     <section class="hero" id="home" data-landing-hero>
         <div class="hero-slides" aria-hidden="true">
-            <div class="hero-slide is-active" aria-hidden="true">
+            <div class="hero-slide is-active" aria-hidden="true" data-title="Temukan Kilau Alami &" data-highlight="Pesona Cantikmu" data-description="Skincare, makeup, dan perawatan pilihan untuk rutinitas kecantikanmu.">
                 <img src="https://images.unsplash.com/photo-1596462502278-27bfdc403348?auto=format&fit=crop&w=2200&q=85" alt="" fetchpriority="high">
             </div>
-            <div class="hero-slide" aria-hidden="true">
+            <div class="hero-slide" aria-hidden="true" data-title="Rawat Kulit dengan" data-highlight="Pilihan Terpercaya" data-description="Temukan produk perawatan yang sesuai untuk kebutuhan kulitmu.">
                 <img src="https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=2200&q=80" alt="" loading="lazy">
             </div>
-            <div class="hero-slide" aria-hidden="true">
-                <img src="https://images.unsplash.com/photo-1556229010-6c3f2c9ca5f8?auto=format&fit=crop&w=1000&q=80" alt="" loading="lazy">
+            <div class="hero-slide" aria-hidden="true" data-title="Temukan Ritual" data-highlight="Kecantikanmu" data-description="Jelajahi koleksi kecantikan pilihan dalam satu tempat.">
+                <img src="https://images.unsplash.com/photo-1556229010-6c3f2c9ca5f8?auto=format&fit=crop&w=2200&q=80" alt="" loading="lazy">
             </div>
         </div>
 
         <div class="hero-container">
             <div class="hero-content">
-                <h1>
-                    Temukan Kilau Alami &
-                    <span class="gradient-text">Pesona Cantikmu</span>
+                <h1 aria-live="polite">
+                    <span data-hero-title>Temukan Kilau Alami &</span>
+                    <span class="gradient-text" data-hero-highlight>Pesona Cantikmu</span>
                 </h1>
 
-                <p>
-                    Temukan skincare, makeup, body care, dan hair care pilihan untuk rutinitas kecantikanmu.
-                </p>
+                <p data-hero-description>Skincare, makeup, dan perawatan pilihan untuk rutinitas kecantikanmu.</p>
 
                 <div class="hero-buttons">
                     <a href="{{ route('login') }}" class="btn btn-primary">
@@ -774,7 +780,7 @@
                     </li>
                     <li>
                         <div class="icon-wrap">🤖</div>
-                        <span>Konsultasi interaktif bersama Chatbot Beauty Store</span>
+                        <span>Konsultasi interaktif bersama Chatbot ZRadiance</span>
                     </li>
                     <li>
                         <div class="icon-wrap">💳</div>
@@ -823,7 +829,7 @@
             <div class="landing-section-heading">
                 <div>
                     <h2>Pilihan Produk</h2>
-                    <p>Produk tersedia yang dipilih langsung dari katalog Beauty Store.</p>
+                    <p>Produk tersedia yang dipilih langsung dari katalog ZRadiance.</p>
                 </div>
                 <a href="{{ route('login') }}" class="btn btn-outline btn-sm">Masuk untuk melihat katalog →</a>
             </div>
@@ -863,7 +869,7 @@
     <section class="section" id="info">
         <div class="section-header">
             <span class="section-tag">Pengalaman Baru</span>
-            <h2>Mengapa Memilih Beauty Store?</h2>
+            <h2>Mengapa Memilih ZRadiance?</h2>
             <p>
                 Platform yang dirancang khusus untuk kenyamanan Anda dalam menjelajahi dan merawat kecantikan setiap hari dengan aman dan transparan.
             </p>
@@ -901,7 +907,7 @@
         <div class="about-container">
             <div class="about-image">
                 <div class="glass-stat">
-                    <h4>Beauty Store</h4>
+                    <h4>ZRADIANCE</h4>
                     <p>Temukan pilihan untuk rutinitas kecantikanmu.</p>
                 </div>
             </div>
@@ -909,7 +915,7 @@
             <div class="about-content">
                 <h2>Satu Platform untuk Seluruh Kebutuhan Estetika Anda</h2>
                 <p>
-                    Kami memahami bahwa setiap kulit memiliki cerita unik. Oleh karena itu, Beauty Store hadir dengan sistem e-commerce modern yang memudahkan Anda menemukan produk yang tepat sesuai kebutuhan personal.
+                    Kami memahami bahwa setiap kulit memiliki cerita unik. Oleh karena itu, ZRadiance hadir dengan sistem e-commerce modern yang memudahkan Anda menemukan produk yang tepat sesuai kebutuhan personal.
                 </p>
                 <p>
                     Mulai dari kemudahan navigasi kategori, detail produk yang transparan, perhitungan ongkos kirim dinamis hingga ke pelosok kecamatan, hingga pelacakan status pesanan secara live.
@@ -944,9 +950,15 @@ document.addEventListener('DOMContentLoaded', function () {
     var indicators = Array.prototype.slice.call(hero.querySelectorAll('[data-hero-slide]'));
     var previous = hero.querySelector('[data-hero-previous]');
     var next = hero.querySelector('[data-hero-next]');
+    var heroContent = hero.querySelector('.hero-content');
+    var title = hero.querySelector('[data-hero-title]');
+    var highlight = hero.querySelector('[data-hero-highlight]');
+    var description = hero.querySelector('[data-hero-description]');
     var current = 0;
     var timer = null;
-    var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var copyTransitionTimer = null;
+    var motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    var reducedMotion = motionQuery.matches;
 
     function showSlide(index) {
         if (slides.length < 2) return;
@@ -962,6 +974,26 @@ document.addEventListener('DOMContentLoaded', function () {
                 indicator.removeAttribute('aria-current');
             }
         });
+
+        if (title && highlight && description) {
+            if (copyTransitionTimer) window.clearTimeout(copyTransitionTimer);
+            if (reducedMotion) {
+                title.textContent = slides[current].getAttribute('data-title') || '';
+                highlight.textContent = slides[current].getAttribute('data-highlight') || '';
+                description.textContent = slides[current].getAttribute('data-description') || '';
+                heroContent.classList.remove('is-changing');
+                copyTransitionTimer = null;
+                return;
+            }
+            heroContent.classList.add('is-changing');
+            copyTransitionTimer = window.setTimeout(function () {
+                title.textContent = slides[current].getAttribute('data-title') || '';
+                highlight.textContent = slides[current].getAttribute('data-highlight') || '';
+                description.textContent = slides[current].getAttribute('data-description') || '';
+                heroContent.classList.remove('is-changing');
+                copyTransitionTimer = null;
+            }, 180);
+        }
     }
 
     function stopSlideshow() {
@@ -999,8 +1031,6 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    hero.addEventListener('mouseenter', stopSlideshow);
-    hero.addEventListener('mouseleave', startSlideshow);
     hero.addEventListener('focusin', stopSlideshow);
     hero.addEventListener('focusout', function (event) {
         if (!hero.contains(event.relatedTarget)) startSlideshow();
@@ -1009,6 +1039,16 @@ document.addEventListener('DOMContentLoaded', function () {
         if (document.hidden) stopSlideshow();
         else startSlideshow();
     });
+    function onMotionPreferenceChange(event) {
+        reducedMotion = event.matches;
+        if (reducedMotion) stopSlideshow();
+        else startSlideshow();
+    }
+    if (typeof motionQuery.addEventListener === 'function') {
+        motionQuery.addEventListener('change', onMotionPreferenceChange);
+    } else if (typeof motionQuery.addListener === 'function') {
+        motionQuery.addListener(onMotionPreferenceChange);
+    }
 
     startSlideshow();
 });

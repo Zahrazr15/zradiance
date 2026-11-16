@@ -3,7 +3,7 @@
 
 <head>
     @include('layouts.partials.head')
-    <title>Lupa Password - Beauty Store</title>
+    <title>Lupa Password - ZRadiance</title>
 </head>
 
 <body>
@@ -14,7 +14,7 @@
         <div class="auth-visual-side">
             <div class="auth-visual-brand">
                 <a href="{{ route('home') }}" style="text-decoration:none;">
-                    <x-logo :size="42" />
+                    <x-logo :size="42" background="dark" />
                 </a>
             </div>
 
@@ -32,7 +32,7 @@
             </div>
 
             <div style="font-size:13px;color:rgba(255,255,255,0.7);position:relative;z-index:2;">
-                © {{ date('Y') }} Beauty Store. All rights reserved.
+                © {{ date('Y') }} ZRadiance. All rights reserved.
             </div>
         </div>
 
@@ -41,7 +41,7 @@
             <div class="auth-form-box">
 
                 <div class="auth-logo" style="justify-content:flex-start;margin-bottom:20px;">
-                    <x-logo :size="36" />
+                    <x-logo :size="36" background="light" />
                 </div>
 
                 <h1>Lupa Password</h1>
@@ -129,7 +129,7 @@
                         <a href="{{ route('login') }}">Kembali ke Login</a>
                     </div>
                     <div style="margin-top:8px;">
-                        <a href="{{ route('home') }}" style="color:var(--c-ink-soft);font-size:13px;font-weight:600;">← Kembali ke Beranda</a>
+                        <a href="{{ route('home') }}" style="color:var(--c-ink-soft);font-size:13px;font-weight:600;">Kembali ke Beranda</a>
                     </div>
                 </div>
 

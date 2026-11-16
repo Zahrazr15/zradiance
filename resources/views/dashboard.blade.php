@@ -1,6 +1,6 @@
 @extends('layouts.user')
 
-@section('title', 'Beranda Pelanggan - Beauty Store')
+@section('title', 'Beranda Pelanggan - ZRadiance')
 
 @push('styles')
 <style>
@@ -542,7 +542,8 @@ document.addEventListener('DOMContentLoaded', function () {
     var slides = Array.prototype.slice.call(hero.querySelectorAll('.dashboard-welcome-slide'));
     var current = 0;
     var timer = null;
-    var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    var reducedMotion = motionQuery.matches;
 
     function showNextSlide() {
         slides[current].classList.remove('is-active');
@@ -566,8 +567,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     if (slides.length < 2) return;
 
-    hero.addEventListener('mouseenter', stopSlideshow);
-    hero.addEventListener('mouseleave', startSlideshow);
     hero.addEventListener('focusin', stopSlideshow);
     hero.addEventListener('focusout', function (event) {
         if (!hero.contains(event.relatedTarget)) startSlideshow();
@@ -576,6 +575,16 @@ document.addEventListener('DOMContentLoaded', function () {
         if (document.hidden) stopSlideshow();
         else startSlideshow();
     });
+    function onMotionPreferenceChange(event) {
+        reducedMotion = event.matches;
+        if (reducedMotion) stopSlideshow();
+        else startSlideshow();
+    }
+    if (typeof motionQuery.addEventListener === 'function') {
+        motionQuery.addEventListener('change', onMotionPreferenceChange);
+    } else if (typeof motionQuery.addListener === 'function') {
+        motionQuery.addListener(onMotionPreferenceChange);
+    }
 
     startSlideshow();
 });

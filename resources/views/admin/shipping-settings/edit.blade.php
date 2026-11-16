@@ -206,9 +206,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function showMessage(message, type = 'info') {
         const colors = {
-            info: '#2563eb',
-            success: '#15803d',
-            error: '#dc2626'
+            info: 'var(--c-ink-soft)',
+            success: 'var(--c-success)',
+            error: 'var(--c-danger)'
         };
 
         messageContainer.textContent = message;
@@ -263,13 +263,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 const button = document.createElement('button');
 
                 button.type = 'button';
-                button.className = 'btn btn-light';
-                button.style.display = 'block';
-                button.style.width = '100%';
-                button.style.textAlign = 'left';
-                button.style.marginBottom = '8px';
-                button.style.padding = '12px';
-                button.style.border = '1px solid #ddd';
+                button.className = 'btn btn-outline shipping-location-option';
 
                 button.textContent =
                     location.label ||

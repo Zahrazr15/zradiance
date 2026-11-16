@@ -176,10 +176,10 @@
 </style>
 
 <div id="bsChat">
-    <div class="bs-panel" role="dialog" aria-label="Chatbot Beauty Store">
+    <div class="bs-panel" role="dialog" aria-label="Chatbot ZRadiance">
         <div class="bs-head">
             <div>
-                <strong>Asisten Beauty Store</strong>
+                <strong>Asisten ZRadiance</strong>
                 <small>Jawaban pintar seputar produk kecantikan</small>
             </div>
             <button type="button" class="bs-close" aria-label="Tutup chatbot">✕</button>
@@ -334,7 +334,7 @@
     } catch (e) {}
 
     if (!restored) {
-        addBot('Halo! Aku asisten Beauty Store. Tanya aku soal kandungan dan cara pakai produk, minta rekomendasi atau perbandingan produk, atau tanya cara pemesanan.');
+        addBot('Halo! Aku asisten ZRadiance. Tanya aku soal kandungan dan cara pakai produk, minta rekomendasi atau perbandingan produk, atau tanya cara pemesanan.');
         render({
             reply: '', table: null, products: [], links: [],
             suggestions: [

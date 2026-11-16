@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Admin Dashboard - Beauty Store')
+@section('title', 'Admin Dashboard - ZRadiance')
 @section('page-title', 'Dashboard Ringkasan')
 
 @push('styles')

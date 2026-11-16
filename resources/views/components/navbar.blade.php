@@ -5,7 +5,7 @@
         <div class="navbar-container">
 
             <a href="{{ $mode === 'landing' ? route('home') : route('dashboard') }}" class="logo">
-                <x-logo />
+                <x-logo background="light" />
             </a>
 
             <button class="nav-toggle" type="button" aria-label="Buka menu"

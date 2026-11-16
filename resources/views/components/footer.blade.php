@@ -5,7 +5,7 @@
     <div class="footer-container">
 
         <div class="footer-brand">
-            <h2><x-logo :size="28" /></h2>
+            <h2><x-logo :size="28" background="light" /></h2>
             <p>Platform e-commerce kecantikan terpercaya. Produk original, BPOM teruji, dan konsultasi cerdas bersama AI.</p>
         </div>
 
@@ -33,5 +33,5 @@
 
     </div>
 
-    <div class="footer-bottom">© {{ date('Y') }} Beauty Store. Sistem e-commerce produk kecantikan modern.</div>
+    <div class="footer-bottom">© {{ date('Y') }} ZRadiance. Sistem e-commerce produk kecantikan modern.</div>
 </footer>

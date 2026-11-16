@@ -3,7 +3,7 @@
 <html lang="id">
 <head>
     @include('layouts.partials.head')
-    <title>@yield('title', 'Admin - Beauty Store')</title>
+    <title>@yield('title', 'Admin - ZRadiance')</title>
     <script>
         try {
             if (localStorage.getItem('sb-collapsed') === '1' && innerWidth > 900) {
@@ -16,7 +16,7 @@
 <div class="admin-wrapper">
 
     <aside class="admin-sidebar">
-        <div class="admin-logo"><x-logo :size="30" /></div>
+        <div class="admin-logo"><x-logo :size="30" background="light" /></div>
 
         <ul class="admin-menu">
             <li><div class="menu-section">Menu utama</div></li>
