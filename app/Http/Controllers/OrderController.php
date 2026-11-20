@@ -155,9 +155,23 @@ class OrderController extends Controller
                     $this->stockService->deduct($lockedOrder);
                 }
 
-                $lockedOrder->update([
+                $updates = [
                     'status' => $newStatus,
-                ]);
+                ];
+
+                // COD dianggap lunas saat admin mengonfirmasi pesanan selesai.
+                if ($newStatus === 'completed' && $isCod) {
+                    if ($lockedOrder->payment_status === 'unpaid') {
+                        $updates['payment_status'] = 'paid';
+                        $updates['paid_at'] = now();
+                    } elseif ($lockedOrder->payment_status !== 'paid') {
+                        throw new StockException(
+                            'Status pembayaran COD tidak valid untuk menyelesaikan pesanan.'
+                        );
+                    }
+                }
+
+                $lockedOrder->update($updates);
             });
         } catch (StockException $e) {
             return back()->withErrors([

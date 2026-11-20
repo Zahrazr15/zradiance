@@ -194,6 +194,61 @@ class AdminManagementTest extends TestCase
         ]);
     }
 
+    public function test_completed_cod_order_is_marked_paid(): void
+    {
+        $admin = User::factory()->create(['role' => 'admin']);
+        $customer = User::factory()->create(['role' => 'user']);
+
+        $category = Category::create([
+            'cat_title' => 'Skincare',
+        ]);
+
+        $product = Product::create(
+            $this->productData($category, ['stock' => 5])
+        );
+
+        $order = $this->createOrder($customer, 'cod');
+
+        $order->items()->create([
+            'product_id' => $product->id,
+            'product_name' => $product->name,
+            'price' => 100,
+            'quantity' => 2,
+        ]);
+
+        $this->actingAs($admin);
+
+        $this->put(route('admin.orders.update', $order), [
+            'status' => 'processing',
+        ])->assertRedirect(route('admin.orders.show', $order))
+        ->assertSessionHasNoErrors();
+
+        $this->put(route('admin.orders.update', $order), [
+            'status' => 'shipped',
+        ])->assertRedirect(route('admin.orders.show', $order))
+        ->assertSessionHasNoErrors();
+
+        $this->put(route('admin.orders.update', $order), [
+            'status' => 'completed',
+        ])->assertRedirect(route('admin.orders.show', $order))
+        ->assertSessionHasNoErrors();
+
+        $this->assertDatabaseHas('orders', [
+            'id' => $order->id,
+            'status' => 'completed',
+            'payment_status' => 'paid',
+        ]);
+
+        $order->refresh();
+
+        $this->assertNotNull($order->paid_at);
+
+        $this->assertDatabaseHas('products', [
+            'id' => $product->id,
+            'stock' => 3,
+        ]);
+    }
+
     public function test_admin_can_update_shipping_settings(): void
     {
         $admin = User::factory()->create(['role' => 'admin']);
@@ -250,5 +305,43 @@ class AdminManagementTest extends TestCase
             'payment_method' => $paymentMethod,
             'payment_status' => 'unpaid',
         ]);
+    }
+
+    public function test_dashboard_revenue_only_counts_completed_paid_orders(): void
+    {
+        $admin = User::factory()->create(['role' => 'admin']);
+        $customer = User::factory()->create(['role' => 'user']);
+
+        $paidCompleted = $this->createOrder($customer, 'online');
+        $paidCompleted->update([
+            'status' => 'completed',
+            'payment_status' => 'paid',
+        ]);
+
+        $unpaidCompleted = $this->createOrder($customer, 'cod');
+        $unpaidCompleted->update([
+            'status' => 'completed',
+            'payment_status' => 'unpaid',
+            'total' => 2000,
+        ]);
+
+        $refundedCompleted = $this->createOrder($customer, 'online');
+        $refundedCompleted->update([
+            'status' => 'completed',
+            'payment_status' => 'refunded',
+            'total' => 3000,
+        ]);
+
+        $paidProcessing = $this->createOrder($customer, 'online');
+        $paidProcessing->update([
+            'status' => 'processing',
+            'payment_status' => 'paid',
+            'total' => 4000,
+        ]);
+
+        $this->actingAs($admin)
+            ->get(route('admin.dashboard'))
+            ->assertOk()
+            ->assertViewHas('revenue', 1000.0);
     }
 }

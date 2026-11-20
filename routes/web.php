@@ -57,7 +57,8 @@ Route::post('/register', [RegisterController::class, 'register']);
 Route::get('/login', [LoginController::class, 'showLogin'])
     ->name('login');
 
-Route::post('/login', [LoginController::class, 'login']);
+Route::post('/login', [LoginController::class, 'login'])
+    ->middleware('throttle:5,1');
 
 // LOGOUT
 Route::post('/logout', [LoginController::class, 'logout'])

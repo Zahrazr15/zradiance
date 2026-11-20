@@ -79,6 +79,28 @@ class CustomerFlowsTest extends TestCase
         $this->assertAuthenticatedAs($customer);
     }
 
+    public function test_login_is_rate_limited_after_five_failed_attempts(): void
+    {
+        $customer = User::factory()->create([
+            'email' => 'ratelimit@example.test',
+            'password' => 'password123',
+            'role' => 'user',
+        ]);
+
+        for ($attempt = 1; $attempt <= 5; $attempt++) {
+            $this->post(route('login'), [
+                'email' => $customer->email,
+                'password' => 'wrong-password',
+            ])->assertRedirect()
+            ->assertSessionHasErrors('email');
+        }
+
+        $this->post(route('login'), [
+            'email' => $customer->email,
+            'password' => 'wrong-password',
+        ])->assertTooManyRequests();
+    }
+
     public function test_customer_can_log_out(): void
     {
         $customer = User::factory()->create(['role' => 'user']);

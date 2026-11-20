@@ -48,7 +48,9 @@ class AdminDashboardController extends Controller
             'totalOrders'      => Order::count(),
             'totalCustomers'   => User::where('role', 'user')->count(),
             'newCustomers'     => User::where('role', 'user')->where('created_at', '>=', now()->subDays(7))->count(),
-            'revenue'          => (float) Order::where('status', 'completed')->sum('total'),
+            'revenue' => (float) Order::where('status', 'completed')
+                ->where('payment_status', 'paid')
+                ->sum('total'),
             'pendingResets'    => PasswordResetRequest::where('status', 'pending')->count(),
             'outOfStock'       => Product::where('stock', '<=', 0)->count(),
             'lowStockProducts' => Product::where('stock', '>', 0)->where('stock', '<=', 5)->orderBy('stock')->limit(5)->get(),
