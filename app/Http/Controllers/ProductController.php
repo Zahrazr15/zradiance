@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use App\Models\Category;
+use App\Models\Brand;
 use App\Models\Order;
 use Illuminate\Http\Request;
 
@@ -14,7 +15,7 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $products = Product::with('category')
+        $products = Product::with(['category', 'brandRelation'])
             ->latest()
             ->get();
 
@@ -28,17 +29,21 @@ class ProductController extends Controller
     {
         $categories = Category::orderBy('cat_title')->get();
 
-        return view('products.create', compact('categories'));
+        $brands = Brand::where('is_active', true)
+            ->orderBy('brand_name')
+            ->get();
+
+        return view('products.create', compact('categories', 'brands'));
     }
 
     /**
      * Menyimpan produk baru.
      */
-    public function store(Request $request)
+   public function store(Request $request)
     {
         $validated = $request->validate([
             'product_cat' => 'required|exists:categories,cat_id',
-            'brand' => 'required|string|max:255',
+            'brand_id' => 'required|exists:brands,brand_id,is_active,1',
             'name' => 'required|string|max:255',
             'price' => 'required|numeric|min:0|max:999999999',
             'stock' => 'required|integer|min:0',
@@ -51,6 +56,11 @@ class ProductController extends Controller
             'how_to_use' => 'nullable|string',
             'warnings' => 'nullable|string',
         ]);
+
+        $brand = Brand::findOrFail($validated['brand_id']);
+
+        // Sinkronisasi dengan kolom brand lama.
+        $validated['brand'] = $brand->brand_name;
 
         Product::create($validated);
 
@@ -76,9 +86,15 @@ class ProductController extends Controller
     {
         $categories = Category::orderBy('cat_title')->get();
 
+        $brands = Brand::where('is_active', true)
+            ->orWhere('brand_id', $product->brand_id)
+            ->orderBy('brand_name')
+            ->get();
+
         return view('products.edit', compact(
             'product',
-            'categories'
+            'categories',
+            'brands'
         ));
     }
 
@@ -89,7 +105,7 @@ class ProductController extends Controller
     {
         $validated = $request->validate([
             'product_cat' => 'required|exists:categories,cat_id',
-            'brand' => 'required|string|max:255',
+            'brand_id' => 'required|exists:brands,brand_id',
             'name' => 'required|string|max:255',
             'price' => 'required|numeric|min:0|max:999999999',
             'stock' => 'required|integer|min:0',
@@ -102,6 +118,11 @@ class ProductController extends Controller
             'how_to_use' => 'nullable|string',
             'warnings' => 'nullable|string',
         ]);
+
+        $brand = Brand::findOrFail($validated['brand_id']);
+
+        // Sinkronisasi nama brand lama.
+        $validated['brand'] = $brand->brand_name;
 
         $product->update($validated);
 

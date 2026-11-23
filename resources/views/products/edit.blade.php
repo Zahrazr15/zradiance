@@ -37,21 +37,25 @@
         </div>
 
         {{-- BRAND --}}
-        <div style="margin-bottom: 20px;">
-            <label style="display: block; margin-bottom: 7px; font-weight: 600;">
-                Brand
-            </label>
+        <div class="form-group">
+            <label for="brand_id">Brand <span class="text-danger">*</span></label>
 
-            <input
-                type="text"
-                name="brand"
-                value="{{ old('brand', $product->brand) }}"
-                required
-                style="width: 100%; padding: 11px; border: 1px solid var(--c-border); border-radius: 7px;"
-            >
+            <select name="brand_id" id="brand_id" class="form-control" required>
+                <option value="">-- Pilih Brand --</option>
 
-            @error('brand')
-                <small style="color: #dc2626;">{{ $message }}</small>
+                @foreach ($brands as $brand)
+                    <option value="{{ $brand->brand_id }}"
+                        {{ old('brand_id', $product->brand_id) == $brand->brand_id ? 'selected' : '' }}>
+                        {{ $brand->brand_name }}
+                        @if (!$brand->is_active)
+                            (Nonaktif)
+                        @endif
+                    </option>
+                @endforeach
+            </select>
+
+            @error('brand_id')
+                <small class="text-danger">{{ $message }}</small>
             @enderror
         </div>
 

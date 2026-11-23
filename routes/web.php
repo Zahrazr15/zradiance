@@ -20,6 +20,7 @@ use App\Http\Controllers\MidtransWebhookController;
 use App\Http\Controllers\Admin\ShippingSettingController;
 use App\Http\Controllers\AdminNotificationController;
 use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\BrandController;
 use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Support\Facades\Route;
@@ -118,6 +119,9 @@ Route::middleware(['auth', 'role:admin'])
         ])->name('categories.search');
 
         Route::resource('categories', CategoryController::class);
+
+        // Brand
+        Route::resource('brands', BrandController::class);
 
         // Pesanan
         Route::resource('orders', OrderController::class)

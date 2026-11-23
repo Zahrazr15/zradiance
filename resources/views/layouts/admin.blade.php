@@ -49,6 +49,12 @@
             </li>
 
             <li>
+                <a href="{{ route('admin.brands.index') }}"
+                class="{{ request()->routeIs('admin.brands.*') ? 'active' : '' }}">
+                    🏷️ Brand
+                </a>
+            </li>
+            <li>
                 <a href="{{ route('admin.orders.index') }}"
                    title="Pesanan"
                    class="{{ request()->routeIs('admin.orders.*') ? 'active' : '' }}">
