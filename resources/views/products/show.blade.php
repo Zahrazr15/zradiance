@@ -1,3 +1,4 @@
+
 @extends('layouts.admin')
 
 @section('title', 'Detail Produk - Admin')
@@ -16,7 +17,6 @@
 
 </div>
 
-
 <div class="admin-card">
 
     <div style="
@@ -26,7 +26,7 @@
         align-items: start;
     ">
 
-        {{-- GAMBAR --}}
+        {{-- GAMBAR PRODUK --}}
         <div>
 
             @if($product->image)
@@ -63,7 +63,7 @@
         </div>
 
 
-        {{-- INFORMASI --}}
+        {{-- INFORMASI PRODUK --}}
         <div>
 
             <h2 style="
@@ -75,24 +75,52 @@
             </h2>
 
 
+            {{-- BRAND --}}
             <div style="margin-bottom: 18px;">
 
                 <span style="
                     display: block;
                     color: var(--c-ink-soft);
                     font-size: 13px;
-                    margin-bottom: 5px;
+                    margin-bottom: 8px;
                 ">
                     Brand
                 </span>
 
-                <strong>
-                    {{ $product->brand }}
-                </strong>
+                <div style="
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                ">
+
+                    @if($product->brandRelation && $product->brandRelation->brand_logo)
+
+                        <img
+                            src="{{ asset('storage/' . $product->brandRelation->brand_logo) }}"
+                            alt="{{ $product->brandRelation->brand_name }}"
+                            style="
+                                width: 45px;
+                                height: 45px;
+                                object-fit: contain;
+                                background: white;
+                                border: 1px solid var(--c-border);
+                                border-radius: 8px;
+                                padding: 5px;
+                            "
+                        >
+
+                    @endif
+
+                    <strong>
+                        {{ $product->brandRelation->brand_name ?? $product->brand ?? '-' }}
+                    </strong>
+
+                </div>
 
             </div>
 
 
+            {{-- KATEGORI --}}
             <div style="margin-bottom: 18px;">
 
                 <span style="
@@ -111,6 +139,7 @@
             </div>
 
 
+            {{-- HARGA --}}
             <div style="margin-bottom: 18px;">
 
                 <span style="
@@ -132,6 +161,7 @@
             </div>
 
 
+            {{-- STOK --}}
             <div style="margin-bottom: 18px;">
 
                 <span style="
@@ -150,6 +180,7 @@
             </div>
 
 
+            {{-- DESKRIPSI --}}
             <div style="margin-bottom: 25px;">
 
                 <span style="

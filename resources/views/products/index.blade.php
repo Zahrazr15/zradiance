@@ -1,3 +1,4 @@
+
 @extends('layouts.admin')
 
 @section('title', 'Produk - Admin')
@@ -57,6 +58,10 @@
                         </th>
 
                         <th style="padding: 14px;">
+                            Brand
+                        </th>
+
+                        <th style="padding: 14px;">
                             Kategori
                         </th>
 
@@ -75,7 +80,6 @@
                     </tr>
 
                 </thead>
-
 
                 <tbody>
 
@@ -131,16 +135,7 @@
 
                                     </div>
 
-
                                     <div>
-
-                                        <div style="
-                                            font-size: 12px;
-                                            color: var(--c-ink-soft);
-                                            margin-bottom: 4px;
-                                        ">
-                                            {{ $product->brand }}
-                                        </div>
 
                                         <strong>
                                             {{ $product->name }}
@@ -152,6 +147,40 @@
 
                             </td>
 
+                            {{-- BRAND --}}
+                            <td style="padding: 14px;">
+
+                                <div style="
+                                    display: flex;
+                                    align-items: center;
+                                    gap: 8px;
+                                ">
+
+                                    @if($product->brandRelation && $product->brandRelation->brand_logo)
+
+                                        <img
+                                            src="{{ asset('storage/' . $product->brandRelation->brand_logo) }}"
+                                            alt="{{ $product->brandRelation->brand_name }}"
+                                            style="
+                                                width: 32px;
+                                                height: 32px;
+                                                object-fit: contain;
+                                                border-radius: 6px;
+                                                background: white;
+                                                padding: 3px;
+                                                flex-shrink: 0;
+                                            "
+                                        >
+
+                                    @endif
+
+                                    <span>
+                                        {{ $product->brandRelation->brand_name ?? $product->brand ?? '-' }}
+                                    </span>
+
+                                </div>
+
+                            </td>
 
                             {{-- KATEGORI --}}
                             <td style="padding: 14px;">
@@ -168,7 +197,6 @@
 
                             </td>
 
-
                             {{-- HARGA --}}
                             <td style="
                                 padding: 14px;
@@ -181,14 +209,12 @@
 
                             </td>
 
-
                             {{-- STOK --}}
                             <td style="padding: 14px;">
 
                                 {{ $product->stock }}
 
                             </td>
-
 
                             {{-- AKSI --}}
                             <td style="padding: 14px;">
@@ -210,7 +236,6 @@
                                         Detail
                                     </a>
 
-
                                     <a
                                         href="{{ route('admin.products.edit', $product) }}"
                                         class="btn"
@@ -221,7 +246,6 @@
                                     >
                                         Edit
                                     </a>
-
 
                                     <form
                                         action="{{ route('admin.products.destroy', $product) }}"

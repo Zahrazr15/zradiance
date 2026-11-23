@@ -21,8 +21,11 @@ use App\Http\Controllers\Admin\ShippingSettingController;
 use App\Http\Controllers\AdminNotificationController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\BrandController;
+
 use App\Models\Category;
 use App\Models\Product;
+use App\Models\Brand;
+
 use Illuminate\Support\Facades\Route;
 
 
@@ -31,28 +34,63 @@ use Illuminate\Support\Facades\Route;
 // =====================================================
 
 Route::get('/', function () {
+
     $categories = Category::query()
         ->select(['cat_id', 'cat_title'])
         ->orderBy('cat_title')
         ->limit(6)
         ->get();
 
+    // Brand aktif untuk homepage
+    $brands = Brand::query()
+        ->select([
+            'brand_id',
+            'brand_name',
+            'brand_slug',
+            'brand_logo',
+            'description',
+        ])
+        ->where('is_active', true)
+        ->orderBy('brand_name')
+        ->get();
+
+    // Produk terbaru
     $products = Product::query()
-        ->select(['id', 'product_cat', 'brand', 'name', 'price', 'stock', 'image', 'created_at'])
-        ->with('category:cat_id,cat_title')
+        ->select([
+            'id',
+            'product_cat',
+            'brand',
+            'brand_id',
+            'name',
+            'price',
+            'stock',
+            'image',
+            'created_at',
+        ])
+        ->with([
+            'category:cat_id,cat_title',
+            'brandRelation:brand_id,brand_name,brand_logo',
+        ])
         ->where('stock', '>', 0)
         ->latest()
         ->limit(8)
         ->get();
 
-    return view('welcome', compact('categories', 'products'));
+    return view('welcome', compact(
+        'categories',
+        'brands',
+        'products'
+    ));
+
 })->name('home');
+
 
 // REGISTER
 Route::get('/register', [RegisterController::class, 'showRegister'])
     ->name('register');
 
 Route::post('/register', [RegisterController::class, 'register']);
+
 
 // LOGIN
 Route::get('/login', [LoginController::class, 'showLogin'])
@@ -61,10 +99,12 @@ Route::get('/login', [LoginController::class, 'showLogin'])
 Route::post('/login', [LoginController::class, 'login'])
     ->middleware('throttle:5,1');
 
+
 // LOGOUT
 Route::post('/logout', [LoginController::class, 'logout'])
     ->middleware('auth')
     ->name('logout');
+
 
 // LUPA PASSWORD
 Route::get('/lupa-password', [PasswordResetRequestController::class, 'create'])
@@ -73,6 +113,7 @@ Route::get('/lupa-password', [PasswordResetRequestController::class, 'create'])
 Route::post('/lupa-password', [PasswordResetRequestController::class, 'store'])
     ->middleware('throttle:5,1')
     ->name('password.request.store');
+
 
 // WEBHOOK MIDTRANS
 Route::post('/midtrans/webhook', [MidtransWebhookController::class, 'handle'])
@@ -147,15 +188,22 @@ Route::middleware(['auth', 'role:admin'])
             'reject'
         ])->name('password-resets.reject');
 
-        // Letakkan di dalam grup auth dan role:admin.
-        Route::get('/notifications', [AdminNotificationController::class, 'index'])
-            ->name('notifications.index');
+        // Notifikasi Admin
+        Route::get('/notifications', [
+            AdminNotificationController::class,
+            'index'
+        ])->name('notifications.index');
 
-        Route::patch('/notifications/read-all', [AdminNotificationController::class, 'readAll'])
-            ->name('notifications.read-all');
+        Route::patch('/notifications/read-all', [
+            AdminNotificationController::class,
+            'readAll'
+        ])->name('notifications.read-all');
 
-        Route::patch('/notifications/{notification}/read', [AdminNotificationController::class, 'read'])
-            ->name('notifications.read');
+        Route::patch('/notifications/{notification}/read', [
+            AdminNotificationController::class,
+            'read'
+        ])->name('notifications.read');
+
     });
 
 
@@ -166,7 +214,9 @@ Route::middleware(['auth', 'role:admin'])
 Route::middleware(['auth', 'role:user'])
     ->group(function () {
 
+        // Dashboard
         Route::get('/dashboard', function () {
+
             $user = request()->user();
 
             $categories = Category::query()
@@ -175,7 +225,16 @@ Route::middleware(['auth', 'role:user'])
                 ->get();
 
             $products = Product::query()
-                ->select(['id', 'product_cat', 'brand', 'name', 'price', 'stock', 'image', 'created_at'])
+                ->select([
+                    'id',
+                    'product_cat',
+                    'brand',
+                    'name',
+                    'price',
+                    'stock',
+                    'image',
+                    'created_at'
+                ])
                 ->with('category:cat_id,cat_title')
                 ->withAvg('reviews', 'rating')
                 ->withCount('reviews')
@@ -195,6 +254,7 @@ Route::middleware(['auth', 'role:user'])
                 ->get();
 
             $orderCount = $user->orders()->count();
+
             $activeOrderCount = $user->orders()
                 ->whereIn('status', ['pending', 'processing', 'shipped'])
                 ->count();
@@ -206,8 +266,11 @@ Route::middleware(['auth', 'role:user'])
                 'orderCount',
                 'activeOrderCount'
             ));
+
         })->name('dashboard');
 
+
+        // Produk
         Route::get('/products', [ProductController::class, 'userIndex'])
             ->name('products.index');
 
@@ -284,28 +347,31 @@ Route::middleware(['auth', 'role:user'])
         // API WILAYAH
         // =================================================
 
-        Route::prefix('/api/wilayah')->name('wilayah.')->group(function () {
+        Route::prefix('/api/wilayah')
+            ->name('wilayah.')
+            ->group(function () {
 
-            Route::get('/provinces', [
-                AddressController::class,
-                'provinces'
-            ])->name('provinces');
+                Route::get('/provinces', [
+                    AddressController::class,
+                    'provinces'
+                ])->name('provinces');
 
-            Route::get('/regencies/{code}', [
-                AddressController::class,
-                'regencies'
-            ])->name('regencies');
+                Route::get('/regencies/{code}', [
+                    AddressController::class,
+                    'regencies'
+                ])->name('regencies');
 
-            Route::get('/districts/{code}', [
-                AddressController::class,
-                'districts'
-            ])->name('districts');
+                Route::get('/districts/{code}', [
+                    AddressController::class,
+                    'districts'
+                ])->name('districts');
 
-            Route::get('/villages/{code}', [
-                AddressController::class,
-                'villages'
-            ])->name('villages');
-        });
+                Route::get('/villages/{code}', [
+                    AddressController::class,
+                    'villages'
+                ])->name('villages');
+
+            });
 
 
         // =================================================
@@ -429,4 +495,5 @@ Route::middleware(['auth', 'role:user'])
             ReviewController::class,
             'store'
         ])->name('products.reviews.store');
+
     });

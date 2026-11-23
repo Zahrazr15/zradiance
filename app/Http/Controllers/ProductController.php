@@ -10,9 +10,7 @@ use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
-    /**
-     * Menampilkan daftar produk untuk admin.
-     */
+    /** Daftar produk untuk admin. */
     public function index()
     {
         $products = Product::with(['category', 'brandRelation'])
@@ -22,24 +20,17 @@ class ProductController extends Controller
         return view('products.index', compact('products'));
     }
 
-    /**
-     * Menampilkan form tambah produk.
-     */
+    /** Form tambah produk. */
     public function create()
     {
         $categories = Category::orderBy('cat_title')->get();
-
-        $brands = Brand::where('is_active', true)
-            ->orderBy('brand_name')
-            ->get();
+        $brands = Brand::where('is_active', true)->orderBy('brand_name')->get();
 
         return view('products.create', compact('categories', 'brands'));
     }
 
-    /**
-     * Menyimpan produk baru.
-     */
-   public function store(Request $request)
+    /** Simpan produk baru. */
+    public function store(Request $request)
     {
         $validated = $request->validate([
             'product_cat' => 'required|exists:categories,cat_id',
@@ -58,49 +49,34 @@ class ProductController extends Controller
         ]);
 
         $brand = Brand::findOrFail($validated['brand_id']);
-
-        // Sinkronisasi dengan kolom brand lama.
-        $validated['brand'] = $brand->brand_name;
+        $validated['brand'] = $brand->brand_name; // Sinkronisasi kolom brand lama.
 
         Product::create($validated);
 
-        return redirect()
-            ->route('admin.products.index')
-            ->with('success', 'Produk berhasil ditambahkan.');
+        return redirect()->route('admin.products.index')->with('success', 'Produk berhasil ditambahkan.');
     }
 
-    /**
-     * Menampilkan detail produk untuk admin.
-     */
+    /** Detail produk admin. */
     public function show(Product $product)
     {
-        $product->load('category');
+        $product->load(['category', 'brandRelation']);
 
         return view('products.show', compact('product'));
     }
 
-    /**
-     * Menampilkan form edit produk.
-     */
+    /** Form edit produk. */
     public function edit(Product $product)
     {
         $categories = Category::orderBy('cat_title')->get();
-
         $brands = Brand::where('is_active', true)
             ->orWhere('brand_id', $product->brand_id)
             ->orderBy('brand_name')
             ->get();
 
-        return view('products.edit', compact(
-            'product',
-            'categories',
-            'brands'
-        ));
+        return view('products.edit', compact('product', 'categories', 'brands'));
     }
 
-    /**
-     * Mengupdate produk.
-     */
+    /** Update produk. */
     public function update(Request $request, Product $product)
     {
         $validated = $request->validate([
@@ -120,20 +96,13 @@ class ProductController extends Controller
         ]);
 
         $brand = Brand::findOrFail($validated['brand_id']);
-
-        // Sinkronisasi nama brand lama.
-        $validated['brand'] = $brand->brand_name;
-
+        $validated['brand'] = $brand->brand_name; // Sinkronisasi nama brand legacy.
         $product->update($validated);
 
-        return redirect()
-            ->route('admin.products.index')
-            ->with('success', 'Produk berhasil diperbarui.');
+        return redirect()->route('admin.products.index')->with('success', 'Produk berhasil diperbarui.');
     }
 
-    /**
-     * Menghapus produk.
-     */
+    /** Hapus produk, kecuali pernah tercatat dalam pesanan. */
     public function destroy(Product $product)
     {
         if ($product->orderItems()->exists()) {
@@ -144,107 +113,64 @@ class ProductController extends Controller
 
         $product->delete();
 
-        return redirect()
-            ->route('admin.products.index')
-            ->with('success', 'Produk berhasil dihapus.');
+        return redirect()->route('admin.products.index')->with('success', 'Produk berhasil dihapus.');
     }
 
-    /**
-     * Katalog semua produk untuk pelanggan.
-     */
+    /** Katalog produk untuk pelanggan dengan filter brand, kategori, harga, pencarian, dan sorting. */
     public function userIndex(Request $request)
     {
         $request->validate([
             'q' => 'nullable|string|max:255',
             'category' => 'nullable|exists:categories,cat_id',
+            'brand' => 'nullable|exists:brands,brand_id,is_active,1',
             'min_price' => 'nullable|numeric|min:0',
             'max_price' => 'nullable|numeric|min:0|gte:min_price',
             'sort' => 'nullable|in:latest,price_low,price_high',
         ]);
 
-        $products = Product::with('category')
+        $products = Product::with(['category', 'brandRelation'])
             ->withAvg('reviews', 'rating')
             ->withCount('reviews')
-
-            // Pencarian nama produk dan brand.
             ->when($request->filled('q'), function ($query) use ($request) {
                 $keyword = trim($request->q);
-
                 $query->where(function ($q) use ($keyword) {
                     $q->where('name', 'like', "%{$keyword}%")
-                        ->orWhere('brand', 'like', "%{$keyword}%");
+                        ->orWhere('brand', 'like', "%{$keyword}%")
+                        ->orWhereHas('brandRelation', function ($brandQuery) use ($keyword) {
+                            $brandQuery->where('brand_name', 'like', "%{$keyword}%");
+                        });
                 });
             })
-
-            // Filter kategori.
-            ->when($request->filled('category'), function ($query) use ($request) {
-                $query->where('product_cat', $request->category);
-            })
-
-            // Filter harga minimum.
-            ->when($request->filled('min_price'), function ($query) use ($request) {
-                $query->where('price', '>=', $request->min_price);
-            })
-
-            // Filter harga maksimum.
-            ->when($request->filled('max_price'), function ($query) use ($request) {
-                $query->where('price', '<=', $request->max_price);
-            })
-
-            // Pengurutan produk.
-            ->when($request->sort === 'price_low', function ($query) {
-                $query->orderBy('price', 'asc');
-            })
-            ->when($request->sort === 'price_high', function ($query) {
-                $query->orderBy('price', 'desc');
-            })
-            ->when(
-                !$request->filled('sort') || $request->sort === 'latest',
-                function ($query) {
-                    $query->latest();
-                }
-            )
-
+            ->when($request->filled('category'), fn ($query) => $query->where('product_cat', $request->category))
+            ->when($request->filled('brand'), fn ($query) => $query->where('brand_id', $request->brand))
+            ->when($request->filled('min_price'), fn ($query) => $query->where('price', '>=', $request->min_price))
+            ->when($request->filled('max_price'), fn ($query) => $query->where('price', '<=', $request->max_price))
+            ->when($request->sort === 'price_low', fn ($query) => $query->orderBy('price', 'asc'))
+            ->when($request->sort === 'price_high', fn ($query) => $query->orderBy('price', 'desc'))
+            ->when(!$request->filled('sort') || $request->sort === 'latest', fn ($query) => $query->latest())
             ->paginate(12)
             ->withQueryString();
 
         $categories = Category::orderBy('cat_title')->get();
+        $brands = Brand::where('is_active', true)->orderBy('brand_name')->get();
 
-        return view('user.products.index', compact(
-            'products',
-            'categories'
-        ));
+        return view('user.products.index', compact('products', 'categories', 'brands'));
     }
 
-    /**
-     * Detail produk untuk pelanggan.
-     */
+    /** Detail produk pelanggan. */
     public function userShow(Product $product)
     {
-        $product->load([
-            'category',
-            'reviews.user',
-        ]);
+        $product->load(['category', 'brandRelation', 'reviews.user']);
 
-        // Memeriksa apakah pelanggan pernah membeli produk,
-        // sudah membayar, dan pesanan sudah selesai.
         $canReview = Order::query()
             ->where('user_id', auth()->id())
             ->where('status', 'completed')
             ->where('payment_status', 'paid')
-            ->whereHas('items', function ($query) use ($product) {
-                $query->where('product_id', $product->id);
-            })
+            ->whereHas('items', fn ($query) => $query->where('product_id', $product->id))
             ->exists();
 
-        // Mengambil ulasan milik pelanggan yang sedang login.
-        $myReview = $product->reviews
-            ->firstWhere('user_id', auth()->id());
+        $myReview = $product->reviews->firstWhere('user_id', auth()->id());
 
-        return view('user.products.show', compact(
-            'product',
-            'canReview',
-            'myReview'
-        ));
+        return view('user.products.show', compact('product', 'canReview', 'myReview'));
     }
 }

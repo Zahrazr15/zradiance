@@ -1,8 +1,8 @@
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
     @include('layouts.partials.head')
+    @stack('styles')
     <title>@yield('title', 'ZRADIANCE')</title>
 </head>
 <body>
@@ -17,7 +17,6 @@
     <x-chatbot />
     <x-flash-popup />
 
-    {{-- Memuat script dari halaman yang menggunakan @push('scripts') --}}
     @stack('scripts')
 </body>
 </html>
