@@ -9,20 +9,20 @@ class CategorySeeder extends Seeder
 {
     public function run(): void
     {
-        Category::create([
-            'cat_title' => 'Makeup',
-        ]);
+        $categories = [
+            'Skincare',
+            'Makeup',
+            'Hair Care',
+            'Body Care',
+            'Fragrance',
+            'Sunscreen',
+        ];
 
-        Category::create([
-            'cat_title' => 'Skincare',
-        ]);
-
-        Category::create([
-            'cat_title' => 'Body Care',
-        ]);
-
-        Category::create([
-            'cat_title' => 'Hair Care',
-        ]);
+        foreach ($categories as $category) {
+            Category::updateOrCreate(
+                ['cat_title' => $category],
+                ['cat_title' => $category]
+            );
+        }
     }
 }

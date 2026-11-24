@@ -4,52 +4,91 @@
     <nav class="navbar" id="mainNavbar">
         <div class="navbar-container">
 
+            {{-- LOGO --}}
             <a href="{{ $mode === 'landing' ? route('home') : route('dashboard') }}" class="logo">
                 <x-logo background="light" />
             </a>
 
-            <button class="nav-toggle" type="button" aria-label="Buka menu"
-                    onclick="this.closest('.navbar').classList.toggle('open')">☰</button>
+            {{-- TOGGLE MOBILE --}}
+            <button class="nav-toggle"
+                    type="button"
+                    aria-label="Buka menu"
+                    onclick="this.closest('.navbar').classList.toggle('open')">
+                ☰
+            </button>
 
             <div class="nav-links">
+
                 @if($mode === 'landing')
-                    {{-- LANDING --}}
+
                     <a href="#home">Home</a>
                     <a href="#info">Informasi</a>
 
                     @auth
-                        <a href="{{ auth()->user()->role === 'admin' ? route('admin.dashboard') : route('dashboard') }}" class="nav-register">Dashboard</a>
+                        <a href="{{ auth()->user()->role === 'admin' ? route('admin.dashboard') : route('dashboard') }}"
+                           class="nav-register">
+                            Dashboard
+                        </a>
                     @else
                         <a href="{{ route('login') }}" class="nav-login">Login</a>
                         <a href="{{ route('register') }}" class="nav-register">Registrasi</a>
                     @endauth
+
                 @else
-                    {{-- USER --}}
-                    <a href="{{ route('dashboard') }}" class="{{ request()->routeIs('dashboard') ? 'active' : '' }}">Home</a>
-                    <a href="{{ route('products.index') }}" class="{{ request()->routeIs('products.*') ? 'active' : '' }}">Products</a>
-                    <a href="{{ route('cart.index') }}" class="nav-cart {{ request()->routeIs('cart.*') ? 'active' : '' }}" id="navCartButton" aria-label="Keranjang">
-                        🛒
+
+                    {{-- HOME --}}
+                    <a href="{{ route('dashboard') }}"
+                       class="{{ request()->routeIs('dashboard') ? 'active' : '' }}">
+                        Home
+                    </a>
+
+                    {{-- PRODUCTS --}}
+                    <a href="{{ route('products.index') }}"
+                       class="{{ request()->routeIs('products.*') ? 'active' : '' }}">
+                        Products
+                    </a>
+
+                    {{-- CART --}}
+                    <a href="{{ route('cart.index') }}"
+                       class="nav-cart {{ request()->routeIs('cart.*') ? 'active' : '' }}"
+                       id="navCartButton"
+                       aria-label="Keranjang"
+                       title="Keranjang">
+
+                        <i class="fa-solid fa-cart-shopping"></i>
+
                         @if(($cartCount ?? 0) > 0)
-                        <span class="cart-badge" id="navCartBadge">{{ $cartCount > 99 ? '99+' : $cartCount }}</span>
+                            <span class="cart-badge" id="navCartBadge">
+                                {{ $cartCount > 99 ? '99+' : $cartCount }}
+                            </span>
                         @endif
                     </a>
-                    <a href="{{ route('profile') }}" class="{{ request()->routeIs('profile', 'profile.*', 'orders.*') ? 'active' : '' }}">Profil</a>
-                @endif
-            </div>
 
+                    {{-- PROFILE --}}
+                    <a href="{{ route('profile') }}"
+                       class="nav-profile {{ request()->routeIs('profile', 'profile.*', 'orders.*') ? 'active' : '' }}"
+                       aria-label="Profil"
+                       title="Profil">
+                        <i class="fa-solid fa-user"></i>
+                    </a>
+
+                @endif
+
+            </div>
         </div>
     </nav>
 </div>
 
 <script>
 (function() {
-    var nb = document.getElementById('mainNavbar');
-    if (nb) {
+    var navbar = document.getElementById('mainNavbar');
+
+    if (navbar) {
         window.addEventListener('scroll', function() {
             if (window.scrollY > 20) {
-                nb.classList.add('scrolled');
+                navbar.classList.add('scrolled');
             } else {
-                nb.classList.remove('scrolled');
+                navbar.classList.remove('scrolled');
             }
         }, { passive: true });
     }
