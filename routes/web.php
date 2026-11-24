@@ -229,13 +229,14 @@ Route::middleware(['auth', 'role:user'])
                     'id',
                     'product_cat',
                     'brand',
+                    'brand_id',
                     'name',
                     'price',
                     'stock',
                     'image',
                     'created_at'
                 ])
-                ->with('category:cat_id,cat_title')
+                ->with(['category:cat_id,cat_title', 'brandRelation:brand_id,brand_name'])
                 ->withAvg('reviews', 'rating')
                 ->withCount('reviews')
                 ->where('stock', '>', 0)

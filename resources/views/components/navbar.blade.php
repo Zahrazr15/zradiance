@@ -6,7 +6,7 @@
 
             {{-- LOGO --}}
             <a href="{{ $mode === 'landing' ? route('home') : route('dashboard') }}" class="logo">
-                <x-logo background="light" />
+                <x-logo background="light" :tight="true" />
             </a>
 
             {{-- TOGGLE MOBILE --}}

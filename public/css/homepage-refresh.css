@@ -58,8 +58,8 @@ html {
 }
 
 .navbar-floating-wrapper .logo .brand-logo {
-    height: 45px !important;
-    max-width: 200px !important;
+    height: 36px !important;
+    max-width: 260px !important;
     width: auto !important;
     object-fit: contain;
 }
@@ -176,7 +176,7 @@ html {
     display: block;
 }
 
-.home-hero-content > * {
+.home-hero-content>* {
     max-width: 620px;
 }
 
@@ -206,7 +206,7 @@ html {
 }
 
 /* DESCRIPTION */
-.home-hero-content > p {
+.home-hero-content>p {
     color: #716269;
     font-size: 16px;
     line-height: 1.8;
@@ -300,7 +300,7 @@ html {
         margin-bottom: 18px;
     }
 
-    .home-hero-content > p {
+    .home-hero-content>p {
         font-size: 14px;
         line-height: 1.8;
         margin-bottom: 22px;
@@ -734,8 +734,8 @@ html {
     }
 
     .navbar-floating-wrapper .logo .brand-logo {
-        height: 38px !important;
-        max-width: 145px !important;
+        height: 28px !important;
+        max-width: 190px !important;
     }
 
     .navbar-floating-wrapper .nav-toggle {

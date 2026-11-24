@@ -26,21 +26,6 @@
     .section-header-row h2 { font-size: 22px; color: var(--c-ink-heading); margin-bottom: 4px; }
     .section-header-row p { color: var(--c-ink-soft); font-size: 14px; margin: 0; }
 
-    .category-pills-grid {
-        display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px;
-    }
-    .category-pill-card {
-        background: var(--c-surface); border: 1px solid var(--c-border-subtle);
-        border-radius: var(--radius-md); padding: 16px 20px; display: flex;
-        align-items: center; gap: 14px; text-decoration: none; color: var(--c-ink);
-        transition: var(--transition); box-shadow: var(--shadow-xs);
-    }
-    .category-pill-card:hover {
-        transform: translateY(-3px); box-shadow: var(--shadow-sm);
-        border-color: var(--c-blush); background: #FFFDF9;
-    }
-    .category-pill-card.active { border-color: var(--c-pink-strong); background: var(--c-pink-subtle); }
-    .category-pill-title { font-weight: 800; font-size: 14.5px; color: var(--c-ink-heading); }
 
     /* BRAND PILIHAN */
     .brand-section {
@@ -49,33 +34,6 @@
         background: linear-gradient(135deg, #fff 0%, #FFF8F8 100%);
         box-shadow: var(--shadow-xs);
     }
-    .brand-grid {
-        display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px;
-    }
-    .brand-card {
-        min-width: 0; min-height: 175px; display: flex; flex-direction: column;
-        align-items: center; justify-content: center; text-align: center;
-        padding: 18px 14px; border-radius: var(--radius-md);
-        border: 1px solid var(--c-border-subtle); background: var(--c-surface);
-        text-decoration: none; color: var(--c-ink-heading); box-shadow: var(--shadow-xs);
-        transition: var(--transition);
-    }
-    .brand-card:hover {
-        transform: translateY(-4px); border-color: var(--c-blush);
-        box-shadow: var(--shadow-sm);
-    }
-    .brand-logo-wrap {
-        width: 84px; height: 84px; margin-bottom: 12px; border-radius: 18px;
-        display: flex; align-items: center; justify-content: center; overflow: hidden;
-        background: linear-gradient(135deg, #FFF6EC, #FFF0F4);
-        border: 1px solid rgba(251,195,193,.35);
-    }
-    .brand-logo { width: 100%; height: 100%; padding: 9px; object-fit: contain; }
-    .brand-fallback { color: var(--c-pink-strong); font-size: 28px; font-weight: 900; }
-    .brand-name { font-size: 15px; font-weight: 800; margin-bottom: 5px; }
-    .brand-caption { color: var(--c-ink-soft); font-size: 12px; }
-
-    .featured-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 22px; }
 
     .filter-panel {
         background: var(--glass-bg-elevated); backdrop-filter: blur(var(--glass-blur));
@@ -108,61 +66,6 @@
         transform: translateY(-1px);
     }
 
-    .product-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px; }
-    .product-card {
-        background: var(--c-surface); border: 1px solid var(--c-border-subtle);
-        border-radius: var(--radius-md); overflow: hidden; transition: var(--transition);
-        display: flex; flex-direction: column; box-shadow: var(--shadow-xs); position: relative;
-    }
-    .product-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-md); border-color: var(--c-blush); }
-    .product-image-link {
-        display: block; background: linear-gradient(135deg, #FFF6EC, var(--c-cream));
-        position: relative; overflow: hidden; padding-top: 90%;
-    }
-    .product-image {
-        position: absolute; inset: 0; width: 100%; height: 100%;
-        object-fit: cover; transition: transform .4s cubic-bezier(.16,1,.3,1);
-    }
-    .product-card:hover .product-image { transform: scale(1.05); }
-    .image-placeholder {
-        position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
-        font-size: 48px; background: linear-gradient(135deg, #FFF9F2, #FFEABB);
-    }
-    .product-info { padding: 18px; display: flex; flex-direction: column; flex: 1; }
-    .product-brand {
-        color: var(--c-ink-light); font-size: 11px; font-weight: 800;
-        text-transform: uppercase; letter-spacing: .6px; margin-bottom: 4px;
-    }
-    .product-brand a { color: var(--c-pink-strong); text-decoration: none; }
-    .product-brand a:hover { text-decoration: underline; }
-    .product-meta a { color: var(--c-ink-soft); text-decoration: none; }
-    .product-meta a:hover { color: var(--c-pink-strong); text-decoration: underline; }
-    .product-name { min-height: 44px; font-size: 15.5px; font-weight: 700; line-height: 1.4; margin-bottom: 8px; }
-    .product-name a { color: var(--c-ink-heading); text-decoration: none; }
-    .product-name a:hover { color: var(--c-pink-strong); }
-    .product-price { font-size: 17.5px; font-weight: 800; color: var(--c-ink-heading); margin-bottom: 6px; }
-    .product-rating {
-        font-size: 13px; color: #E6A213; margin-bottom: 6px;
-        display: flex; align-items: center; gap: 4px;
-    }
-    .product-rating span { color: var(--c-ink-soft); font-size: 12px; }
-    .product-meta { font-size: 12px; color: var(--c-ink-soft); margin-bottom: 14px; }
-    .product-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: auto; }
-    .product-actions button, .product-actions a {
-        display: inline-flex; align-items: center; justify-content: center; width: 100%;
-        text-align: center; padding: 9px 12px; border: 0; border-radius: var(--radius-pill);
-        text-decoration: none; cursor: pointer; font: 700 12.5px var(--font); transition: var(--transition);
-    }
-    .detail-button { background: #FAF2E8; color: var(--c-ink); border: 1px solid rgba(243,217,214,.6) !important; }
-    .detail-button:hover { background: var(--c-cream); color: var(--c-ink-heading); }
-    .cart-button { background: linear-gradient(135deg, var(--c-pink), var(--c-pink-strong)); color: #fff; box-shadow: 0 2px 8px rgba(233,129,158,.3); }
-    .cart-button:hover { background: linear-gradient(135deg, var(--c-pink-strong), #D46684); transform: translateY(-1px); }
-    .btn-ask-bot {
-        grid-column: span 2; background: rgba(250,172,191,.15); color: var(--c-pink-strong);
-        border: 1px dashed var(--c-pink-strong) !important; margin-top: 4px;
-        padding: 6px 10px !important; font-size: 11.5px !important;
-    }
-    .btn-ask-bot:hover { background: var(--c-pink); color: var(--c-ink); }
     .empty-products {
         padding: 60px 20px; text-align: center; background: var(--c-surface);
         border-radius: var(--radius-lg); color: var(--c-ink-soft); border: 1px dashed var(--c-border);
@@ -205,29 +108,14 @@
 
     @media (max-width: 1040px) {
         .filter-form { grid-template-columns: repeat(3, 1fr); }
-        .product-grid, .featured-grid { grid-template-columns: repeat(3, 1fr); }
-        .brand-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
     }
     @media (max-width: 768px) {
         .home-wrapper { padding: 0 16px 60px; }
         .filter-form { grid-template-columns: 1fr 1fr; }
-        .product-grid, .featured-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
-        .product-info { padding: 14px; }
-        .product-name { font-size: 14px; min-height: 40px; }
-        .product-price { font-size: 15.5px; }
-        .product-actions { grid-template-columns: 1fr; }
-        .btn-ask-bot { grid-column: span 1; }
-        .brand-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
         .brand-section { padding: 15px; }
-        .brand-card { min-height: 155px; padding: 15px 10px; }
-        .brand-logo-wrap { width: 72px; height: 72px; }
     }
     @media (max-width: 480px) {
         .filter-form { grid-template-columns: 1fr; }
-        .product-grid, .featured-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
-        .product-info { padding: 12px; }
-        .product-name { font-size: 13px; min-height: 38px; }
-        .product-price { font-size: 14px; }
     }
     @media (prefers-reduced-motion: reduce) { .product-image { transition: none !important; } }
 </style>
@@ -251,24 +139,38 @@
             <a href="{{ route('products.index') }}#catalog-section" class="btn btn-outline btn-sm">Semua Produk →</a>
         </div>
 
-        <div class="brand-grid">
-            @foreach($brands as $brand)
-                <a href="{{ route('products.index', ['brand' => $brand->brand_id]) }}#catalog-section"
-                   class="brand-card"
-                   aria-label="Lihat produk {{ $brand->brand_name }}">
-                    <div class="brand-logo-wrap">
-                        @if($brand->brand_logo)
-                            <img src="{{ asset('storage/' . $brand->brand_logo) }}"
-                                 alt="Logo {{ $brand->brand_name }}"
-                                 class="brand-logo" loading="lazy">
-                        @else
-                            <span class="brand-fallback">{{ strtoupper(mb_substr($brand->brand_name, 0, 1)) }}</span>
-                        @endif
-                    </div>
-                    <div class="brand-name">{{ $brand->brand_name }}</div>
-                    <span class="brand-caption">Lihat produk →</span>
-                </a>
-            @endforeach
+        <div class="brand-marquee">
+            <div class="brand-marquee-track">
+                <div class="brand-marquee-group">
+                    @foreach($brands as $brand)
+                            <a href="{{ route('products.index', ['brand' => $brand->brand_id]) }}#catalog-section"
+                               class="brand-marquee-item"
+                               title="{{ $brand->brand_name }}">
+                                @if($brand->brand_logo)
+                                    <img src="{{ asset('storage/' . $brand->brand_logo) }}"
+                                         alt="Logo {{ $brand->brand_name }}" loading="lazy">
+                                @else
+                                    <span class="brand-marquee-name">{{ $brand->brand_name }}</span>
+                                @endif
+                            </a>
+                    @endforeach
+                </div>
+                {{-- Duplikat supaya animasi berjalan tanpa jeda --}}
+                <div class="brand-marquee-group" aria-hidden="true">
+                    @foreach($brands as $brand)
+                            <a href="{{ route('products.index', ['brand' => $brand->brand_id]) }}#catalog-section"
+                               class="brand-marquee-item"
+                               title="{{ $brand->brand_name }}" tabindex="-1">
+                                @if($brand->brand_logo)
+                                    <img src="{{ asset('storage/' . $brand->brand_logo) }}"
+                                         alt="" loading="lazy">
+                                @else
+                                    <span class="brand-marquee-name">{{ $brand->brand_name }}</span>
+                                @endif
+                            </a>
+                    @endforeach
+                </div>
+            </div>
         </div>
     </section>
     @endif
@@ -348,32 +250,14 @@
                             @else
                                 <div class="image-placeholder">✨</div>
                             @endif
+                            <span class="product-view-hint">Quick View</span>
                         </a>
                         <div class="product-info">
-                            <div class="product-brand">
-                                @if($product->brand_id && $product->brandRelation)
-                                    <a href="{{ route('products.index', ['brand' => $product->brand_id]) }}#catalog-section">{{ $product->brandRelation->brand_name }}</a>
-                                @else
-                                    {{ $product->brand ?? 'Brand tidak diketahui' }}
-                                @endif
-                            </div>
-                            <h3 class="product-name"><a href="{{ route('products.show', $product->id) }}" class="quick-view-trigger" data-quick-view-trigger>{{ $product->name }}</a></h3>
-                            <div class="product-price">Rp{{ number_format($product->price, 0, ',', '.') }}</div>
-                            <div class="product-rating">
-                                @if($product->reviews_count > 0)
-                                    ★ {{ number_format($product->reviews_avg_rating, 1) }} <span>({{ $product->reviews_count }} ulasan)</span>
-                                @else
-                                    <span>Belum ada ulasan</span>
-                                @endif
-                            </div>
-                            <div class="product-meta">
-                                @if($product->product_cat && $product->category)
-                                    <a href="{{ route('products.index', ['category' => $product->product_cat]) }}#catalog-section">{{ $product->category->cat_title }}</a>
-                                @else
-                                    {{ $product->category->cat_title ?? 'Kategori Umum' }}
-                                @endif
-                                · Stok: {{ $product->stock }}
-                            </div>
+                            <span class="product-brand">{{ $product->brandRelation->brand_name ?? $product->brand }}</span>
+                            <h3 class="product-name">
+                                <a href="{{ route('products.show', $product->id) }}" class="quick-view-trigger" data-quick-view-trigger>{{ $product->name }}</a>
+                            </h3>
+                            <p class="product-price">Rp {{ number_format($product->price, 0, ',', '.') }}</p>
                             <div class="product-actions">
                                 <a href="{{ route('products.show', $product->id) }}" class="detail-button quick-view-trigger" data-quick-view-trigger>Quick View</a>
                                 @if($product->stock > 0)
@@ -382,7 +266,7 @@
                                         <button type="submit" class="cart-button">+ Keranjang</button>
                                     </form>
                                 @else
-                                    <button type="button" disabled style="background:#ddd;color:#888;">Habis</button>
+                                    <button type="button" disabled>Habis</button>
                                 @endif
                                 <button type="button" class="btn-ask-bot"
                                     data-chat-ask="{{ $product->brandRelation->brand_name ?? $product->brand }} {{ $product->name }}"
@@ -400,105 +284,6 @@
             </div>
         @endif
     </div>
-
-    {{-- KATEGORI PILIHAN --}}
-    <div class="section-block">
-        <div class="section-header-row">
-            <div>
-                <h2>Pilihan Kategori Perawatan</h2>
-                <p>Jelajahi produk berdasarkan kategori.</p>
-            </div>
-        </div>
-        <div class="category-pills-grid">
-            @foreach($categories as $cat)
-                <a href="{{ route('products.index', array_merge(request()->query(), ['category' => $cat->cat_id])) }}"
-                   class="category-pill-card {{ (string) request('category') === (string) $cat->cat_id ? 'active' : '' }}">
-                    <x-category-icon :title="$cat->cat_title" />
-                    <div>
-                        <div class="category-pill-title">{{ $cat->cat_title }}</div>
-                        <small style="color:var(--c-ink-soft);font-size:12px;">Lihat koleksi →</small>
-                    </div>
-                </a>
-            @endforeach
-        </div>
-    </div>
-
-    {{-- PRODUK UNGGULAN --}}
-    @php
-        $featuredProducts = $products->filter(fn($p) => $p->stock > 0)->sortByDesc('reviews_avg_rating')->take(4);
-        if ($featuredProducts->isEmpty()) {
-            $featuredProducts = $products->take(4);
-        }
-    @endphp
-
-    @if($featuredProducts->isNotEmpty() && !request()->has('q'))
-    <div class="section-block">
-        <div class="section-header-row">
-            <div>
-                <h2>🌟 Produk Unggulan & Terpopuler</h2>
-                <p>Pilihan terbaik dengan ulasan tertinggi dari para pelanggan setia.</p>
-            </div>
-            <a href="#catalog-section" class="btn btn-outline btn-sm">Buka Seluruh Katalog →</a>
-        </div>
-        <div class="featured-grid">
-            @foreach($featuredProducts as $product)
-                <article class="product-card"
-                    data-quick-view-product
-                    data-product-id="{{ $product->id }}"
-                    data-product-name="{{ $product->name }}"
-                    data-product-brand="{{ $product->brandRelation->brand_name ?? $product->brand }}"
-                    data-product-brand-id="{{ $product->brand_id ?? '' }}"
-                    data-product-category="{{ $product->category->cat_title ?? 'Kategori Umum' }}"
-                    data-product-category-id="{{ $product->product_cat ?? '' }}"
-                    data-product-price="{{ number_format($product->price, 0, ',', '.') }}"
-                    data-product-stock="{{ $product->stock }}"
-                    data-product-image="{{ $product->image ?? '' }}"
-                    data-product-description="{{ $product->description ?? 'Lihat detail lengkap untuk informasi produk.' }}"
-                    data-product-detail-url="{{ route('products.show', $product->id) }}"
-                    data-product-cart-url="{{ route('cart.add', $product->id) }}"
-                    data-product-brand-url="{{ !empty($product->brand_id) ? route('products.index', ['brand' => $product->brand_id]) : route('products.index') }}"
-                    data-product-category-url="{{ !empty($product->product_cat) ? route('products.index', ['category' => $product->product_cat]) : route('products.index') }}">
-                    <a href="{{ route('products.show', $product->id) }}" class="product-image-link quick-view-trigger" data-quick-view-trigger>
-                        @if($product->image)
-                            <img src="{{ $product->image }}" alt="{{ $product->name }}" class="product-image" loading="lazy">
-                        @else
-                            <div class="image-placeholder">✨</div>
-                        @endif
-                    </a>
-                    <div class="product-info">
-                        <div class="product-brand">
-                                @if($product->brand_id && $product->brandRelation)
-                                    <a href="{{ route('products.index', ['brand' => $product->brand_id]) }}#catalog-section">{{ $product->brandRelation->brand_name }}</a>
-                                @else
-                                    {{ $product->brand ?? 'Brand tidak diketahui' }}
-                                @endif
-                            </div>
-                        <h3 class="product-name"><a href="{{ route('products.show', $product->id) }}" class="quick-view-trigger" data-quick-view-trigger>{{ $product->name }}</a></h3>
-                        <div class="product-price">Rp{{ number_format($product->price, 0, ',', '.') }}</div>
-                        <div class="product-rating">
-                            @if($product->reviews_count > 0)
-                                ★ {{ number_format($product->reviews_avg_rating, 1) }} <span>({{ $product->reviews_count }})</span>
-                            @else
-                                <span>Belum ada ulasan</span>
-                            @endif
-                        </div>
-                        <div class="product-actions">
-                            <a href="{{ route('products.show', $product->id) }}" class="detail-button quick-view-trigger" data-quick-view-trigger>Quick View</a>
-                            @if($product->stock > 0)
-                                <form action="{{ route('cart.add', $product->id) }}" method="POST" class="add-to-cart-form">
-                                    @csrf
-                                    <button type="submit" class="cart-button">+ Keranjang</button>
-                                </form>
-                            @else
-                                <button type="button" disabled style="background:#ddd;color:#888;">Habis</button>
-                            @endif
-                        </div>
-                    </div>
-                </article>
-            @endforeach
-        </div>
-    </div>
-    @endif
 
     {{-- QUICK VIEW MODAL --}}
     <div class="quick-view-backdrop" id="quickViewBackdrop" aria-hidden="true">

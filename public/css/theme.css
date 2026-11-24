@@ -423,9 +423,9 @@ p {
 }
 
 .logo .brand-logo {
-  height: 45px;
+  height: 36px !important;
   width: auto;
-  max-width: 200px;
+  max-width: 260px;
   object-fit: contain;
 }
 
@@ -649,8 +649,8 @@ p {
   }
 
   .logo .brand-logo {
-    height: 38px;
-    max-width: 145px;
+    height: 28px !important;
+    max-width: 190px;
   }
 
   .nav-toggle {
@@ -2156,5 +2156,400 @@ p {
   .admin-dashboard .bar-row .lbl {
     width: 88px;
     font-size: 11px
+  }
+}
+
+/* =========================================================
+   ZRADIANCE SHARED PRODUCT CARD
+   Same design as the landing page (.home-product-card in homepage-refresh.css).
+   Used by: dashboard, user/products/index, user/categories/show.
+   ========================================================= */
+
+:root {
+  --zr-pink: #df91a8;
+  --zr-pink-dark: #b96580;
+  --zr-text: #33272d;
+  --zr-muted: #81747a;
+  --zr-border: #eee6e2;
+}
+
+.product-grid,
+.featured-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 22px;
+}
+
+.product-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  overflow: hidden;
+  border: 1px solid var(--zr-border);
+  border-radius: 9px;
+  box-shadow: none;
+  transition: .25s ease;
+}
+
+.product-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--zr-border);
+  box-shadow: 0 10px 28px rgba(59, 38, 47, .07);
+}
+
+.product-image-link {
+  position: relative;
+  display: block;
+  aspect-ratio: 1 / 1;
+  background: #f6efeb;
+  overflow: hidden;
+  text-decoration: none;
+}
+
+.product-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 15px;
+  transition: transform .35s ease;
+}
+
+.product-card:hover .product-image {
+  transform: scale(1.04);
+}
+
+.image-placeholder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40px;
+  background: #f6efeb;
+}
+
+.product-view-hint {
+  position: absolute;
+  bottom: 12px;
+  left: 50%;
+  transform: translate(-50%, 8px);
+  opacity: 0;
+  background: rgba(255, 255, 255, .95);
+  color: var(--zr-text);
+  padding: 9px 15px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+  pointer-events: none;
+  transition: .25s ease;
+}
+
+.product-card:hover .product-view-hint {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+.product-info {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: 17px 17px 20px;
+}
+
+.product-brand {
+  display: block;
+  margin-bottom: 8px;
+  color: #a1848e;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1.1px;
+  text-transform: uppercase;
+}
+
+.product-brand a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.product-brand a:hover {
+  color: var(--zr-pink-dark);
+}
+
+.product-name {
+  min-height: 42px;
+  margin: 0 0 11px;
+  color: #3b2e34;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.55;
+}
+
+.product-name a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.product-name a:hover {
+  color: var(--zr-pink-dark);
+}
+
+.product-price {
+  margin: 0 0 8px;
+  color: #382a30;
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.product-rating {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 8px;
+  color: #e6a213;
+  font-size: 12.5px;
+  font-weight: 700;
+}
+
+.product-rating span {
+  color: var(--zr-muted);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.product-meta {
+  margin-bottom: 14px;
+  color: var(--zr-muted);
+  font-size: 12px;
+}
+
+.product-meta a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.product-meta a:hover {
+  color: var(--zr-pink-dark);
+}
+
+/* Card actions: same button language as the navbar (Login / Registrasi) */
+.product-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: auto;
+  padding-top: 14px;
+}
+
+.product-actions button,
+.product-actions a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid transparent;
+  border-radius: 7px;
+  font: 700 12.5px var(--font);
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.detail-button {
+  background: #fff;
+  border-color: #eadde0 !important;
+  color: var(--c-ink);
+}
+
+.detail-button:hover {
+  background: #faf1f3;
+  border-color: #dfb6c1 !important;
+  color: var(--zr-pink-dark);
+}
+
+.cart-button {
+  background: var(--zr-pink);
+  color: #fff;
+  box-shadow: none;
+}
+
+.cart-button:hover {
+  background: var(--zr-pink-dark);
+  transform: none;
+}
+
+.product-actions button:disabled {
+  background: #f1ebe8 !important;
+  color: #a39499 !important;
+  cursor: not-allowed;
+}
+
+.btn-ask-bot {
+  grid-column: span 2;
+  background: transparent;
+  border: 1px solid transparent !important;
+  color: var(--zr-pink-dark);
+  padding: 7px 10px !important;
+  font-size: 11.5px !important;
+}
+
+.btn-ask-bot:hover {
+  background: #faf1f3;
+  color: var(--zr-pink-dark);
+}
+
+@media (max-width: 1040px) {
+
+  .product-grid,
+  .featured-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+
+  .product-grid,
+  .featured-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+  }
+
+  .product-info {
+    padding: 12px 12px 14px;
+  }
+
+  .product-name {
+    font-size: 13px;
+    min-height: 40px;
+  }
+
+  .product-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .btn-ask-bot {
+    grid-column: span 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  .product-card,
+  .product-image,
+  .product-view-hint {
+    transition: none !important;
+  }
+}
+
+/* =========================================================
+   ZRADIANCE BRAND MARQUEE (same behaviour as landing .home-brand-marquee)
+   ========================================================= */
+
+.brand-marquee {
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+  padding: 12px 0;
+}
+
+.brand-marquee-track {
+  display: flex;
+  width: max-content;
+  animation: brand-marquee-scroll 40s linear infinite;
+  will-change: transform;
+}
+
+.brand-marquee:hover .brand-marquee-track {
+  animation-play-state: paused;
+}
+
+.brand-marquee-group {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  gap: 65px;
+  padding-right: 65px;
+}
+
+.brand-marquee-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 145px;
+  height: 75px;
+  flex: 0 0 auto;
+  opacity: .78;
+  text-decoration: none;
+  transition: opacity .25s ease, transform .25s ease;
+}
+
+.brand-marquee-item:hover {
+  opacity: 1;
+  transform: scale(1.06);
+}
+
+.brand-marquee-item img {
+  width: 100%;
+  height: 100%;
+  max-width: 145px;
+  object-fit: contain;
+}
+
+.brand-marquee-name {
+  color: #6f5962;
+  font-size: 15px;
+  font-weight: 800;
+  text-align: center;
+}
+
+@keyframes brand-marquee-scroll {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@media (max-width: 600px) {
+  .brand-marquee {
+    overflow-x: auto;
+    overflow-y: hidden;
+    cursor: grab;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .brand-marquee::-webkit-scrollbar {
+    display: none;
+  }
+
+  .brand-marquee-track {
+    animation: none !important;
+    transform: none !important;
+  }
+
+  .brand-marquee-group {
+    gap: 28px;
+    padding-right: 28px;
+  }
+
+  .brand-marquee-item {
+    width: 110px;
+    height: 62px;
+  }
+
+  .brand-marquee-item img {
+    max-width: 110px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .brand-marquee-track {
+    animation: none !important;
   }
 }

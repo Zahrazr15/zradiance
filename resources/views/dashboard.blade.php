@@ -238,75 +238,6 @@
         font-weight: 800;
     }
 
-    .dashboard-product-grid {
-        display: grid;
-        grid-template-columns: repeat(4, minmax(0, 1fr));
-        gap: 18px;
-    }
-
-    .dashboard-product-card {
-        overflow: hidden;
-        border: 1px solid var(--c-border-subtle);
-        border-radius: var(--radius-md);
-        background: #fff;
-        box-shadow: var(--shadow-xs);
-        transition: var(--transition);
-    }
-
-    .dashboard-product-card:hover {
-        transform: translateY(-3px);
-        box-shadow: var(--shadow-md);
-    }
-
-    .dashboard-product-image {
-        display: grid;
-        width: 100%;
-        aspect-ratio: 1 / 1;
-        place-items: center;
-        object-fit: cover;
-        background: linear-gradient(135deg, #FFF6EC, var(--c-cream));
-        font-size: 36px;
-    }
-
-    .dashboard-product-info {
-        padding: 15px;
-    }
-
-    .dashboard-product-info small {
-        color: var(--c-ink-light);
-        font-size: 11px;
-        font-weight: 800;
-        letter-spacing: 0.05em;
-        text-transform: uppercase;
-    }
-
-    .dashboard-product-info h3 {
-        min-height: 40px;
-        margin: 5px 0 8px;
-        color: var(--c-ink-heading);
-        font-size: 14px;
-    }
-
-    .dashboard-product-price {
-        margin-bottom: 12px;
-        color: var(--c-ink-heading);
-        font-weight: 800;
-    }
-
-    .dashboard-product-rating {
-        display: flex;
-        align-items: center;
-        gap: 5px;
-        margin-bottom: 12px;
-        color: var(--c-ink-soft);
-        font-size: 12px;
-        font-weight: 700;
-    }
-
-    .dashboard-product-rating .rating-score {
-        color: var(--c-pink-strong);
-    }
-
     .dashboard-empty-state {
         padding: 28px 20px;
         border: 1px dashed var(--c-border);
@@ -360,7 +291,6 @@
         .dashboard-shortcuts { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
         .dashboard-order-grid { grid-template-columns: 1fr; }
         .dashboard-summary-grid { gap: 10px; }
-        .dashboard-product-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
         .dashboard-section-heading { align-items: flex-start; flex-direction: column; }
     }
 
@@ -369,7 +299,6 @@
         .dashboard-summary-grid { grid-template-columns: 1fr; }
         .dashboard-stat { min-height: 74px; padding: 14px; }
         .dashboard-shortcut { padding: 12px; font-size: 13px; }
-        .dashboard-product-info { padding: 12px; }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -497,27 +426,26 @@
         </div>
 
         @if ($products->isNotEmpty())
-            <div class="dashboard-product-grid">
+            <div class="product-grid">
                 @foreach ($products as $product)
-                    <article class="dashboard-product-card">
-                        @if ($product->image)
-                            <img class="dashboard-product-image" src="{{ $product->image }}" alt="{{ $product->name }}" loading="lazy">
-                        @else
-                            <div class="dashboard-product-image" role="img" aria-label="Gambar produk belum tersedia">✨</div>
-                        @endif
-                        <div class="dashboard-product-info">
-                            <small>{{ $product->brand }}</small>
-                            <h3>{{ $product->name }}</h3>
-                            <div class="dashboard-product-price">Rp {{ number_format($product->price, 0, ',', '.') }}</div>
-                            @if ($product->reviews_count > 0)
-                                <div class="dashboard-product-rating" aria-label="Rating {{ number_format($product->reviews_avg_rating, 1, ',', '.') }} dari 5 dari {{ $product->reviews_count }} ulasan">
-                                    <span class="rating-score" aria-hidden="true">★ {{ number_format($product->reviews_avg_rating, 1, ',', '.') }}</span>
-                                    <span>({{ $product->reviews_count }} ulasan)</span>
-                                </div>
+                    <article class="product-card">
+                        <a href="{{ route('products.show', $product->id) }}" class="product-image-link">
+                            @if ($product->image)
+                                <img class="product-image" src="{{ $product->image }}" alt="{{ $product->name }}" loading="lazy">
                             @else
-                                <div class="dashboard-product-rating">Belum ada ulasan</div>
+                                <div class="image-placeholder" role="img" aria-label="Gambar produk belum tersedia">✨</div>
                             @endif
-                            <a href="{{ route('products.show', $product->id) }}" class="btn btn-primary btn-sm">Lihat Produk</a>
+                            <span class="product-view-hint">Lihat Produk</span>
+                        </a>
+                        <div class="product-info">
+                            <span class="product-brand">{{ $product->brandRelation->brand_name ?? $product->brand }}</span>
+                            <h3 class="product-name">
+                                <a href="{{ route('products.show', $product->id) }}">{{ $product->name }}</a>
+                            </h3>
+                            <div class="product-price">Rp {{ number_format($product->price, 0, ',', '.') }}</div>
+                            <div class="product-actions" style="grid-template-columns:1fr;">
+                                <a href="{{ route('products.show', $product->id) }}" class="cart-button">Lihat Produk</a>
+                            </div>
                         </div>
                     </article>
                 @endforeach
