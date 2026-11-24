@@ -243,6 +243,7 @@ class ChatbotSupportTest extends TestCase
     public function test_informational_question_does_not_trigger_support_diagnosis(): void
     {
         $this->healthySystem();
+        $this->seed(\Database\Seeders\KnowledgeSeeder::class);
         $user = $this->customer();
 
         $json = $this->ask($user, 'Bagaimana cara memesan produk?')->json();
