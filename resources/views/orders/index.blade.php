@@ -6,8 +6,8 @@
 
 @section('content')
 
-<div class="page-header">
-    <div>
+<div class="page-header-row">
+    <div class="page-header">
         <h2>Manajemen Pesanan</h2>
         <p>Kelola dan pantau pesanan pelanggan Beauty Store.</p>
     </div>
@@ -97,19 +97,19 @@
 
     @if ($orders->count() > 0)
 
-        <div style="overflow-x:auto;">
-            <table style="width:100%;border-collapse:collapse;">
+        <div class="table-wrap">
+            <table class="table">
 
                 <thead>
-                    <tr style="background:var(--c-bg);text-align:left;">
-                        <th style="padding:14px;">ID Pesanan</th>
-                        <th style="padding:14px;">Pelanggan</th>
-                        <th style="padding:14px;">Penerima</th>
-                        <th style="padding:14px;">Total</th>
-                        <th style="padding:14px;">Status Pesanan</th>
-                        <th style="padding:14px;">Pembayaran</th>
-                        <th style="padding:14px;">Tanggal</th>
-                        <th style="padding:14px;">Aksi</th>
+                    <tr>
+                        <th>ID Pesanan</th>
+                        <th>Pelanggan</th>
+                        <th>Penerima</th>
+                        <th>Total</th>
+                        <th>Status Pesanan</th>
+                        <th>Pembayaran</th>
+                        <th>Tanggal</th>
+                        <th>Aksi</th>
                     </tr>
                 </thead>
 
@@ -145,15 +145,15 @@
                                 && $status !== 'cancelled';
                         @endphp
 
-                        <tr style="border-top:1px solid var(--c-border);">
+                        <tr>
 
                             {{-- ID PESANAN --}}
-                            <td style="padding:14px;">
+                            <td>
                                 <strong>#{{ $order->id }}</strong>
                             </td>
 
                             {{-- PELANGGAN --}}
-                            <td style="padding:14px;">
+                            <td>
                                 <div style="display:flex;align-items:center;gap:10px;">
 
                                     <div class="customer-avatar">
@@ -174,7 +174,7 @@
                             </td>
 
                             {{-- PENERIMA --}}
-                            <td style="padding:14px;">
+                            <td>
                                 <strong>{{ $order->recipient_name }}</strong>
 
                                 <div style="font-size:12px;color:var(--c-ink-soft);margin-top:4px;">
@@ -183,14 +183,14 @@
                             </td>
 
                             {{-- TOTAL --}}
-                            <td style="padding:14px;white-space:nowrap;">
-                                <strong style="color:#d97706;">
+                            <td style="white-space:nowrap;">
+                                <strong>
                                     Rp {{ number_format($order->total, 0, ',', '.') }}
                                 </strong>
                             </td>
 
                             {{-- STATUS PESANAN --}}
-                            <td style="padding:14px;">
+                            <td>
                                 <span
                                     class="order-badge"
                                     style="background:{{ $statusStyle[0] }};color:{{ $statusStyle[1] }};"
@@ -200,7 +200,7 @@
                             </td>
 
                             {{-- STATUS PEMBAYARAN --}}
-                            <td style="padding:14px;">
+                            <td>
                                 <span
                                     class="order-badge"
                                     style="background:{{ $paymentStyle[0] }};color:{{ $paymentStyle[1] }};"
@@ -216,18 +216,17 @@
                             </td>
 
                             {{-- TANGGAL --}}
-                            <td style="padding:14px;white-space:nowrap;">
+                            <td style="white-space:nowrap;">
                                 <span style="font-size:13px;color:var(--c-ink-soft);">
                                     {{ $order->created_at->format('d/m/Y H:i') }}
                                 </span>
                             </td>
 
                             {{-- AKSI --}}
-                            <td style="padding:14px;">
+                            <td>
                                 <a
                                     href="{{ route('admin.orders.show', $order) }}"
-                                    class="btn"
-                                    style="background:var(--c-border);color:var(--c-ink);"
+                                    class="btn btn-outline btn-sm"
                                 >
                                     Detail
                                 </a>

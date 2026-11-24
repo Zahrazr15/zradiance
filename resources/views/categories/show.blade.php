@@ -23,40 +23,20 @@
 
 <div class="admin-card">
 
-    <div style="
-        display: flex;
-        align-items: center;
-        gap: 20px;
-        margin-bottom: 30px;
-    ">
+    <div style="display: flex; align-items: center; gap: 20px; margin-bottom: 30px;">
 
-        <div style="
-            width: 65px;
-            height: 65px;
-            border-radius: 12px;
-            background: var(--c-cream);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 28px;
-        ">
+        <div style="width: 65px; height: 65px; border-radius: 12px; background: var(--c-cream); display: flex; align-items: center; justify-content: center; font-size: 28px;">
             🏷️
         </div>
 
 
         <div>
 
-            <div style="
-                color: var(--c-ink-soft);
-                font-size: 13px;
-                margin-bottom: 5px;
-            ">
+            <div style="color: var(--c-ink-soft); font-size: 13px; margin-bottom: 5px;">
                 ID Kategori
             </div>
 
-            <strong style="
-                font-size: 14px;
-            ">
+            <strong style="font-size: 14px;">
                 #{{ $category->cat_id }}
             </strong>
 
@@ -65,18 +45,11 @@
 
         <div>
 
-            <div style="
-                color: var(--c-ink-soft);
-                font-size: 13px;
-                margin-bottom: 5px;
-            ">
+            <div style="color: var(--c-ink-soft); font-size: 13px; margin-bottom: 5px;">
                 Nama Kategori
             </div>
 
-            <strong style="
-                font-size: 22px;
-                color: var(--c-ink);
-            ">
+            <strong style="font-size: 22px; color: var(--c-ink);">
                 {{ $category->cat_title }}
             </strong>
 
@@ -85,15 +58,9 @@
     </div>
 
 
-    <div style="
-        border-top: 1px solid var(--c-border);
-        padding-top: 25px;
-    ">
+    <div style="border-top: 1px solid var(--c-border); padding-top: 25px;">
 
-        <h3 style="
-            font-size: 18px;
-            margin-bottom: 18px;
-        ">
+        <h3 style="font-size: 18px; margin-bottom: 18px;">
             Produk dalam Kategori
         </h3>
 
@@ -102,17 +69,11 @@
 
             <div style="overflow-x: auto;">
 
-                <table style="
-                    width: 100%;
-                    border-collapse: collapse;
-                ">
+                <table style="width: 100%; border-collapse: collapse;">
 
                     <thead>
 
-                        <tr style="
-                            background: var(--c-bg);
-                            text-align: left;
-                        ">
+                        <tr style="background: var(--c-bg); text-align: left;">
 
                             <th style="padding: 13px;">
                                 Produk
@@ -143,9 +104,7 @@
 
                         @foreach($category->products as $product)
 
-                            <tr style="
-                                border-top: 1px solid var(--c-border);
-                            ">
+                            <tr style="border-top: 1px solid var(--c-border);">
 
                                 <td style="padding: 13px;">
 
@@ -161,10 +120,7 @@
                                 </td>
 
 
-                                <td style="
-                                    padding: 13px;
-                                    white-space: nowrap;
-                                ">
+                                <td style="padding: 13px; white-space: nowrap;">
 
                                     Rp
                                     {{ number_format($product->price, 0, ',', '.') }}
@@ -181,11 +137,7 @@
 
                                     <a
                                         href="{{ route('admin.products.show', $product) }}"
-                                        class="btn"
-                                        style="
-                                            background: var(--c-border);
-                                            color: var(--c-ink);
-                                        "
+                                        class="btn btn-outline"
                                     >
                                         Detail
                                     </a>
@@ -204,13 +156,7 @@
 
         @else
 
-            <div style="
-                padding: 30px;
-                text-align: center;
-                color: var(--c-ink-soft);
-                background: var(--c-bg);
-                border-radius: 8px;
-            ">
+            <div style="padding: 30px; text-align: center; color: var(--c-ink-soft); background: var(--c-bg); border-radius: 8px;">
 
                 Belum ada produk dalam kategori ini.
 
@@ -221,13 +167,7 @@
     </div>
 
 
-    <div style="
-        display: flex;
-        gap: 10px;
-        margin-top: 25px;
-        padding-top: 20px;
-        border-top: 1px solid var(--c-border);
-    ">
+    <div style="display: flex; gap: 10px; margin-top: 25px; padding-top: 20px; border-top: 1px solid var(--c-border);">
 
         <a
             href="{{ route('admin.categories.edit', $category->cat_id) }}"
@@ -239,11 +179,7 @@
 
         <a
             href="{{ route('admin.categories.index') }}"
-            class="btn"
-            style="
-                background: var(--c-border);
-                color: var(--c-ink);
-            "
+            class="btn btn-outline"
         >
             Kembali
         </a>

@@ -7,73 +7,50 @@
 
 @section('content')
 
-<div class="page-header">
-
-    <div style="
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 20px;
-    ">
-
-        <div>
-            <h2>Management Produk</h2>
-
-            <p>
-                Kelola produk, kategori, harga, dan stok.
-            </p>
-        </div>
-
-        <a
-            href="{{ route('admin.products.create') }}"
-            class="btn btn-primary"
-        >
-            + Tambah Produk
-        </a>
-
+<div class="page-header-row">
+    <div class="page-header">
+        <h2>Management Produk</h2>
+        <p>Kelola produk, kategori, harga, dan stok.</p>
     </div>
 
+    <a href="{{ route('admin.products.create') }}" class="btn btn-primary">
+        + Tambah Produk
+    </a>
 </div>
 
 <div class="admin-card">
 
     @if($products->count() > 0)
 
-        <div style="overflow-x: auto;">
+        <div class="table-wrap">
 
-            <table style="
-                width: 100%;
-                border-collapse: collapse;
-            ">
+            <table class="table">
 
                 <thead>
 
-                    <tr style="
-                        background: var(--c-bg);
-                        text-align: left;
-                    ">
+                    <tr>
 
-                        <th style="padding: 14px;">
+                        <th>
                             Produk
                         </th>
 
-                        <th style="padding: 14px;">
+                        <th>
                             Brand
                         </th>
 
-                        <th style="padding: 14px;">
+                        <th>
                             Kategori
                         </th>
 
-                        <th style="padding: 14px;">
+                        <th>
                             Harga
                         </th>
 
-                        <th style="padding: 14px;">
+                        <th>
                             Stok
                         </th>
 
-                        <th style="padding: 14px;">
+                        <th>
                             Aksi
                         </th>
 
@@ -85,49 +62,26 @@
 
                     @foreach($products as $product)
 
-                        <tr style="
-                            border-top: 1px solid var(--c-border);
-                        ">
+                        <tr>
 
                             {{-- PRODUK --}}
-                            <td style="padding: 14px;">
+                            <td>
 
-                                <div style="
-                                    display: flex;
-                                    align-items: center;
-                                    gap: 12px;
-                                ">
+                                <div style="display: flex; align-items: center; gap: 12px;">
 
-                                    <div style="
-                                        width: 60px;
-                                        height: 60px;
-                                        border-radius: 8px;
-                                        overflow: hidden;
-                                        background: var(--c-cream);
-                                        display: flex;
-                                        align-items: center;
-                                        justify-content: center;
-                                        flex-shrink: 0;
-                                    ">
+                                    <div style="width: 60px; height: 60px; border-radius: 8px; overflow: hidden; background: var(--c-cream); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
 
                                         @if($product->image)
 
                                             <img
                                                 src="{{ $product->image }}"
                                                 alt="{{ $product->name }}"
-                                                style="
-                                                    width: 100%;
-                                                    height: 100%;
-                                                    object-fit: cover;
-                                                "
+                                                style="width: 100%; height: 100%; object-fit: cover;"
                                             >
 
                                         @else
 
-                                            <span style="
-                                                font-size: 11px;
-                                                color: var(--c-ink-soft);
-                                            ">
+                                            <span style="font-size: 11px; color: var(--c-ink-soft);">
                                                 No Image
                                             </span>
 
@@ -148,28 +102,16 @@
                             </td>
 
                             {{-- BRAND --}}
-                            <td style="padding: 14px;">
+                            <td>
 
-                                <div style="
-                                    display: flex;
-                                    align-items: center;
-                                    gap: 8px;
-                                ">
+                                <div style="display: flex; align-items: center; gap: 8px;">
 
                                     @if($product->brandRelation && $product->brandRelation->brand_logo)
 
                                         <img
                                             src="{{ asset('storage/' . $product->brandRelation->brand_logo) }}"
                                             alt="{{ $product->brandRelation->brand_name }}"
-                                            style="
-                                                width: 32px;
-                                                height: 32px;
-                                                object-fit: contain;
-                                                border-radius: 6px;
-                                                background: white;
-                                                padding: 3px;
-                                                flex-shrink: 0;
-                                            "
+                                            style="width: 32px; height: 32px; object-fit: contain; border-radius: 6px; background: white; padding: 3px; flex-shrink: 0;"
                                         >
 
                                     @endif
@@ -183,25 +125,16 @@
                             </td>
 
                             {{-- KATEGORI --}}
-                            <td style="padding: 14px;">
+                            <td>
 
-                                <span style="
-                                    display: inline-block;
-                                    background: var(--c-cream);
-                                    padding: 6px 10px;
-                                    border-radius: 20px;
-                                    font-size: 12px;
-                                ">
+                                <span style="display: inline-block; background: var(--c-cream); padding: 6px 10px; border-radius: 20px; font-size: 12px;">
                                     {{ $product->category->cat_title ?? '-' }}
                                 </span>
 
                             </td>
 
                             {{-- HARGA --}}
-                            <td style="
-                                padding: 14px;
-                                white-space: nowrap;
-                            ">
+                            <td style="white-space: nowrap;">
 
                                 <strong>
                                     Rp {{ number_format($product->price, 0, ',', '.') }}
@@ -210,39 +143,27 @@
                             </td>
 
                             {{-- STOK --}}
-                            <td style="padding: 14px;">
+                            <td>
 
                                 {{ $product->stock }}
 
                             </td>
 
                             {{-- AKSI --}}
-                            <td style="padding: 14px;">
+                            <td>
 
-                                <div style="
-                                    display: flex;
-                                    gap: 6px;
-                                    flex-wrap: wrap;
-                                ">
+                                <div class="row-actions">
 
                                     <a
                                         href="{{ route('admin.products.show', $product) }}"
-                                        class="btn"
-                                        style="
-                                            background: var(--c-border);
-                                            color: var(--c-ink);
-                                        "
+                                        class="btn btn-outline btn-sm"
                                     >
                                         Detail
                                     </a>
 
                                     <a
                                         href="{{ route('admin.products.edit', $product) }}"
-                                        class="btn"
-                                        style="
-                                            background: #f59e0b;
-                                            color: var(--c-ink);
-                                        "
+                                        class="btn btn-secondary btn-sm"
                                     >
                                         Edit
                                     </a>
@@ -259,11 +180,7 @@
 
                                         <button
                                             type="submit"
-                                            class="btn"
-                                            style="
-                                                background: #dc2626;
-                                                color: white;
-                                            "
+                                            class="btn btn-danger btn-sm"
                                         >
                                             Hapus
                                         </button>
@@ -286,11 +203,7 @@
 
     @else
 
-        <div style="
-            text-align: center;
-            padding: 50px;
-            color: var(--c-ink-soft);
-        ">
+        <div style="text-align: center; padding: 50px; color: var(--c-ink-soft);">
 
             <p style="margin-bottom: 15px;">
                 Belum ada produk.

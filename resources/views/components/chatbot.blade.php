@@ -180,7 +180,7 @@
         <div class="bs-head">
             <div>
                 <strong>Asisten ZRadiance</strong>
-                <small>Jawaban pintar seputar produk kecantikan</small>
+                <small>Produk, pesanan, dan bantuan sistem</small>
             </div>
             <button type="button" class="bs-close" aria-label="Tutup chatbot">✕</button>
         </div>
@@ -202,7 +202,7 @@
     var sendBtn = form.querySelector('button');
     var URL = @json(route('chatbot.send'));
     var TOKEN = @json(csrf_token());
-    var KEY = 'bs-chat-v1';
+    var KEY = 'bs-chat-v2';
     var busy = false;
 
     function el(tag, cls, text) {
@@ -334,13 +334,13 @@
     } catch (e) {}
 
     if (!restored) {
-        addBot('Halo! Aku asisten ZRadiance. Tanya aku soal kandungan dan cara pakai produk, minta rekomendasi atau perbandingan produk, atau tanya cara pemesanan.');
+        addBot('Halo! Aku asisten ZRadiance. Tanya aku soal produk dan skincare, cara pemesanan, atau kendala seperti tidak bisa checkout, ongkir, dan pembayaran.');
         render({
             reply: '', table: null, products: [], links: [],
             suggestions: [
                 'Cari moisturizer untuk kulit berminyak di bawah Rp100.000',
                 'Apa fungsi niacinamide?',
-                'Bagaimana cara memesan produk?'
+                'Kenapa aku tidak bisa checkout?'
             ]
         });
         list.removeChild(list.querySelector('.bs-bot:nth-of-type(2)'));

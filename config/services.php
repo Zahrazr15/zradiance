@@ -35,6 +35,11 @@ return [
         ],
     ],
 
+    'support' => [
+        'store_name' => env('SUPPORT_STORE_NAME', 'ZRadiance'),
+        'whatsapp' => env('SUPPORT_WHATSAPP', '085282985123'),
+    ],
+
     'gemini' => [
         'key' => env('GEMINI_API_KEY'),
         'model' => env('GEMINI_MODEL', 'gemini-2.5-flash'),

@@ -133,10 +133,6 @@ class CheckoutController extends Controller
             'address_id' => 'required|integer',
             'selected' => 'required|array|min:1',
             'selected.*' => 'required|integer|distinct',
-            'courier' => [
-                'required',
-                Rule::in($this->couriers),
-            ],
         ]);
 
         $user = $request->user();
@@ -212,21 +208,23 @@ class CheckoutController extends Controller
                 ], 422);
             }
 
-            $costs = $shippingService->calculate(
+            $grouped = $shippingService->calculateGrouped(
                 (string) $destination['id'],
-                $weight,
-                $validated['courier']
+                $weight
             );
 
-            $options = collect($costs)->map(function ($item) {
-                return [
-                    'courier' => $item['code'] ?? '',
-                    'courier_name' => $item['name'] ?? '',
-                    'service' => $item['service'] ?? '',
-                    'description' => $item['description'] ?? '',
-                    'cost' => (int) ($item['cost'] ?? 0),
-                    'etd' => $item['etd'] ?? '',
-                ];
+            $options = collect($grouped)->flatMap(function ($items, $category) {
+                return collect($items)->map(function ($item) use ($category) {
+                    return [
+                        'category' => $category,
+                        'courier' => $item['code'] ?? '',
+                        'courier_name' => $item['name'] ?? '',
+                        'service' => $item['service'] ?? '',
+                        'description' => $item['description'] ?? '',
+                        'cost' => (int) ($item['cost'] ?? 0),
+                        'etd' => $item['etd'] ?? '',
+                    ];
+                });
             })->values();
 
             return response()->json([
@@ -579,42 +577,28 @@ class CheckoutController extends Controller
         ShippingService $shippingService,
         Address $address
     ): ?array {
-        $queries = [];
-        $seenKeywords = [];
+        $queries = array_values(array_unique(array_filter([
+            trim((string) $address->postal_code),
+            trim((string) $address->village_name),
+            trim((string) $address->district_name),
+            trim((string) $address->city_name),
+        ])));
 
-        foreach ([
-            'postal_code' => $address->postal_code,
-            'village_name' => $address->village_name,
-        ] as $type => $value) {
-            $keyword = trim((string) $value);
-
-            if ($keyword === '' || isset($seenKeywords[$keyword])) {
-                continue;
-            }
-
-            $seenKeywords[$keyword] = true;
-            $queries[] = [
-                'type' => $type,
-                'keyword' => $keyword,
-            ];
-        }
-
+        $best = null;
+        $bestScore = -1;
         $diagnostics = [];
 
-        foreach ($queries as $query) {
-            $destinations = $shippingService->searchDestination(
-                $query['keyword'],
-                fn (array $item) => !in_array(
-                    false,
-                    $this->destinationComponentMatches($item, $address),
-                    true
-                )
-            );
-            $componentMatches = [
-                'province' => false,
-                'city' => false,
-                'district' => false,
-                'subdistrict' => false,
+        foreach ($queries as $keyword) {
+            $destinations = $shippingService->searchDestination($keyword);
+
+            $stats = [
+                'keyword_type' => 'location',
+                'candidate_count' => count($destinations),
+                'province_match' => 0,
+                'city_match' => 0,
+                'district_match' => 0,
+                'subdistrict_match' => 0,
+                'full_hierarchy_match' => 0,
             ];
 
             foreach ($destinations as $item) {
@@ -624,37 +608,71 @@ class CheckoutController extends Controller
                 );
 
                 foreach ($matches as $component => $matched) {
-                    $componentMatches[$component] =
-                        $componentMatches[$component] || $matched;
+                    if ($matched) {
+                        $stats[$component . '_match']++;
+                    }
                 }
 
-                if (!in_array(false, $matches, true)) {
-                    Log::info('RajaOngkir destination matched.', [
-                        'query_type' => $query['type'],
-                        'candidate_count' => count($destinations),
-                    ]);
+                if (
+                    $matches['province'] &&
+                    $matches['city'] &&
+                    $matches['district']
+                ) {
+                    $stats['full_hierarchy_match']++;
 
-                    return $item;
+                    $score = 3 + (int) $matches['subdistrict'];
+
+                    if (
+                        $keyword ===
+                        trim((string) $address->postal_code)
+                    ) {
+                        $score += 2;
+                    }
+
+                    if ($score > $bestScore) {
+                        $best = $item;
+                        $bestScore = $score;
+                    }
+
+                    if (
+                        $matches['subdistrict'] &&
+                        $keyword ===
+                        trim((string) $address->postal_code)
+                    ) {
+                        Log::info(
+                            'RajaOngkir destination matched exactly.',
+                            ['match_source' => 'postal_code']
+                        );
+
+                        return $item;
+                    }
                 }
             }
 
-            $diagnostics[] = [
-                'query_type' => $query['type'],
-                'candidate_count' => count($destinations),
-                'component_matches' => $componentMatches,
-            ];
+            $diagnostics[] = $stats;
+        }
+
+        if ($best !== null) {
+            Log::warning(
+                'RajaOngkir destination matched using fallback.',
+                [
+                    'search_diagnostics' => $diagnostics,
+                    'subdistrict_exact_match' =>
+                        $this->locationMatches(
+                            $best['subdistrict_name'] ?? null,
+                            $address->village_name,
+                            'subdistrict'
+                        ),
+                ]
+            );
+
+            return $best;
         }
 
         Log::warning(
-            'RajaOngkir destination lookup found no exact hierarchy match.',
+            'RajaOngkir destination lookup failed.',
             [
-                'searches' => $diagnostics,
-                'required_hierarchy' => [
-                    'province',
-                    'city',
-                    'district',
-                    'subdistrict',
-                ],
+                'search_diagnostics' => $diagnostics,
             ]
         );
 

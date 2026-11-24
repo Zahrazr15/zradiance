@@ -33,11 +33,7 @@
 
         <div style="margin-bottom: 20px;">
 
-            <label style="
-                display: block;
-                margin-bottom: 7px;
-                font-weight: 600;
-            ">
+            <label style="display: block; margin-bottom: 7px; font-weight: 600;">
                 Nama Kategori
             </label>
 
@@ -48,23 +44,13 @@
                 value="{{ old('cat_title') }}"
                 placeholder="Contoh: Skincare"
                 required
-                style="
-                    width: 100%;
-                    padding: 11px;
-                    border: 1px solid var(--c-border);
-                    border-radius: 7px;
-                    font-size: 14px;
-                "
+                style="width: 100%; padding: 11px; border: 1px solid var(--c-border); border-radius: 7px; font-size: 14px;"
             >
 
 
             @error('cat_title')
 
-                <small style="
-                    display: block;
-                    color: #dc2626;
-                    margin-top: 5px;
-                ">
+                <small style="display: block; color: #dc2626; margin-top: 5px;">
                     {{ $message }}
                 </small>
 
@@ -73,10 +59,7 @@
         </div>
 
 
-        <div style="
-            display: flex;
-            gap: 10px;
-        ">
+        <div style="display: flex; gap: 10px;">
 
             <button
                 type="submit"
@@ -88,11 +71,7 @@
 
             <a
                 href="{{ route('admin.categories.index') }}"
-                class="btn"
-                style="
-                    background: var(--c-border);
-                    color: var(--c-ink);
-                "
+                class="btn btn-outline"
             >
                 Batal
             </a>

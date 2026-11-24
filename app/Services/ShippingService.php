@@ -165,6 +165,26 @@ class ShippingService
                 }
 
                 if ($response->failed()) {
+                    // RajaOngkir can return 404 when a search keyword has no
+                    // destination matches. Treat that as an empty search result
+                    // so the caller can try its next keyword, rather than
+                    // aborting the entire automatic address lookup.
+                    $metaMessage = (string) $response->json('meta.message', '');
+                    $metaCode = (int) $response->json('meta.code', $response->status());
+
+                    if (
+                        $response->status() === 404 &&
+                        $metaCode === 404 &&
+                        stripos($metaMessage, 'not found') !== false
+                    ) {
+                        Log::debug('RajaOngkir destination search returned no matches.', [
+                            'keyword' => $keyword,
+                            'http_status' => 404,
+                        ]);
+
+                        return [];
+                    }
+
                     $this->failForResponse(
                         $response,
                         'destination-search',
@@ -208,6 +228,37 @@ class ShippingService
             'limit' => self::DESTINATION_PAGE_SIZE,
             'offset' => $offset,
         ]));
+    }
+
+    /**
+     * Status cooldown RajaOngkir saat ini (read-only), dipakai chatbot
+     * untuk mendiagnosis kegagalan ongkir tanpa memanggil API.
+     *
+     * @return array{reason:string,retry_after:int}|null
+     */
+    public function cooldownStatus(): ?array
+    {
+        $cooldown = Cache::store('file')->get($this->rateLimitCacheKey());
+
+        if (!is_array($cooldown)) {
+            return null;
+        }
+
+        $retryAfter = max(0, (int) ($cooldown['retry_at'] ?? 0) - now()->timestamp);
+
+        if ($retryAfter === 0) {
+            return null;
+        }
+
+        return [
+            'reason' => (string) ($cooldown['reason'] ?? ShippingServiceException::RATE_LIMITED),
+            'retry_after' => $retryAfter,
+        ];
+    }
+
+    public function hasApiKey(): bool
+    {
+        return $this->apiKey !== '';
     }
 
     private function rateLimitCacheKey(): string
@@ -595,4 +646,64 @@ class ShippingService
 
         return $data;
     }
+    /**
+     * Mengambil tarif dari beberapa kurir lalu menyederhanakannya menjadi
+     * kategori Regular, Hemat, dan Kargo. Hasil per kurir di-cache agar
+     * perubahan alamat tidak terus menghabiskan kuota API.
+     */
+    public function calculateGrouped(string $destination, int $weight): array
+    {
+        $couriers = ['jne', 'jnt', 'sicepat', 'anteraja', 'pos', 'ninja', 'tiki', 'wahana'];
+        $cache = Cache::store('file');
+        $all = [];
+        $errors = [];
+
+        foreach ($couriers as $courier) {
+            $key = 'rajaongkir:rates:' . hash('sha256', serialize([$destination, $weight, $courier]));
+            try {
+                $rates = $cache->remember($key, now()->addMinutes(10), fn () => $this->calculate($destination, $weight, $courier));
+                foreach ($rates as $rate) {
+                    $rate['code'] = $rate['code'] ?? $courier;
+                    $rate['name'] = $rate['name'] ?? strtoupper($courier);
+                    $all[] = $rate;
+                }
+            } catch (\Throwable $e) {
+                $errors[] = $e->getMessage();
+                Log::notice('Courier rate lookup skipped.', ['courier' => $courier, 'reason' => $e->getMessage()]);
+            }
+        }
+
+        if (!$all) {
+            throw new ShippingServiceException(
+                $errors[0] ?? 'Tidak ada tarif pengiriman yang tersedia.',
+                ShippingServiceException::API_ERROR
+            );
+        }
+
+        $groups = ['regular' => [], 'hemat' => [], 'kargo' => []];
+        foreach ($all as $rate) {
+            $service = strtolower(($rate['service'] ?? '') . ' ' . ($rate['description'] ?? ''));
+            if (preg_match('/cargo|kargo|trucking|big.?pack|freight/i', $service)) {
+                $groups['kargo'][] = $rate;
+            } elseif (preg_match('/economy|eco|hemat|saver|cheap/i', $service)) {
+                $groups['hemat'][] = $rate;
+            } else {
+                $groups['regular'][] = $rate;
+            }
+        }
+
+        // Jika provider tidak memberi label hemat, jadikan tarif termurah
+        // yang bukan layanan kargo sebagai opsi Hemat.
+        if (!$groups['hemat']) {
+            $nonCargo = array_merge($groups['regular']);
+            usort($nonCargo, fn ($a, $b) => (int)($a['cost'] ?? 0) <=> (int)($b['cost'] ?? 0));
+            if ($nonCargo) $groups['hemat'] = [$nonCargo[0]];
+        }
+        foreach ($groups as $key => $rates) {
+            usort($rates, fn ($a, $b) => (int)($a['cost'] ?? 0) <=> (int)($b['cost'] ?? 0));
+            $groups[$key] = $rates ? [$rates[0]] : [];
+        }
+        return $groups;
+    }
+
 }

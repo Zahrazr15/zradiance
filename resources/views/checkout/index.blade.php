@@ -285,26 +285,16 @@
                         </a>
                     </div>
 
-                    {{-- PILIH KURIR RAJAONGKIR --}}
+                    {{-- PILIH KATEGORI PENGIRIMAN. TARIF DIHITUNG OTOMATIS --}}
                     <div class="form-group">
-                        <label for="courier">Pilih Jasa Ekspedisi (Kurir)</label>
-                        <select id="courier">
-                            <option value="">-- Pilih Ekspedisi --</option>
-                            <option value="jne">JNE Express</option>
-                            <option value="jnt">J&T Express</option>
-                            <option value="sicepat">SiCepat Ekspres</option>
-                            <option value="ide">ID Express</option>
-                            <option value="sap">SAP Express</option>
-                            <option value="tiki">TIKI</option>
-                            <option value="lion">Lion Parcel</option>
-                            <option value="anteraja">AnterAja</option>
-                            <option value="pos">POS Indonesia</option>
-                            <option value="ninja">Ninja Xpress</option>
-                            <option value="wahana">Wahana Prestasi Logistik</option>
+                        <label for="shipping-category">Pilih Jenis Pengiriman</label>
+                        <select id="shipping-category" disabled>
+                            <option value="hemat">Hemat (ongkir termurah)</option>
+                            <option value="regular">Regular</option>
+                            <option value="kargo">Kargo</option>
                         </select>
                     </div>
-
-                    <button type="button" id="calculate-shipping" class="shipping-button">
+                    <button type="button" id="calculate-shipping" class="shipping-button" style="display:none;">
                         Hitung Tarif Pengiriman
                     </button>
 
@@ -435,7 +425,7 @@
             </div>
 
             <small style="display:block; margin-top:14px; color:var(--c-ink-soft); line-height:1.5;">
-                ℹ️ Total tagihan akhir akan diperbarui otomatis saat paket kurir telah Anda tentukan.
+                ℹ️ Ongkir dan total akan diperbarui otomatis saat alamat atau jenis pengiriman diubah.
             </small>
         </div>
 
@@ -449,7 +439,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const selectedIds = @json($selectedIds);
 
     const addressSelect = document.getElementById('address_id');
-    const courierSelect = document.getElementById('courier');
+    const categorySelect = document.getElementById('shipping-category');
     const calculateButton = document.getElementById('calculate-shipping');
     const serviceGroup = document.getElementById('service-group');
     const serviceSelect = document.getElementById('shipping-service-option');
@@ -469,6 +459,7 @@ document.addEventListener('DOMContentLoaded', function () {
     );
 
     let shippingOptions = [];
+    let calculationSequence = 0;
 
     function formatRupiah(value) {
         return 'Rp ' + Number(value).toLocaleString('id-ID');
@@ -499,7 +490,8 @@ document.addEventListener('DOMContentLoaded', function () {
         shippingOptions = [];
 
         serviceSelect.innerHTML =
-            '<option value="">-- Pilih Layanan --</option>';
+            '<option value="">Tarif sedang dimuat...</option>';
+        categorySelect.disabled = true;
 
         serviceGroup.style.display = 'none';
 
@@ -562,20 +554,16 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     async function calculateShipping() {
+        const currentSequence = ++calculationSequence;
         clearShipping();
 
         const addressId = addressSelect.value;
-        const courier = courierSelect.value;
 
         if (!addressId) {
             showMessage('Pilih alamat pengiriman terlebih dahulu.', 'error-message');
             return;
         }
 
-        if (!courier) {
-            showMessage('Pilih kurir terlebih dahulu.', 'error-message');
-            return;
-        }
 
         calculateButton.disabled = true;
         calculateButton.textContent = 'Menghitung...';
@@ -594,13 +582,15 @@ document.addEventListener('DOMContentLoaded', function () {
                     },
                     body: JSON.stringify({
                         address_id: addressId,
-                        selected: selectedIds,
-                        courier: courier
+                        selected: selectedIds
                     })
                 }
             );
 
             const result = await response.json();
+
+            // Abaikan hasil request lama jika alamat sudah berubah lagi.
+            if (currentSequence !== calculationSequence) return;
 
             if (!response.ok || !result.success) {
                 throw new Error(
@@ -613,24 +603,30 @@ document.addEventListener('DOMContentLoaded', function () {
             }
 
             shippingOptions = result.options;
-
-            shippingOptions.forEach((option, index) => {
+            serviceSelect.innerHTML = '<option value="">Pilih kategori pengiriman</option>';
+            const categoryLabels = { hemat: 'Hemat', regular: 'Regular', kargo: 'Kargo' };
+            ['hemat', 'regular', 'kargo'].forEach(category => {
+                const option = shippingOptions.find(item => item.category === category);
+                const categoryOption = categorySelect.querySelector(`option[value="${category}"]`);
+                if (!option) {
+                    if (categoryOption) categoryOption.disabled = true;
+                    return;
+                }
+                if (categoryOption) {
+                    categoryOption.disabled = false;
+                    categoryOption.textContent = `${categoryLabels[category]} · ${formatRupiah(option.cost)} · ${option.courier_name} · ${option.etd || 'Estimasi -'}`;
+                }
                 const element = document.createElement('option');
-
-                element.value = index;
-                element.textContent =
-                    `${option.service} - ${option.description || option.courier_name} - ` +
-                    `${formatRupiah(option.cost)} - Estimasi ${option.etd || '-'}`;
-
+                element.value = shippingOptions.indexOf(option);
+                element.textContent = categoryOption.textContent;
                 serviceSelect.appendChild(element);
             });
-
-            serviceGroup.style.display = 'block';
-
-            showMessage(
-                `Total berat: ${Number(result.weight).toLocaleString('id-ID')} gram. Silakan tentukan paket layanan pengiriman.`,
-                'success-message'
-            );
+            categorySelect.disabled = false;
+            categorySelect.value = shippingOptions.some(item => item.category === 'hemat') ? 'hemat' : 'regular';
+            serviceGroup.style.display = 'none'; // Pilihan kategori ditampilkan lewat dropdown utama
+            serviceSelect.value = String(shippingOptions.findIndex(item => item.category === categorySelect.value));
+            updateSelectedService();
+            showMessage(`Tarif otomatis tersedia untuk berat ${Number(result.weight).toLocaleString('id-ID')} gram.`, 'success-message');
 
         } catch (error) {
             showMessage(error.message, 'error-message');
@@ -642,13 +638,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
     addressSelect.addEventListener('change', function () {
         updatePreview();
-        clearShipping();
         message.hidden = true;
+        calculateShipping(); // Hitung ulang otomatis untuk alamat yang baru dipilih.
     });
 
-    courierSelect.addEventListener('change', function () {
-        clearShipping();
-        message.hidden = true;
+    categorySelect.addEventListener('change', function () {
+        const selected = shippingOptions.findIndex(item => item.category === categorySelect.value);
+        serviceSelect.value = selected >= 0 ? String(selected) : '';
+        updateSelectedService();
     });
 
     calculateButton.addEventListener('click', calculateShipping);
@@ -671,6 +668,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     updatePreview();
     clearShipping();
+    calculateShipping();
 });
 </script>
 @endif

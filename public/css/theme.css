@@ -2553,3 +2553,93 @@ p {
     animation: none !important;
   }
 }
+
+/* =========================================================
+   ZRADIANCE ADMIN: SHARED LIST PAGE HELPERS
+   Standard for every admin list page:
+   .page-header-row (title left, "+ Tambah" right) > .admin-card > .table-wrap > .table
+   Row actions: Detail (btn-outline) / Edit (btn-secondary) / Hapus (btn-danger), all .btn-sm in .row-actions
+   ========================================================= */
+
+.admin-content .row-actions {
+  flex-wrap: nowrap;
+}
+
+.admin-content .row-actions .btn,
+.admin-content .row-actions form {
+  margin: 0;
+}
+
+.admin-content .table td .row-actions {
+  min-width: max-content;
+}
+
+.admin-content .pager {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 18px;
+  font-size: 13px;
+}
+
+.badge-success {
+  background: var(--c-success-soft);
+  color: var(--c-success);
+}
+
+.badge-muted {
+  background: #F1EBE8;
+  color: var(--c-ink-soft);
+}
+
+.brand-thumb {
+  width: 60px;
+  height: 60px;
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: 8px;
+  background: var(--c-cream);
+}
+
+.brand-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 6px;
+}
+
+.brand-thumb .muted {
+  font-size: 11px;
+  text-align: center;
+}
+
+.admin-content .admin-card-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 22px;
+}
+
+.admin-content .admin-card-heading h3 {
+  margin: 0 0 4px;
+  color: var(--c-ink-heading);
+}
+
+.admin-content .admin-card-heading p {
+  margin: 0;
+  color: var(--c-ink-soft);
+  font-size: 14px;
+}
+
+.admin-content .admin-table-empty {
+  padding: 28px 16px;
+  text-align: center;
+  color: var(--c-ink-soft);
+}

@@ -48,10 +48,14 @@
                 </a>
             </li>
 
-            <li>
+           <li>
                 <a href="{{ route('admin.brands.index') }}"
+                title="Brand"
                 class="{{ request()->routeIs('admin.brands.*') ? 'active' : '' }}">
-                    🏷️ Brand
+
+                    <span class="menu-icon">🏷️</span>
+                    <span class="menu-label">Brand</span>
+
                 </a>
             </li>
             <li>

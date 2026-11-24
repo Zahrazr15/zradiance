@@ -30,7 +30,7 @@ class KnowledgeSeeder extends Seeder
             ],
             [
                 'question' => 'Bagaimana cara checkout dan data apa yang harus diisi?',
-                'answer'   => 'Di halaman checkout kamu perlu mengisi nama penerima, nomor telepon, dan alamat lengkap. Setelah pesanan dibuat, keranjang otomatis dikosongkan dan kamu diarahkan ke detail pesanan.',
+                'answer'   => "Di halaman checkout: 1) pilih alamat pengiriman (atau tambahkan alamat lengkap di Profil), 2) klik hitung ongkir lalu pilih kurir dan layanan, 3) pilih pembayaran Online atau COD, 4) buat pesanan. Pastikan produk sudah dicentang di keranjang. Pesanan online dibayar lewat tombol Bayar di detail pesanan.",
                 'keywords' => 'checkout, data penerima, alamat pengiriman, nomor telepon, isi alamat',
             ],
             [
@@ -40,7 +40,7 @@ class KnowledgeSeeder extends Seeder
             ],
             [
                 'question' => 'Apakah pesanan bisa dibatalkan?',
-                'answer'   => 'Saat ini pembatalan belum bisa dilakukan sendiri lewat akunmu. Status pesanan diubah oleh admin toko, jadi hubungi admin jika ingin membatalkan pesanan.',
+                'answer'   => 'Bisa, selama status pesanan masih menunggu (pending) dan belum dibayar. Buka menu Pesanan, pilih pesanan, lalu klik Batalkan. Pesanan yang sudah dibayar tidak bisa dibatalkan langsung, hubungi admin untuk proses refund.',
                 'keywords' => 'batal, dibatalkan, membatalkan, pembatalan, cancel',
             ],
             [
@@ -57,6 +57,26 @@ class KnowledgeSeeder extends Seeder
                 'question' => 'Bagaimana cara mendaftar akun?',
                 'answer'   => 'Klik menu Registrasi di halaman utama, isi formulir pendaftaran, lalu login dengan akun yang sudah dibuat.',
                 'keywords' => 'daftar akun, mendaftar, registrasi, buat akun, membuat akun, register',
+            ],
+            [
+                'question' => 'Bagaimana cara membayar pesanan online?',
+                'answer'   => 'Setelah pesanan dibuat, buka menu Pesanan, pilih pesanan, lalu klik Bayar. Kamu bisa membayar dengan QRIS, transfer/virtual account, atau e-wallet. Status pembayaran biasanya berubah otomatis dalam beberapa menit setelah pembayaran berhasil.',
+                'keywords' => 'cara bayar, membayar, pembayaran, bayar pesanan, qris, virtual account, e-wallet, gopay, transfer',
+            ],
+            [
+                'question' => 'Kenapa ongkir tidak muncul atau lokasi tidak ditemukan?',
+                'answer'   => "Ongkir dihitung otomatis dari alamat dan berat produk. Penyebab yang paling sering: provinsi, kota, kecamatan, kelurahan, atau kode pos di alamat belum tepat; alamat belum lengkap; atau layanan ongkir sedang membatasi permintaan (coba lagi beberapa menit). Periksa dan perbarui alamat di Profil > Alamat.",
+                'keywords' => 'ongkir tidak muncul, ongkir gagal, lokasi tidak ditemukan, ongkos kirim error, kurir tidak muncul',
+            ],
+            [
+                'question' => 'Pembayaran saya kedaluwarsa atau gagal, apa yang harus dilakukan?',
+                'answer'   => 'Pesanan dengan pembayaran kedaluwarsa atau gagal tidak bisa dibayar ulang. Buka detail pesanan, klik Batalkan, lalu checkout ulang produknya. Kalau saldo kamu sudah terpotong, simpan bukti pembayaran dan hubungi admin.',
+                'keywords' => 'pembayaran kedaluwarsa, pembayaran kadaluarsa, pembayaran gagal, expired, bayar ulang, saldo terpotong',
+            ],
+            [
+                'question' => 'Bagaimana jika saya lupa password?',
+                'answer'   => 'Klik "Lupa password" di halaman login, isi email dan password baru. Permintaanmu akan dicek dan disetujui admin dulu, setelah itu kamu bisa login dengan password baru. Kalau lama tidak diproses, hubungi admin.',
+                'keywords' => 'lupa password, reset password, ganti password, tidak bisa login, lupa kata sandi',
             ],
         ];
 

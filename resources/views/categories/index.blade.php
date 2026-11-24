@@ -6,54 +6,42 @@
 
 @section('content')
 
-<div class="page-header">
-
-    <div>
+<div class="page-header-row">
+    <div class="page-header">
         <h2>Management Kategori</h2>
-
-        <p>
-            Kelola kategori produk Beauty Store.
-        </p>
+        <p>Kelola kategori produk Beauty Store.</p>
     </div>
 
-    <a
-        href="{{ route('admin.categories.create') }}"
-        class="btn btn-primary"
-    >
+    <a href="{{ route('admin.categories.create') }}" class="btn btn-primary">
         + Tambah Kategori
     </a>
-
 </div>
-
 
 <div class="admin-card">
 
     @if($categories->count() > 0)
 
-        <div style="overflow-x: auto;">
+        <div class="table-wrap">
 
-            <table style="width: 100%; border-collapse: collapse;">
+            <table class="table">
 
                 <thead>
 
-                    <tr style="
-                        background: var(--c-bg);
-                        text-align: left;
-                    ">
+                    <tr>
 
-                        <th style="padding: 14px;">
+                        <th>
                             ID
                         </th>
 
-                        <th style="padding: 14px;">
+                        <th>
                             Nama Kategori
                         </th>
 
-                        <th style="padding: 14px;">
+                        <th>
                             Jumlah Produk
                         </th>
 
-                        <th style="padding: 14px;">
+                        <th>
                             Aksi
                         </th>
 
@@ -66,33 +54,18 @@
 
                     @foreach($categories as $category)
 
-                        <tr style="
-                            border-top: 1px solid var(--c-border);
-                        ">
+                        <tr>
 
-                            <td style="padding: 14px;">
+                            <td>
                                 {{ $category->cat_id }}
                             </td>
 
 
-                            <td style="padding: 14px;">
+                            <td>
 
-                                <div style="
-                                    display: flex;
-                                    align-items: center;
-                                    gap: 12px;
-                                ">
+                                <div style="display: flex; align-items: center; gap: 12px;">
 
-                                    <div style="
-                                        width: 42px;
-                                        height: 42px;
-                                        border-radius: 9px;
-                                        background: var(--c-cream);
-                                        display: flex;
-                                        align-items: center;
-                                        justify-content: center;
-                                        font-size: 19px;
-                                    ">
+                                    <div style="width: 42px; height: 42px; border-radius: 9px; background: var(--c-cream); display: flex; align-items: center; justify-content: center; font-size: 19px;">
                                         🏷️
                                     </div>
 
@@ -105,15 +78,9 @@
                             </td>
 
 
-                            <td style="padding: 14px;">
+                            <td>
 
-                                <span style="
-                                    display: inline-block;
-                                    background: var(--c-cream);
-                                    padding: 6px 10px;
-                                    border-radius: 20px;
-                                    font-size: 12px;
-                                ">
+                                <span class="badge">
                                     {{ $category->products->count() }}
                                     Produk
                                 </span>
@@ -121,21 +88,13 @@
                             </td>
 
 
-                            <td style="padding: 14px;">
+                            <td>
 
-                                <div style="
-                                    display: flex;
-                                    gap: 6px;
-                                    flex-wrap: wrap;
-                                ">
+                                <div class="row-actions">
 
                                     <a
                                         href="{{ route('admin.categories.show', $category->cat_id) }}"
-                                        class="btn"
-                                        style="
-                                            background: var(--c-border);
-                                            color: var(--c-ink);
-                                        "
+                                        class="btn btn-outline btn-sm"
                                     >
                                         Detail
                                     </a>
@@ -143,11 +102,7 @@
 
                                     <a
                                         href="{{ route('admin.categories.edit', $category->cat_id) }}"
-                                        class="btn"
-                                        style="
-                                            background: #f59e0b;
-                                            color: var(--c-ink);
-                                        "
+                                        class="btn btn-secondary btn-sm"
                                     >
                                         Edit
                                     </a>
@@ -165,11 +120,7 @@
 
                                         <button
                                             type="submit"
-                                            class="btn"
-                                            style="
-                                                background: #dc2626;
-                                                color: var(--c-surface);
-                                            "
+                                            class="btn btn-danger btn-sm"
                                         >
                                             Hapus
                                         </button>
@@ -192,16 +143,9 @@
 
     @else
 
-        <div style="
-            text-align: center;
-            padding: 50px;
-            color: var(--c-ink-soft);
-        ">
+        <div style="text-align: center; padding: 50px; color: var(--c-ink-soft);">
 
-            <div style="
-                font-size: 40px;
-                margin-bottom: 15px;
-            ">
+            <div style="font-size: 40px; margin-bottom: 15px;">
                 🏷️
             </div>
 

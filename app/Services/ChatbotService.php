@@ -6,6 +6,7 @@ use App\Models\Category;
 use App\Models\Faq;
 use App\Models\KnowledgeArticle;
 use App\Models\Product;
+use App\Models\User;
 use Illuminate\Support\Collection;
 
 class ChatbotService
@@ -107,10 +108,20 @@ class ChatbotService
         'bha' => ['bha','beta hydroxy acid'],
     ];
 
+    public function __construct(
+        private SupportDiagnosisService $support
+    ) {}
+
+    /**
+     * @param  User|null  $user  Pelanggan yang login, dipakai untuk diagnosis kendala sistem.
+     * @param  string|null  $previousSupportTopic  Topik bantuan pada giliran sebelumnya (untuk "masih gagal").
+     */
     public function reply(
         string $message,
         ?int $contextProductId = null,
-        ?string $userName = null
+        ?string $userName = null,
+        ?User $user = null,
+        ?string $previousSupportTopic = null
     ): array {
         $text = $this->normalize($message);
 
@@ -127,6 +138,19 @@ class ChatbotService
                 'Sama-sama! Kalau masih ada yang ingin ditanyakan soal produk atau pesananmu, tulis saja ya.',
                 ['suggestions' => $this->defaultSuggestions()]
             );
+        }
+
+        /*
+         * Kendala sistem (checkout, ongkir, pembayaran, pesanan, akun)
+         * ditangani sebelum pencarian produk.
+         */
+        $supportIntent = $this->support->detectTopic(
+            $text,
+            $previousSupportTopic
+        );
+
+        if ($supportIntent !== null) {
+            return $this->supportReply($supportIntent, $user);
         }
 
         $products = Product::with('category')->get();
@@ -379,6 +403,80 @@ class ChatbotService
         return $this->fallback();
     }
 
+    private function supportReply(array $intent, ?User $user): array
+    {
+        $topic = $intent['topic'];
+        $escalate = (bool) $intent['escalate'];
+
+        $diagnosis = $this->support->diagnose($topic, $user);
+        $needsHuman = $escalate || $diagnosis['needs_human'];
+
+        $links = $this->support->actionLinks($diagnosis);
+
+        if ($needsHuman) {
+            $links[] = $this->support->contactLink(
+                $user,
+                $topic,
+                $diagnosis['problems']
+            );
+
+            $this->support->logEscalation(
+                $user,
+                $topic,
+                $diagnosis['problems'],
+                'diagnosis'
+            );
+        }
+
+        return $this->response(
+            $this->support->fallbackReply($diagnosis, $escalate),
+            [
+                'links' => $links,
+                'suggestions' => $needsHuman ? [] : $this->supportSuggestions($topic),
+                '_use_ai' => true,
+                '_ai_context' => [
+                    'intent' => 'support_' . $topic,
+                    'diagnosis' => [
+                        'topic' => $diagnosis['topic_label'],
+                        'problems' => $this->aiChecks($diagnosis['problems']),
+                        'checks_ok' => $this->aiChecks(array_filter(
+                            $diagnosis['checks'],
+                            fn ($check) => $check['status'] === 'ok'
+                        )),
+                        'tips' => $diagnosis['tips'],
+                        'recent_orders' => $diagnosis['orders'],
+                        'needs_admin' => $needsHuman,
+                    ],
+                ],
+                '_support_topic' => $topic,
+                '_support_problems' => $diagnosis['problems'],
+                '_support_needs_human' => $needsHuman,
+            ]
+        );
+    }
+
+    private function aiChecks(array $checks): array
+    {
+        return array_values(array_map(
+            fn ($check) => [
+                'issue' => $check['detail'],
+                'owner' => $check['owner'],
+                'fix' => $check['fix'],
+            ],
+            $checks
+        ));
+    }
+
+    private function supportSuggestions(string $topic): array
+    {
+        return match ($topic) {
+            'checkout', 'shipping' => ['Ongkir tidak muncul', 'Cara mengisi alamat dengan benar'],
+            'payment' => ['Pembayaran saya kedaluwarsa', 'Bagaimana cara membatalkan pesanan?'],
+            'order' => ['Bagaimana cara melihat status pesanan?'],
+            default => [],
+        };
+    }
+
     private function productAnswer(
         Product $product,
         string $text,
@@ -477,7 +575,7 @@ class ChatbotService
         }
 
         $lines = [
-            'Ini perbandingan berdasarkan data yang tersimpan di Beauty Store:'
+            'Ini perbandingan berdasarkan data yang tersimpan di ZRadiance:'
         ];
 
         $sorted = $set->sortBy('price')->values();
@@ -648,7 +746,7 @@ class ChatbotService
 
             $lines[] = $out > 0
                 ? 'Produk yang sesuai ada, tetapi stoknya sedang habis.'
-                : 'Belum ada produk di Beauty Store yang sesuai kriteria tersebut.';
+                : 'Belum ada produk di ZRadiance yang sesuai kriteria tersebut.';
 
             if ($criteria['ingredients']) {
                 $lines[] = 'Produk yang belum memiliki data kandungan tidak bisa kusaring.';
@@ -896,7 +994,7 @@ class ChatbotService
                 });
 
                 if ($found->isNotEmpty()) {
-                    $reply .= "\n\nProduk di Beauty Store yang datanya mencantumkan bahan ini:";
+                    $reply .= "\n\nProduk di ZRadiance yang datanya mencantumkan bahan ini:";
 
                     $cards = $found
                         ->take(3)
@@ -904,7 +1002,7 @@ class ChatbotService
                         ->values()
                         ->all();
                 } else {
-                    $reply .= "\n\nSaat ini belum ada produk di Beauty Store yang datanya mencantumkan bahan ini.";
+                    $reply .= "\n\nSaat ini belum ada produk di ZRadiance yang datanya mencantumkan bahan ini.";
                 }
             }
         }
@@ -1443,6 +1541,7 @@ class ChatbotService
             'Cari moisturizer untuk kulit berminyak di bawah Rp100.000',
             'Apa fungsi niacinamide?',
             'Bagaimana cara memesan produk?',
+            'Kenapa aku tidak bisa checkout?',
         ];
     }
 
@@ -1453,7 +1552,7 @@ class ChatbotService
             : '';
 
         return $this->response(
-            "Halo{$first}! Aku asisten Beauty Store. Aku bisa bantu soal kandungan dan cara pakai produk, rekomendasi dan perbandingan produk, serta pertanyaan tentang pemesanan. Mau tanya apa?",
+            "Halo{$first}! Aku asisten ZRadiance. Aku bisa bantu soal produk dan skincare, pemesanan, sampai kendala seperti tidak bisa checkout, ongkir, atau pembayaran. Mau tanya apa?",
             ['suggestions' => $this->defaultSuggestions()]
         );
     }
@@ -1461,7 +1560,7 @@ class ChatbotService
     private function fallback(): array
     {
         return $this->response(
-            'Maaf, aku belum punya informasi yang cukup untuk menjawab itu. Aku akan mencoba memahami pertanyaanmu, tetapi jawaban tentang produk harus tetap mengacu pada data Beauty Store.',
+            'Maaf, aku belum punya informasi yang cukup untuk menjawab itu. Aku akan mencoba memahami pertanyaanmu, tetapi jawaban tentang produk harus tetap mengacu pada data ZRadiance.',
             [
                 'suggestions' => $this->defaultSuggestions(),
                 'links' => [

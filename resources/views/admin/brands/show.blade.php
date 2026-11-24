@@ -38,8 +38,8 @@
     </div>
 
     {{-- Informasi --}}
-    <div class="admin-table-wrap">
-        <table class="admin-data-table">
+    <div class="table-wrap">
+        <table class="table">
             <tbody>
                 <tr>
                     <th>Nama Brand</th>
@@ -54,7 +54,9 @@
                 <tr>
                     <th>Status</th>
                     <td>
-                        {{ $brand->is_active ? 'Aktif' : 'Nonaktif' }}
+                        <span class="badge {{ $brand->is_active ? 'badge-success' : 'badge-muted' }}">
+                            {{ $brand->is_active ? 'Aktif' : 'Nonaktif' }}
+                        </span>
                     </td>
                 </tr>
 
@@ -77,8 +79,8 @@
     <div style="margin-top:25px;">
         <h3>Produk dari Brand Ini</h3>
 
-        <div class="admin-table-wrap">
-            <table class="admin-data-table">
+        <div class="table-wrap">
+            <table class="table">
                 <thead>
                     <tr>
                         <th>Nama Produk</th>
