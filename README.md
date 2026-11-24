@@ -1,124 +1,111 @@
-# ZRadiance - Beauty E-Commerce
+# ZRadiance | Beauty E-Commerce
 
-**ZRadiance** merupakan aplikasi e-commerce berbasis web yang berfokus pada penjualan produk kecantikan (*beauty products*). Aplikasi ini dikembangkan sebagai bagian dari pemenuhan tugas Ujian Akhir Semester (UAS) untuk mata kuliah Praktik Manajemen Sistem Informasi.
+ZRadiance merupakan aplikasi e-commerce berbasis web yang berfokus pada penjualan produk kecantikan (*beauty products*). Aplikasi menyediakan pengalaman belanja bagi pelanggan serta panel administrator untuk mengelola produk, kategori, brand, pesanan, pelanggan, dan aktivitas toko.
 
-ZRadiance dirancang untuk memudahkan pelanggan dalam mencari produk kecantikan, mengelola keranjang belanja, melakukan pemesanan, serta memantau informasi pesanan. Aplikasi juga menyediakan halaman administrator untuk mengelola data dan aktivitas toko.
-
----
+Project ini dikembangkan sebagai proyek UAS Praktik Manajemen Sistem Informasi.
 
 ## Fitur Aplikasi
 
-### 1. Customer
+### Customer
 - Registrasi dan login pengguna.
 - Melihat katalog dan detail produk.
 - Pencarian, filter kategori, dan pengurutan produk.
-- Menambahkan dan mengelola produk dalam keranjang.
+- Mengelola keranjang belanja.
 - Mengelola profil dan alamat pengiriman.
-- Melakukan checkout dan melihat ongkos kirim.
-- Melihat riwayat serta detail pesanan.
-- Melihat ulasan produk.
+- Checkout dan perhitungan ongkos kirim.
+- Melihat riwayat dan detail pesanan.
+- Memberikan ulasan produk.
+- Chatbot bantuan pelanggan.
 
-### 2. Administrator
-- Dashboard administrator.
-- Mengelola data produk (tambah, lihat, ubah, dan hapus).
-- Mengelola kategori produk.
-- Melihat dan mengelola pesanan.
-- Mengelola informasi pelanggan.
-- Mengatur konfigurasi pengiriman.
+### Administrator
+- Dashboard admin.
+- Manajemen produk (CRUD).
+- Manajemen kategori.
+- Manajemen brand.
+- Manajemen pesanan.
+- Manajemen pelanggan.
+- Pengelolaan informasi toko dan pengiriman.
 
-### 3. Integrasi dan Fitur Pendukung
-- Integrasi RajaOngkir untuk pencarian tujuan dan perhitungan ongkos kirim.
-- Integrasi Midtrans untuk mendukung proses pembayaran online.
-- Pengelolaan status pesanan.
-- Penanganan kegagalan API dan pembatasan permintaan (*rate limiting*).
-- Cache pencarian destinasi pengiriman.
+### Integrasi
+- Midtrans untuk pembayaran online.
+- RajaOngkir untuk pencarian tujuan dan perhitungan ongkos kirim.
+- Gemini API untuk chatbot bantuan pelanggan.
+- Validasi data dan penanganan error API.
+- Cache dan pembatasan permintaan API.
 
----
-
-## Teknologi yang Digunakan
+## Teknologi
 
 | Teknologi | Kegunaan |
 |---|---|
-| PHP 8.3 | Bahasa pemrograman backend |
-| Laravel 13 | Framework aplikasi web |
-| MySQL | Sistem manajemen basis data |
-| HTML, CSS, JavaScript | Pengembangan antarmuka |
-| Blade Template | Template engine Laravel |
-| PHPUnit | Pengujian otomatis aplikasi |
-| Laravel Feature Test | Pengujian fungsional aplikasi |
-| RajaOngkir | Integrasi layanan pengiriman |
-| Midtrans | Integrasi pembayaran online |
-| Laragon | Lingkungan pengembangan lokal |
+| PHP 8.3 | Backend |
+| Laravel 13 | Framework |
+| MySQL | Database |
+| Blade | Template |
+| HTML, CSS, JavaScript | Frontend |
+| Vite | Asset bundling |
+| Node.js & NPM | Frontend dependencies |
+| PHPUnit | Testing |
+| Midtrans | Payment gateway |
+| RajaOngkir | Shipping integration |
+| Gemini API | Chatbot |
+| Laragon | Local development |
 
----
+## Persyaratan
 
-## Persyaratan Sistem
+- PHP 8.3
+- Composer
+- MySQL
+- Node.js dan NPM
+- Git
+- Laragon (direkomendasikan untuk Windows)
 
-Sebelum menjalankan aplikasi, pastikan perangkat telah memiliki:
+## Instalasi
 
-- PHP 8.3 atau versi yang kompatibel.
-- Composer.
-- MySQL.
-- Node.js dan NPM.
-- Laragon atau lingkungan server lokal sejenis.
-
----
-
-## Instalasi dan Konfigurasi
-
-### 1. Clone Repository
+### 1. Clone repository
 
 ```bash
-git clone <URL_REPOSITORY_GITHUB>
-```
-
-Masuk ke direktori project:
-
-```bash
+git clone https://github.com/Zahrazr15/zradiance.git
 cd ecommerce
 ```
 
-### 2. Install Dependency
+Jika ingin menggunakan branch pengembangan:
+
+```bash
+git switch redesign/full-ui
+```
+
+### 2. Install dependencies
 
 ```bash
 composer install
-```
-
-Install dependency frontend:
-
-```bash
 npm install
 ```
 
-### 3. Konfigurasi Environment
+### 3. Konfigurasi environment
 
-Salin file konfigurasi:
+Salin file `.env.example` menjadi `.env`.
 
-```bash
-cp .env.example .env
-```
-
-Pada Windows PowerShell, dapat menggunakan:
+Windows PowerShell:
 
 ```powershell
 Copy-Item .env.example .env
 ```
 
-Buat application key:
+Generate application key:
 
 ```bash
 php artisan key:generate
 ```
 
-### 4. Konfigurasi Database
+### 4. Konfigurasi database
 
-Buat database MySQL dengan nama:
+Buat database MySQL bernama:
 
 ```text
 ecommerce
 ```
 
-Sesuaikan konfigurasi database pada file `.env`:
+Atur koneksi database di file `.env`:
 
 ```env
 DB_CONNECTION=mysql
@@ -129,143 +116,122 @@ DB_USERNAME=root
 DB_PASSWORD=
 ```
 
-Sesuaikan username dan password berdasarkan konfigurasi MySQL lokal.
+Sesuaikan username dan password dengan konfigurasi MySQL masing-masing.
 
-### 5. Migrasi dan Seeder
+### 5. Import database
 
-Jalankan migrasi database:
+Jika file backup `database/zradiance.sql` tersedia:
+
+1. Buka phpMyAdmin.
+2. Pilih database `ecommerce`.
+3. Klik menu **Import**.
+4. Pilih file `database/zradiance.sql`.
+5. Jalankan proses import.
+
+Alternatif menggunakan terminal:
+
+```bash
+mysql -u root ecommerce < database/zradiance.sql
+```
+
+Jika database belum memiliki data dan tidak menggunakan backup, jalankan:
 
 ```bash
 php artisan migrate
-```
-
-Untuk mengisi data awal demonstrasi, jalankan seeder yang telah disediakan:
-
-```bash
 php artisan db:seed
 ```
 
-Pastikan `DatabaseSeeder` sudah memanggil seeder yang diperlukan sebelum menjalankan perintah tersebut.
+### 6. Konfigurasi API
 
-### 6. Menjalankan Aplikasi
+Tambahkan API key yang dimiliki pada file `.env`:
 
-Jalankan proses build frontend:
+```env
+MIDTRANS_SERVER_KEY=
+MIDTRANS_CLIENT_KEY=
+
+RAJAONGKIR_API_KEY=
+
+GEMINI_API_KEY=
+GEMINI_MODEL=gemini-2.5-flash
+```
+
+Jangan mengunggah API key, password, atau token pribadi ke repository.
+
+### 7. Build frontend
 
 ```bash
 npm run build
 ```
 
-Jalankan server Laravel:
+### 8. Jalankan aplikasi
 
 ```bash
 php artisan serve
 ```
 
-Buka aplikasi melalui browser:
+Buka browser:
 
 ```text
 http://127.0.0.1:8000
 ```
 
----
+## Pengujian
 
-## Konfigurasi Layanan Eksternal
-
-Aplikasi menggunakan layanan eksternal untuk mendukung beberapa proses operasional.
-
-- **RajaOngkir:** digunakan untuk pencarian destinasi dan perhitungan ongkos kirim.
-- **Midtrans:** digunakan untuk mendukung proses pembayaran online.
-
-Konfigurasi API harus disesuaikan dengan dokumentasi resmi masing-masing penyedia layanan.
-
-Gunakan API Key milik sendiri dan simpan seluruh kredensial pada file `.env`. Jangan mengunggah API Key atau secret ke repository publik.
-
----
-
-## Pengujian Sistem
-
-Pengujian otomatis dilakukan menggunakan PHPUnit dan Laravel Testing.
-
-Perintah menjalankan seluruh pengujian:
+Jalankan pengujian menggunakan:
 
 ```bash
 php artisan test
 ```
 
-### Hasil Pengujian Otomatis
+Pengujian mencakup feature test dan unit test untuk berbagai fungsi aplikasi, termasuk autentikasi, pengelolaan data, validasi, dan proses bisnis.
 
-| Jenis Pengujian | Jumlah |
-|---|---:|
-| Feature Test | 27 |
-| Unit Test | 13 |
-| Total Test | **40** |
-| Assertions | **212** |
-| PASS | **40** |
-| FAIL | **0** |
-| SKIPPED dalam suite otomatis | **0** |
+Pengujian integrasi layanan eksternal dapat menggunakan simulasi (*mock testing*), sehingga tidak seluruh proses berarti telah diuji menggunakan transaksi live.
 
-Pengujian mencakup autentikasi, hak akses pengguna, pengelolaan produk dan kategori, profil, alamat, keranjang, checkout, validasi data, penanganan error, serta integrasi pengiriman menggunakan simulasi API (*mock testing*).
-
-**Catatan:** Pengujian otomatis menggunakan database SQLite in-memory dan simulasi layanan eksternal. Pengujian transaksi Midtrans sungguhan dan integrasi langsung RajaOngkir belum dilakukan.
-
-Dokumentasi pengujian lebih lanjut dapat dilihat pada:
-
-`docs/testing/LAPORAN-PENGUJIAN-ZRADIANCE.md`
-
----
-
-## Struktur Direktori
+## Struktur Project
 
 ```text
-ecommerce/
-├── app/
-│   ├── Http/
-│   ├── Models/
-│   └── Services/
-├── config/
-├── database/
-│   ├── migrations/
-│   ├── seeders/
-│   └── seed-data/
-├── docs/
-│   └── testing/
-├── public/
-├── resources/
-│   └── views/
-├── routes/
-├── tests/
-│   ├── Feature/
-│   └── Unit/
-├── .env.example
-├── artisan
-├── composer.json
-└── README.md
+app/
+├── Http/
+├── Models/
+└── Services/
+
+database/
+├── migrations/
+├── seeders/
+└── backup/
+
+public/
+resources/
+├── css/
+├── js/
+└── views/
+
+routes/
+tests/
+├── Feature/
+└── Unit/
+
+docs/
 ```
 
----
+## Keamanan
 
-## Tujuan Pengembangan
+- File `.env` tidak boleh diunggah ke repository.
+- API key dan secret harus disimpan secara lokal.
+- Database backup yang dibagikan harus menggunakan data demo atau data yang telah disanitasi.
+- Jangan menyertakan password, data pribadi pelanggan, atau informasi transaksi sensitif.
 
-Pengembangan ZRadiance bertujuan untuk menerapkan konsep sistem informasi berbasis web dalam kegiatan perdagangan elektronik, khususnya pada bidang produk kecantikan.
-
-Melalui aplikasi ini, diharapkan proses pengelolaan produk, pelanggan, pesanan, dan informasi pengiriman dapat dilakukan secara lebih terstruktur dan terintegrasi.
-
----
-
-## Informasi Proyek
+## Informasi Project
 
 | Keterangan | Informasi |
 |---|---|
-| Nama Aplikasi | ZRadiance |
-| Jenis Aplikasi | E-Commerce |
-| Bidang | Beauty Products |
-| Mata Kuliah | Praktik Manajemen Sistem Informasi |
-| Keperluan | Tugas Ujian Akhir Semester (UAS) |
+| Nama aplikasi | ZRadiance |
+| Jenis | Beauty E-Commerce |
 | Framework | Laravel 13 |
 | Database | MySQL |
+| Mata kuliah | Praktik Manajemen Sistem Informasi |
+| Tujuan | Proyek UAS |
 
 ---
 
-**ZRadiance - Beauty Store E-Commerce**
-
-Dikembangkan untuk memenuhi kebutuhan pembelajaran dan penerapan sistem informasi berbasis web.
+**ZRadiance — Beauty Store E-Commerce**
